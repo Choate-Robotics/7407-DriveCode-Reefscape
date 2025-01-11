@@ -1,11 +1,11 @@
 
-# 7407-DriveCode-{TEMPLATE}
+# 7407-DriveCode-Reefscape
 
-Team 7407 Wired Boars {TEMPLATE} Robot Code
+Team 7407 Wired Boars Reefscape Robot Code
 
 ## File Tree:
 ```
-7407-DriveCode-Template
+7407-DriveCode-Reefscape
 ├── autonomous (Contains autonomous routines for robot)
 ├── command (Contains commands for command scheduling)
 │   └── __init__.py
