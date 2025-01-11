@@ -76,3 +76,13 @@ MOVE_CONFIG = TalonConfig(
     current_limit=40,
     kV=0.12
 )
+
+#intake
+intake_id = 9
+INTAKE_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
