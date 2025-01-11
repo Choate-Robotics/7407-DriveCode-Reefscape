@@ -1,0 +1,41 @@
+{
+  "MainWindow": {
+    "GLOBAL": {
+      "fps": "120",
+      "height": "1275",
+      "maximized": "0",
+      "style": "0",
+      "userScale": "2",
+      "width": "2312",
+      "xpos": "0",
+      "ypos": "56"
+    }
+  },
+  "Window": {
+    "Debug##Default": {
+      "Collapsed": "0",
+      "Pos": "60,60",
+      "Size": "400,400"
+    },
+    "Download": {
+      "Collapsed": "0",
+      "Pos": "0,625",
+      "Size": "937,650"
+    },
+    "Entries": {
+      "Collapsed": "0",
+      "Pos": "950,50",
+      "Size": "1350,912"
+    },
+    "Input Files": {
+      "Collapsed": "0",
+      "Pos": "0,50",
+      "Size": "937,575"
+    },
+    "Output": {
+      "Collapsed": "0",
+      "Pos": "950,975",
+      "Size": "1350,300"
+    }
+  }
+}
