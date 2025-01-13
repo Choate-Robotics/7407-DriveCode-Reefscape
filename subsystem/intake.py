@@ -13,6 +13,7 @@ class Intake(Subsystem):
             config = config.INTAKE_CONFIG
         )
         self.coral_in_intake: bool = False
+        self.intake_running: bool = False
     
     def init(self):
         self.motor.init()
@@ -23,7 +24,7 @@ class Intake(Subsystem):
         """
         pass
 
-    def  stop(self):
+    def stop(self):
         """
         stop the motors
         """
@@ -31,7 +32,7 @@ class Intake(Subsystem):
 
     def roll_out(self):
         """
-        #eject coral in the intake
+        eject coral in the intake
         """
         pass
 
