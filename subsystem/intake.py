@@ -17,4 +17,28 @@ class Intake(Subsystem):
     def init(self):
         self.motor.init()
 
-    
+    def roll_in(self):
+        """
+        spin the motors inwards to collect the corral
+        """
+        pass
+
+    def  stop(self):
+        """
+        stop the motors
+        """
+        pass
+
+    def roll_out(self):
+        """
+        #eject coral in the intake
+        """
+        pass
+
+    def detect_coral(self) -> bool:
+        """
+        check if coral is in the intake
+        """
+        coral_in_intake = self.imaginarysensor
+        return coral_in_intake
+
