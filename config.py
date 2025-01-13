@@ -76,3 +76,7 @@ MOVE_CONFIG = TalonConfig(
     current_limit=40,
     kV=0.12
 )
+
+#elevator
+elevator_lead_id = 10
+elevator_follower_id = 11
