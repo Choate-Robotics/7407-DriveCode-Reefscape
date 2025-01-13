@@ -8,20 +8,19 @@ class RunIntake(SubsystemCommand[Intake]):
     """
     def initialize(self) -> None:
         self.subsystem.roll_in()
-        self.coral_in_intake = False
-        self.intake_running = True
+        self.subsystem.intake_running = True
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        coral_in_intake: bool = self.detect_coral()
+        self.subsystem.coral_in_intake = self.detect_coral()
         return self.subsystem.coral_in_intake
     
     def end(self, interrupted) -> None:
         self.subsystem.stop()
-        self.coral_in_intake = True
-        self.intake_running = False
+        self.subsystem.coral_in_intake = True
+        self.subsystem.intake_running = False
 
 
 class EjectIntake(SubsystemCommand[Intake]):
@@ -30,8 +29,8 @@ class EjectIntake(SubsystemCommand[Intake]):
     """
     def initialize(self) -> None:
         self.subsystem.roll_out()
-        self.coral_in_intake = True
-        self.intake_running = True
+        self.subsystem.coral_in_intake = True
+        self.subsystem.intake_running = True
 
     def execute(self) -> None:
         pass
