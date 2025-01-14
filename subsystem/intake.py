@@ -40,6 +40,6 @@ class Intake(Subsystem):
         """
         check if coral is in the intake
         """
-        coral_in_intake = self.imaginarysensor
-        return coral_in_intake
+        self.coral_in_intake = self.imaginarysensor
+        return self.coral_in_intake
 

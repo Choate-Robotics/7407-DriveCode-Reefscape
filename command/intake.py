@@ -4,7 +4,7 @@ from subsystem import Intake
 
 class RunIntake(SubsystemCommand[Intake]):
     """
-    run until coral detected
+    Runs until coral is detected
     """
     def initialize(self) -> None:
         self.subsystem.roll_in()
@@ -36,8 +36,8 @@ class EjectIntake(SubsystemCommand[Intake]):
         pass
 
     def isFinished(self) -> bool:
-        self.coral_in_intake = self.detect_coral()
-        return not self.coral_in_intake
+        self.subsystem.coral_in_intake = self.detect_coral()
+        return not self.subsystem.coral_in_intake
 
     def end(self, interrupted) -> None:
         self.subsystem.stop()
