@@ -20,3 +20,27 @@ class Elevator(Subsystem):
         self.leader_motor.init()
         self.follower_motor.init()
         self.follower_motor.follow(self.leader_motor, inverted=True)
+
+    def set_position(self, height):
+        """
+        sets the elevator to a specific height
+        """
+        pass
+
+    def set_zero(self):
+        """
+        brings the elevator down to the lowest position
+        """
+        pass
+
+    def get_position(self): 
+        """
+        gets the current height of the elevator
+        """
+        pass
+
+    def zero(self):
+        """
+        zero the elevator
+        """
+        pass
