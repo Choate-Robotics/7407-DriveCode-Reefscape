@@ -86,3 +86,7 @@ INTAKE_CONFIG = TalonConfig(
     0,
     0
 )
+
+intake_speed = 1 #placeholder
+intake_gear_ratio = 1 #placeholder
+intake_eject_speed = 1 #placeholder
