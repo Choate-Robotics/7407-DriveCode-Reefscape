@@ -86,3 +86,22 @@ INTAKE_CONFIG = TalonConfig(
     0,
     0
 )
+
+#wrist
+wrist_feed_id = 9
+WRIST_FEED_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+wrist_id = 9
+WRIST_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+

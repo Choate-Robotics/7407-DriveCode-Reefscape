@@ -7,6 +7,7 @@ from units.SI import (
     rotations_per_minute,
     degrees_to_radians,
     meters_per_second_squared,
+    radians
 )
 
 #drivetrain
@@ -40,3 +41,8 @@ drivetrain_max_angular_accel = 720 * degrees_per_second__to__radians_per_second
 drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio
+
+# wrist 
+wrist_max_angle: radians = 2 * math.radians
+wrist_min_angle: radians = 0 * math.radians
+wrist_gear_ratio = 10 #placeholder
