@@ -77,6 +77,7 @@ MOVE_CONFIG = TalonConfig(
     kV=0.12
 )
 
-climber_motor_id = 1
-climber_motor_follower_id = 1
+# TODO: Placeholder
+climber_motor_id = 23
+climber_motor_follower_id = 24
 climber_config = TalonConfig(0, 0, 0, 0, 0, 0)
