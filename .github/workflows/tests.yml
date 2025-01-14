@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python3 -m pip install robotpy
+          python3 -m pip install robotpy==2025.2.1.0
           python3 -m robotpy sync
 
 
