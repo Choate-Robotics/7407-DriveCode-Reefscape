@@ -30,3 +30,18 @@ robotpy_extras = [
 requires = [
     "numpy",
 ]
+
+[tool.poetry]
+name = "7407-drivecode-reefscape"
+version = "0.1.0"
+description = ""
+authors = ["cyrusnaficy <cyrus.naficy@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
