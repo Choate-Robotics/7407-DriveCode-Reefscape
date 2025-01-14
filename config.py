@@ -76,3 +76,7 @@ MOVE_CONFIG = TalonConfig(
     current_limit=40,
     kV=0.12
 )
+
+climber_motor_id = 1
+climber_motor_follower_id = 1
+climber_config = TalonConfig(0, 0, 0, 0, 0, 0)
