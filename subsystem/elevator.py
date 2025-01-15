@@ -25,7 +25,7 @@ class Elevator(Subsystem):
         """
         sets the elevator to a specific height
         """
-        pass
+        self.leader_motor.set_target_position(height)
 
     def set_zero(self):
         """
@@ -37,7 +37,7 @@ class Elevator(Subsystem):
         """
         gets the current height of the elevator
         """
-        pass
+        self.follower_motor.get_sensor_position()
 
     def zero(self):
         """
