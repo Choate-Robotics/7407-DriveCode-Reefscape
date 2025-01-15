@@ -6,7 +6,7 @@ import time  # noqa
 
 from utils import LocalLogger  # noqa
 import rev
-from rev import SparkMax, REVLibError, SparkMaxPIDController, SparkMaxRelativeEncoder
+from rev import SparkMax, REVLibError, SparkClosedLoopController, RelativeEncoder
 from wpilib import TimedRobot
 
 import config
@@ -116,8 +116,8 @@ class SparkMax(PIDMotor):
     """
 
     motor: SparkMax
-    encoder: SparkMaxRelativeEncoder
-    pid_controller: SparkMaxPIDController
+    encoder: RelativeEncoder
+    pid_controller: SparkClosedLoopController
     _configs: list[SparkMaxConfig] = []
     _has_init_run: bool = False
     _logger: LocalLogger
