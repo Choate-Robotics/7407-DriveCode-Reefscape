@@ -43,6 +43,4 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 ) * drivetrain_wheel_gear_ratio
 
 # wrist 
-wrist_max_angle: radians = 2 * math.radians
-wrist_min_angle: radians = 0 * math.radians
 wrist_gear_ratio = 10 #placeholder

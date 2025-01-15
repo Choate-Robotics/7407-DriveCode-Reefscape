@@ -5,6 +5,7 @@ from phoenix6.hardware import cancoder
 import math
 from math import pi
 from units.SI import radians
+from toolkit.utils.toolkit_math import bounded_angle_diff
 
 import config
 import constants
@@ -28,6 +29,8 @@ class Wrist(Subsystem):
         self.coral_in_wrist: bool = False
         self.wrist_angle: radians = 0
         self.target_angle: radians = 0
+        self.wrist_moving: bool = False
+        self.coral_in_feed: bool = False
 
     def init(self):
         self.feed_motor.init()
@@ -38,13 +41,13 @@ class Wrist(Subsystem):
 # feed
 
     def feed_in(self):
-        pass
+        self.feed_motor.set_target_velocity(config.wrist_feed_vel)
 
     def feed_out(self):
-        pass
+        self.feed_motor.set_target_velocity(-config.wrist_feed_vel)
 
     def feed_stop(self):
-        pass
+        self.feed_motor.set_target_velocity(0)
 
     def coral_detected(self):
         pass
@@ -52,14 +55,11 @@ class Wrist(Subsystem):
 # wrist
 
     def limit_angle(self, angle: radians) -> radians:
-        if angle <= constants.wrist_min_angle:
-            return constants.wrist_min_angle
-        elif angle >= constants.wrist_max_angle:
-            return constants.wrist_max_angle
+        if angle <= config.wrist_min_angle:
+            return config.wrist_min_angle
+        elif angle >= config.wrist_max_angle:
+            return config.wrist_max_angle
         return angle
-
-    def get_wrist_angle(self):
-        pass
 
     def set_wrist_angle(self, angle: radians):
 
@@ -69,4 +69,15 @@ class Wrist(Subsystem):
         self.wrist_motor.set_target_position(
             ( angle / 2*math.pi ) * constants.wrist_gear_ratio
         )
+
+    def get_wrist_angle(self):
+        return (
+                (self.wrist_motor.get_sensor_position() / constants.wrist_gear_ratio)
+                * pi
+                * 2
+        )
+        
+
+    def is_at_angle(self, angle: radians, threshold=math.radians(2)):
+        return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < threshold
 
