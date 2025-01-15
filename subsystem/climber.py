@@ -6,7 +6,6 @@ from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 import math
 
-
 class Climber(Subsystem):
 
     # Initialize class
@@ -43,7 +42,10 @@ class Climber(Subsystem):
             return True
         else:
             return False
-
+        
+    def get_angle(self) -> float:
+        return self.climber_motor.get_sensor_position() / constants.climber_gear_ratio
+        
     # Set raw output of climber motor
     def set_raw_output(self, raw_value: float) -> None:
         self.climber_motor.set_raw_output(raw_value)
