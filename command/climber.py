@@ -12,7 +12,6 @@ from enum import Enum
 
 
 # cmds: set climber (angle), zero climber
-
 class SetClimber(SubsystemCommand[Climber]):
 
     """
