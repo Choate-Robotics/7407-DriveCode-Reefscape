@@ -24,7 +24,7 @@ def test_intake_init(intake: Intake):
         """
         add whatever testing values
         """
-        pass
+        
     ]
 )
 
