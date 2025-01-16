@@ -6,7 +6,7 @@ import time  # noqa
 
 from utils import LocalLogger  # noqa
 import rev
-from rev import CANSparkMax, REVLibError, SparkMaxPIDController, SparkMaxRelativeEncoder
+from rev import SparkMax, REVLibError, SparkClosedLoopController, RelativeEncoder
 from wpilib import TimedRobot
 
 import config
@@ -42,7 +42,7 @@ class SparkMaxConfig:
         k_D: float = None,
         k_F: float = None,
         output_range: tuple[float, float] = None,
-        idle_mode: CANSparkMax.IdleMode = None,
+        idle_mode: SparkMax.IdleMode = None,
     ):
         self.k_P = k_P
         self.k_I = k_I
@@ -59,7 +59,7 @@ class RevPeriodicFrames:
 
         Default Period: 10ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus0
+        return SparkMax.PeriodicFrame.kStatus0
 
     def k1():
         """
@@ -67,7 +67,7 @@ class RevPeriodicFrames:
 
         Default Period: 20ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus1
+        return SparkMax.PeriodicFrame.kStatus1
 
     def k2():
         """
@@ -75,7 +75,7 @@ class RevPeriodicFrames:
 
         Default Period: 20ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus2
+        return SparkMax.PeriodicFrame.kStatus2
 
     def k3():
         """
@@ -83,7 +83,7 @@ class RevPeriodicFrames:
 
         Default Period: 50ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus3
+        return SparkMax.PeriodicFrame.kStatus3
 
     def k4():
         """
@@ -91,7 +91,7 @@ class RevPeriodicFrames:
 
         Default Period: 20ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus4
+        return SparkMax.PeriodicFrame.kStatus4
 
     def k5():
         """
@@ -99,7 +99,7 @@ class RevPeriodicFrames:
 
         Default Period: 200ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus5
+        return SparkMax.PeriodicFrame.kStatus5
 
     def k6():
         """
@@ -107,7 +107,7 @@ class RevPeriodicFrames:
 
         Default Period: 200ms
         """
-        return CANSparkMax.PeriodicFrame.kStatus6
+        return SparkMax.PeriodicFrame.kStatus6
 
 
 class SparkMax(PIDMotor):
@@ -115,9 +115,9 @@ class SparkMax(PIDMotor):
     Wrapper class for the SparkMax motor controller
     """
 
-    motor: CANSparkMax
-    encoder: SparkMaxRelativeEncoder
-    pid_controller: SparkMaxPIDController
+    motor: SparkMax
+    encoder: RelativeEncoder
+    pid_controller: SparkClosedLoopController
     _configs: list[SparkMaxConfig] = []
     _has_init_run: bool = False
     _logger: LocalLogger
@@ -182,11 +182,11 @@ class SparkMax(PIDMotor):
 
         self._logger.setup("Initializing")
 
-        self.motor = CANSparkMax(
+        self.motor = SparkMax(
             self._can_id,
-            CANSparkMax.MotorType.kBrushless
+            SparkMax.MotorType.kBrushless
             if self._brushless or TimedRobot.isSimulation()
-            else CANSparkMax.MotorType.kBrushed,
+            else SparkMax.MotorType.kBrushed,
         )
 
         # Set pid controller
@@ -287,7 +287,7 @@ class SparkMax(PIDMotor):
         Args:
             pos (float): The target position of the motor controller in rotations
         """
-        result = self.pid_controller.setReference(pos, CANSparkMax.ControlType.kPosition, arbFeedforward=arbff, pidSlot=slot)
+        result = self.pid_controller.setReference(pos, SparkMax.ControlType.kPosition, arbFeedforward=arbff, pidSlot=slot)
         self.error_check(result, f'target position: {pos}, arbff: {arbff}, PID slot: {slot}')
 
     def set_target_velocity(
@@ -299,7 +299,7 @@ class SparkMax(PIDMotor):
         Args:
             vel (float): The target velocity of the motor controller in rotations per second
         """
-        result = self.pid_controller.setReference(vel, CANSparkMax.ControlType.kVelocity, arbFeedforward=arbff)
+        result = self.pid_controller.setReference(vel, SparkMax.ControlType.kVelocity, arbFeedforward=arbff)
         self.error_check(result, f'target velocity: {vel} arbff: {arbff}')
 
     def set_target_voltage(self, voltage: float):
@@ -309,7 +309,7 @@ class SparkMax(PIDMotor):
         Args:
             voltage (float): The target voltage of the motor controller in volts
         """
-        result = self.pid_controller.setReference(voltage, CANSparkMax.ControlType.kVoltage)
+        result = self.pid_controller.setReference(voltage, SparkMax.ControlType.kVoltage)
         self.error_check(result, f'target voltage: {voltage}')
 
     def get_sensor_position(self) -> rotations:
