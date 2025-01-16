@@ -23,24 +23,30 @@ class Elevator(Subsystem):
 
     def set_position(self, height):
         """
-        sets the elevator to a specific height
+        Brings the elevator to given height 
+
+        Args:
+            height (float): intended elevator height in meters
         """
         self.leader_motor.set_target_position(height)
 
     def set_zero(self):
         """
-        brings the elevator down to the lowest position
+        Brings the elevator to the zero position
         """
         pass
 
     def get_position(self): 
         """
-        gets the current height of the elevator
+        Obtains the current height of the elevator
+
+        Returns:
+            return_float: current elevator height 
         """
         self.follower_motor.get_sensor_position()
 
     def zero(self):
         """
-        zero the elevator
+        Tells the robot that its position is at zero
         """
         pass

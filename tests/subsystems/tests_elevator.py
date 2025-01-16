@@ -29,7 +29,7 @@ def test_elevator_init(elevator: Elevator):
 def test_set_position(test_input, elevator: Elevator):
     elevator.set_position(test_input)
     elevator.leader_motor.set_target_position.assert_called_with(
-        (test_input * constants.elevator_gear_ratio) / constants.elevator_driver_gear_circumfrence, 0
+        (test_input * constants.elevator_gear_ratio) / constants.elevator_driver_gear_circumference, 0
     )
 
 def test_set_zero(elevator: Elevator):
@@ -51,7 +51,7 @@ def test_get_position(test_input, elevator: Elevator, monkeypatch: MonkeyPatch):
     assert(
         elevator.get_position 
         == (test_input / constants.elevator_gear_ratio) 
-        * constants.elevator_driver_gear_circumfrence
+        * constants.elevator_driver_gear_circumference
     )
 
 def test_zero(elevator: Elevator):
