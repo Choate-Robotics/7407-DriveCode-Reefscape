@@ -50,7 +50,7 @@ class SwerveNode:
         """
 
         self.m_turn.set_sensor_position(0)
-        abs_encoder_position: float = self.encoder.getAbsolutePosition()
+        abs_encoder_position: float = self.encoder.get()
 
         # Find the difference in current and zero absolute position
         encoder_difference: float = abs_encoder_position - self.absolute_encoder_zeroed_pos
@@ -110,7 +110,7 @@ class SwerveNode:
         '''
         Gets the absolute encoder value. Must be overridden.
         '''
-        return self.encoder.getAbsolutePosition()
+        return self.encoder.get()
 
     def set_motor_velocity(self, vel: meters_per_second):
         """
