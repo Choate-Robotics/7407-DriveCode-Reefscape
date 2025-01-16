@@ -6,7 +6,9 @@ from math import radians
 
 
 class setWrist(SubsystemCommand[Wrist]):
-
+    """
+    Set the wrist to a specific angle.
+    """
     def __init__(self, subsystem: Wrist, angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
@@ -27,14 +29,16 @@ class setWrist(SubsystemCommand[Wrist]):
 
 
 class FeedIn(SubsystemCommand[Wrist]):
-     
+    """
+    run the feed intake in until there is coral detected in the feed
+    """
     def __init__(self, subsystem: Wrist, angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
 
     def initialize(self) -> None:
         self.subsystem.feed_in()
-        self.subsystem.coral_in_feed = False
+        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
     
     def execute(self):
         pass
@@ -42,19 +46,22 @@ class FeedIn(SubsystemCommand[Wrist]):
     def isFinished(self):
         return self.subsystem.coral_in_feed
 
-    def end(self, interrupted) -> None:
+    def end(self, interrupted):
         self.subsystem.feed_stop()
+        return self.subsystem.coral_in_feed
 
 
 class FeedOut(SubsystemCommand[Wrist]):
-     
+    """
+    run the feed out until coral is no longer detected in the feed
+    """
     def __init__(self, subsystem: Wrist, angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
 
     def initialize(self) -> None:
         self.subsystem.feed_out()
-        self.subsystem.coral_in_feed = True
+        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
     
     def execute(self):
         pass
@@ -62,5 +69,6 @@ class FeedOut(SubsystemCommand[Wrist]):
     def isFinished(self):
         return not self.subsystem.coral_in_feed
 
-    def end(self, interrupted) -> None:
+    def end(self, interrupted) -> bool:
         self.subsystem.feed_stop()
+        return not self.subsystem.coral_in_feed

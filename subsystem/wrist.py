@@ -41,20 +41,35 @@ class Wrist(Subsystem):
 # feed
 
     def feed_in(self):
+        """
+        spin feed motors in
+        """
         self.feed_motor.set_target_velocity(config.wrist_feed_vel)
 
     def feed_out(self):
+        """
+        spin feed motors out
+        """
         self.feed_motor.set_target_velocity(-config.wrist_feed_vel)
 
     def feed_stop(self):
+        """
+        stop the feed motors
+        """
         self.feed_motor.set_target_velocity(0)
 
     def coral_detected(self):
+        """
+        check if there is coral in the feed
+        """
         pass
 
 # wrist
 
     def limit_angle(self, angle: radians) -> radians:
+        """
+        check if the given angle is within the range of the wrist
+        """
         if angle <= config.wrist_min_angle:
             return config.wrist_min_angle
         elif angle >= config.wrist_max_angle:
@@ -62,7 +77,9 @@ class Wrist(Subsystem):
         return angle
 
     def set_wrist_angle(self, angle: radians):
-
+        """
+        move to motor until the wrist is at given angle
+        """
         angle = self.limit_angle(angle)
         self.target_angle = angle
 
@@ -71,6 +88,9 @@ class Wrist(Subsystem):
         )
 
     def get_wrist_angle(self):
+        """
+        get the current angle of the wrist
+        """
         return (
                 (self.wrist_motor.get_sensor_position() / constants.wrist_gear_ratio)
                 * pi
@@ -79,5 +99,8 @@ class Wrist(Subsystem):
         
 
     def is_at_angle(self, angle: radians, threshold=math.radians(2)):
+        """
+        check if the wrist angle is at the given angle
+        """
         return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < threshold
 
