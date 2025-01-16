@@ -34,7 +34,9 @@ def test_set_position(test_input, elevator: Elevator):
 
 def test_set_zero(elevator: Elevator):
     elevator.set_zero()
-    pass
+    elevator.leader_motor.set_target_position.assert_called_with(
+        0, 0
+    )
 
 @pytest.mark.parametrize(
     "test_input",
@@ -44,6 +46,7 @@ def test_set_zero(elevator: Elevator):
         """
     ]
 )
+
 def test_get_position(test_input, elevator: Elevator, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(
         elevator.leader_motor, "get_sensor_position", lambda: test_input
@@ -56,4 +59,7 @@ def test_get_position(test_input, elevator: Elevator, monkeypatch: MonkeyPatch):
 
 def test_zero(elevator: Elevator):
     elevator.zero()
+    """
+    add code depending on encoders used
+    """
     pass
