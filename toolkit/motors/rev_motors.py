@@ -53,7 +53,7 @@ class SparkMaxConfig:
 
 
 class RevPeriodicFrames:
-    def k0():
+    def k0(self):
         """
         Applied Output, Faults, Sticky Faults, isFollower
 
@@ -61,7 +61,7 @@ class RevPeriodicFrames:
         """
         return SparkMax.PeriodicFrame.kStatus0
 
-    def k1():
+    def k1(self):
         """
         Motor Velocity, Motor Current, Motor Voltage, Motor Temperature
 
@@ -69,7 +69,7 @@ class RevPeriodicFrames:
         """
         return SparkMax.PeriodicFrame.kStatus1
 
-    def k2():
+    def k2(self):
         """
         Motor Position
 
@@ -77,7 +77,7 @@ class RevPeriodicFrames:
         """
         return SparkMax.PeriodicFrame.kStatus2
 
-    def k3():
+    def k3(self):
         """
         Analog Sensor Voltage, Analog Sensor Position, Analog Sensor Velocity
 
@@ -85,7 +85,7 @@ class RevPeriodicFrames:
         """
         return SparkMax.PeriodicFrame.kStatus3
 
-    def k4():
+    def k4(self):
         """
         Alternate Encoder Position, Alternate Encoder Velocity
 
@@ -93,7 +93,7 @@ class RevPeriodicFrames:
         """
         return SparkMax.PeriodicFrame.kStatus4
 
-    def k5():
+    def k5(self):
         """
         Duty Cycle Absolute Encoder Position, Duty Cycle Absolute Encoder Angle
 
@@ -101,7 +101,7 @@ class RevPeriodicFrames:
         """
         return SparkMax.PeriodicFrame.kStatus5
 
-    def k6():
+    def k6(self):
         """
         Duty Cycle Absolute Encoder Velocity, Duty Cycle Absolute Encoder Frequency
 
