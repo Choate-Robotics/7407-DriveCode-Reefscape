@@ -13,6 +13,6 @@ from phoenix6.hardware import cancoder
 def wrist() -> Wrist:
 
     my_wrist = Wrist()
-    my_wrist.wrist_motor: TalonFX = MagicMock()
-    my_wrist.feed_motor: TalonFX = MagicMock()
+    my_wrist.wrist_motor = MagicMock()
+    my_wrist.feed_motor = MagicMock()
     return my_wrist
