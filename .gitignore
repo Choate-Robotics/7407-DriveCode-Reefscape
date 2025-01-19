@@ -161,3 +161,6 @@ cython_debug/
 .idea/
 
 simgui*
+
+# ctre-sim
+tests/ctre-sim/
