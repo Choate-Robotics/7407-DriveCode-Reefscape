@@ -1,7 +1,10 @@
-from toolkit.subsystem import Subsystem
-from toolkit.motors.ctre_motors import TalonFX
+from unittest.mock import MagicMock
 
 import config
+import constants
+from toolkit.motors.ctre_motors import TalonFX
+from toolkit.subsystem import Subsystem
+
 
 class Intake(Subsystem):
     def __init__(self):
@@ -9,12 +12,13 @@ class Intake(Subsystem):
         self.motor: TalonFX = TalonFX(
             config.intake_id,
             config.foc_active,
-            inverted = False,
-            config = config.INTAKE_CONFIG
+            inverted=False,
+            config=config.INTAKE_CONFIG,
         )
         self.coral_in_intake: bool = False
         self.intake_running: bool = False
-    
+        self.sensor = MagicMock()  # placeholder
+
     def init(self):
         self.motor.init()
 
@@ -22,24 +26,25 @@ class Intake(Subsystem):
         """
         spin the motors inwards to collect the corral
         """
-        pass
+        self.motor.set_raw_output(config.intake_speed * constants.intake_gear_ratio)
 
     def stop(self):
         """
         stop the motors
         """
-        pass
+        self.motor.set_raw_output(0)
 
     def roll_out(self):
         """
         eject coral in the intake
         """
-        pass
+        self.motor.set_raw_output(
+            -config.intake_eject_speed * constants.intake_gear_ratio
+        )
 
     def detect_coral(self) -> bool:
         """
         check if coral is in the intake
         """
-        self.coral_in_intake = self.imaginarysensor
+        self.coral_in_intake = self.sensor.get()
         return self.coral_in_intake
-

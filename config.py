@@ -90,3 +90,6 @@ wrist_max_angle = 2 * math.pi
 wrist_min_angle = 0 * math.pi
 
 wrist_feed_vel = 1  # placeholder
+
+intake_speed = 1  # placeholder
+intake_eject_speed = -1  # placeholder
