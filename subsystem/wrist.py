@@ -42,13 +42,13 @@ class Wrist(Subsystem):
 
     def feed_in(self):
         """
-        spin feed motors in
+        spin feed motors in, used in command to stop
         """
         self.feed_motor.set_target_velocity(config.wrist_feed_vel)
 
     def feed_out(self):
         """
-        spin feed motors out
+        spin feed motors out, used in command to stop
         """
         self.feed_motor.set_target_velocity(-config.wrist_feed_vel)
 
@@ -68,7 +68,11 @@ class Wrist(Subsystem):
 
     def limit_angle(self, angle: radians) -> radians:
         """
-        check if the given angle is within the range of the wrist
+        limits if the given angle in radians is within the range of the wrist
+        if it is out of range, it returns the min or max angle in radians
+        otherwise it returns the given angle
+
+        takes in angle in radians
         """
         if angle <= config.wrist_min_angle:
             return config.wrist_min_angle
@@ -90,6 +94,7 @@ class Wrist(Subsystem):
     def get_wrist_angle(self):
         """
         get the current angle of the wrist
+        returns angle in radians
         """
         return (
                 (self.wrist_motor.get_sensor_position() / constants.wrist_gear_ratio)
