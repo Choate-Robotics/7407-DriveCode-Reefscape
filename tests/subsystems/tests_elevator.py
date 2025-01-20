@@ -9,8 +9,8 @@ from unittest.mock import MagicMock
 @pytest.fixture
 def elevator() -> Elevator: 
     elevator = Elevator()
-    elevator.leader_motor = MagicMock
-    elevator.follower_motor = MagicMock
+    elevator.leader_motor = MagicMock()
+    elevator.follower_motor = MagicMock()
     return elevator 
 
 def test_elevator_init(elevator: Elevator):

@@ -8,6 +8,7 @@ class SetElevator(SubsystemCommand[Elevator]):
     """
     Set elevator to specified length.
     param length to set elevator to (float)
+    in meters
     """
     def __init__(self, subsystem: Elevator, length: float):
         super().__init__(subsystem)
@@ -28,12 +29,9 @@ class SetElevator(SubsystemCommand[Elevator]):
         return round(self.subsystem.get_length(), 2) == round(self.length, 2)
 
     def end(self, interrupted: bool):
-        if interrupted:
-            pass
-
-        else:
-            pass
-
+        """
+        stops moving
+        """
         self.subsystem.elevator_moving = False
 
     
