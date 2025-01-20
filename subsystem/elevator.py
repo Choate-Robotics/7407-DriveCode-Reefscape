@@ -1,12 +1,12 @@
-from toolkit.subsystem import Subsystem
-from toolkit.motors.ctre_motors import TalonFX
-
 import config
 import constants
+from toolkit.motors.ctre_motors import TalonFX
+from toolkit.subsystem import Subsystem
+
 
 class Elevator(Subsystem):
     def _init_(self):
-        super._init_()
+        super.__init__()
         self.leader_motor: TalonFX = TalonFX(
             config.elevator_lead_id,
             config.foc_active,
@@ -16,7 +16,7 @@ class Elevator(Subsystem):
             config.elevator_follower_id,
             config.foc_active,
         )
-    
+
     def init(self):
         self.leader_motor.init()
         self.follower_motor.init()
@@ -24,7 +24,7 @@ class Elevator(Subsystem):
 
     def set_position(self, height):
         """
-        Brings the elevator to given height 
+        Brings the elevator to given height
 
         Args:
             height (float): intended elevator height in meters
@@ -38,15 +38,18 @@ class Elevator(Subsystem):
         """
         pass
 
-    def get_position(self): 
+    def get_position(self):
         """
         Obtains the current height of the elevator
 
         Returns:
-            return_float: current elevator height 
+            return_float: current elevator height
         """
-        self.rotations = self.follower_motor.get_sensor_position()
-        self.height = (self.rotations / constants.elevator_gear_ratio) * constants.elevator_driver_gear_circumference
+        return (
+            self.leader_motor.get_sensor_position()
+            * constants.elevator_driver_gear_circumference
+            / constants.elevator_gear_ratio
+        )
 
     def zero(self):
         """
