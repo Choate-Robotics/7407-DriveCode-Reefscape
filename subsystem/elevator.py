@@ -3,7 +3,6 @@ import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 
-
 class Elevator(Subsystem):
     def _init_(self):
         super.__init__()
@@ -36,7 +35,7 @@ class Elevator(Subsystem):
         """
         Brings the elevator to the zero position
         """
-        pass
+        self.set_position(0)
 
     def get_position(self):
         """
@@ -53,6 +52,16 @@ class Elevator(Subsystem):
 
     def zero(self):
         """
-        Tells the robot that its position is at zero
+        Tells the elevator that its position is at zero
         """
-        pass
+        self.leader_motor.set_sensor_position(0)
+
+    def is_at_position(self, height):
+        """
+        checks if the elevator is at a certain height
+
+        Args:
+            height (float): height to be checked in meters
+        """
+        # Rounding to make sure it's not too precise (will cause err)
+        return round(self.get_position(), 2) == round(height, 2)

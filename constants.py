@@ -42,5 +42,5 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 ) * drivetrain_wheel_gear_ratio
 
 #elevator
-elevator_gear_ratio = 0 #placeholder
-elevator_driver_gear_circumference = 0 #placeholder
+elevator_gear_ratio = 1 #placeholder
+elevator_driver_gear_circumference = 1 #placeholder

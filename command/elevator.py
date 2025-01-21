@@ -3,6 +3,7 @@ import constants, config
 
 from toolkit.command import SubsystemCommand
 from subsystem import Elevator 
+from units.SI import meters
 
 class SetElevator(SubsystemCommand[Elevator]):
     """
@@ -10,23 +11,22 @@ class SetElevator(SubsystemCommand[Elevator]):
     param length to set elevator to (float)
     in meters
     """
-    def __init__(self, subsystem: Elevator, length: float):
+    def __init__(self, subsystem: Elevator, length: meters):
         super().__init__(subsystem)
-        self.length: float = length
+        self.length: meters = length
 
     def initialize(self):
         
         self.length = self.subsystem.limit_length(self.length)
 
-        self.subsystem.set_length(self.length,0)
+        self.subsystem.set_position(self.length,0)
         self.subsystem.elevator_moving = True
 
     def execute(self):
         pass
 
     def isFinished(self):
-        # Rounding to make sure it's not too precise (will cause err)
-        return round(self.subsystem.get_length(), 2) == round(self.length, 2)
+        self.subsystem.is_at_position(self.length)
 
     def end(self, interrupted: bool):
         """
