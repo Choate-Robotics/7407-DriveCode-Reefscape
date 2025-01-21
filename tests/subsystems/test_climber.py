@@ -54,7 +54,7 @@ def test_get_angle(climber: Climber):
 )
 
 def test_set_raw_output(test_input, climber: Climber):
-    climber.set_raw_output(1)
+    climber.set_raw_output(test_input)
     climber.climber_motor.set_raw_output.assert_called_with(test_input)
     climber.climber_motor.set_raw_output.assert_called_with(test_input)
 
