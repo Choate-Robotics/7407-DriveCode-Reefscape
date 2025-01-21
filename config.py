@@ -81,13 +81,20 @@ intake_id = 9
 INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 
 # Wrist
-wrist_feed_id = 9
-WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+wrist_feed_id = 10
+WRIST_FEED_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
 wrist_id = 9
 WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 
 wrist_max_angle = 2 * math.pi
 wrist_min_angle = 0 * math.pi
+angle_threshold = math.radians(2)  # radians
 
 wrist_feed_vel = 1  # placeholder
 

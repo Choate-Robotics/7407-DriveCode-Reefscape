@@ -16,14 +16,14 @@ class Wrist(Subsystem):
         self.feed_motor: TalonFX = TalonFX(
             config.wrist_feed_id,
             config.foc_active,
-            inverted = False,
-            config = config.WRIST_FEED_CONFIG
+            inverted=False,
+            config=config.WRIST_FEED_CONFIG
         )
         self.wrist_motor: TalonFX = TalonFX(
             config.wrist_id,
             config.foc_active,
-            inverted = False,
-            config = config.WRIST_CONFIG
+            inverted=False,
+            config=config.WRIST_CONFIG
         )
 
         self.coral_in_wrist: bool = False
@@ -44,13 +44,13 @@ class Wrist(Subsystem):
         """
         spin feed motors in, used in command to stop
         """
-        self.feed_motor.set_target_velocity(config.wrist_feed_vel)
+        self.feed_motor.set_raw_output(1)
 
     def feed_out(self):
         """
         spin feed motors out, used in command to stop
         """
-        self.feed_motor.set_target_velocity(-config.wrist_feed_vel)
+        self.feed_motor.set_raw_output(-1)
 
     def feed_stop(self):
         """
@@ -88,12 +88,13 @@ class Wrist(Subsystem):
         self.target_angle = angle
 
         self.wrist_motor.set_target_position(
-            ( angle / 2*math.pi ) * constants.wrist_gear_ratio
+            (angle / 2*math.pi ) * constants.wrist_gear_ratio
         )
 
-    def get_wrist_angle(self):
+    def get_wrist_angle(self) -> radians:
         """
         get the current angle of the wrist
+        A single full rotation corresponds to 2π radians
         returns angle in radians
         """
         return (
@@ -103,9 +104,9 @@ class Wrist(Subsystem):
         )
         
 
-    def is_at_angle(self, angle: radians, threshold=math.radians(2)):
+    def is_at_angle(self, angle: radians):
         """
         check if the wrist angle is at the given angle
         """
-        return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < threshold
+        return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < config.angle_threshold
 

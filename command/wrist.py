@@ -5,7 +5,7 @@ from subsystem import Wrist
 from math import radians
 
 
-class setWrist(SubsystemCommand[Wrist]):
+class SetWrist(SubsystemCommand[Wrist]):
     """
     Set the wrist to a specific angle.
     """
@@ -38,12 +38,12 @@ class FeedIn(SubsystemCommand[Wrist]):
 
     def initialize(self) -> None:
         self.subsystem.feed_in()
-        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
-    
+
     def execute(self):
         pass
 
     def isFinished(self):
+        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
         return self.subsystem.coral_in_feed
 
     def end(self, interrupted):
@@ -61,12 +61,12 @@ class FeedOut(SubsystemCommand[Wrist]):
 
     def initialize(self) -> None:
         self.subsystem.feed_out()
-        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
     
     def execute(self):
         pass
 
     def isFinished(self):
+        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
         return not self.subsystem.coral_in_feed
 
     def end(self, interrupted) -> bool:
