@@ -2,7 +2,7 @@ from wpilib import AddressableLED, PowerDistribution, SmartDashboard
 import math, config
 
 class ALeds:
-    m_led: AddressableLED
+    led: AddressableLED
 
     def __init__(self, id: int, size: int ):
         self.size = size
@@ -19,25 +19,25 @@ class ALeds:
         
     def init(self):
         self.m_rainbowFirstPixelHue = 0
-        self.led_data = [self.m_ledBuffer for i in range(self.size)]
-        self.m_led.setLength(self.size)
-        self.m_led = AddressableLED(self.id)
-        self.m_ledBuffer = self.m_led.LEDData()
-        self.m_led.setData(self.led_data)
+        self.led_data = [self.ledBuffer for i in range(self.size)]
+        self.led.setLength(self.size)
+        self.led = AddressableLED(self.id)
+        self.ledBuffer = self.m_led.LEDData()
+        self.led.setData(self.led_data)
 
         SmartDashboard.putBoolean("LEDs Initialized", True)
 
     def enable(self):
-        self.m_led.start()
+        self.led.start()
 
     def disable(self):
-        self.m_led.stop()
+        self.led.stop()
 
     def set_brightness(self, brightness: float):
         self.brightness = brightness
     
     def get_led_data(self):
-        return [self.m_led.LEDData() for i in range(self.size)].copy()
+        return [self.led.LEDData() for i in range(self.size)].copy()
     
     def get_current_cycle(self):
         return self.led_data
@@ -89,7 +89,7 @@ class ALeds:
         return res
 
     def cycle(self):
-        self.m_led.setData(self.match(self.active_mode))
+        self.led.setData(self.match(self.active_mode))
 
     def set_Mask(self, r1, g1, b1, r2, b2, g2):
         mask = self.get_led_data()
