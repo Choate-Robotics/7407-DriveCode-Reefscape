@@ -4,6 +4,10 @@ import math, config
 class ALeds:
     led: AddressableLED
 
+    """
+
+    """
+
     def __init__(self, id: int, size: int ):
         self.size = size
         self.id = id
@@ -18,11 +22,11 @@ class ALeds:
         
         
     def init(self):
-        self.m_rainbowFirstPixelHue = 0
+        self.rainbowFirstPixelHue = 0
         self.led_data = [self.ledBuffer for i in range(self.size)]
         self.led.setLength(self.size)
         self.led = AddressableLED(self.id)
-        self.ledBuffer = self.m_led.LEDData()
+        self.ledBuffer = self.led.LEDData()
         self.led.setData(self.led_data)
 
         SmartDashboard.putBoolean("LEDs Initialized", True)
@@ -109,13 +113,13 @@ class ALeds:
     def set_Rainbow_Ladder(self):
         rainbow = self.get_led_data()
         for i in range(self.size):
-            hue = math.floor((self.m_rainbowFirstPixelHue + (i * 180 / self.size)) % 180)
+            hue = math.floor((self.rainbowFirstPixelHue + (i * 180 / self.size)) % 180)
             rainbow[i].setHSV(hue, 255, 128)
 
         #move rainbow
-        self.m_rainbowFirstPixelHue += self.speed
+        self.rainbowFirstPixelHue += self.speed
 
-        self.m_rainbowFirstPixelHue %= 180
+        self.rainbowFirstPixelHue %= 180
 
         return rainbow
 
