@@ -26,7 +26,7 @@ class Intake(Subsystem):
         """
         spin the motors inwards to collect the corral
         """
-        self.motor.set_raw_output(1)
+        self.motor.set_raw_output(config.intake_speed * constants.intake_gear_ratio)
 
     def stop(self):
         """
@@ -38,7 +38,7 @@ class Intake(Subsystem):
         """
         eject coral in the intake
         """
-        self.motor.set_raw_output(-1)
+        self.motor.set_raw_output(-config.intake_eject_speed * constants.intake_gear_ratio)
 
     def detect_coral(self) -> bool:
         """

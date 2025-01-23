@@ -44,13 +44,13 @@ class Wrist(Subsystem):
         """
         spin feed motors in, used in command to stop
         """
-        self.feed_motor.set_raw_output(1)
+        self.feed_motor.set_target_velocity(config.wrist_feed_vel)
 
     def feed_out(self):
         """
         spin feed motors out, used in command to stop
         """
-        self.feed_motor.set_raw_output(-1)
+        self.feed_motor.set_target_velocity(-config.wrist_feed_vel)
 
     def feed_stop(self):
         """
@@ -62,6 +62,7 @@ class Wrist(Subsystem):
         """
         check if there is coral in the feed
         """
+        
         pass
 
 # wrist
