@@ -1,14 +1,16 @@
 from wpilib import AddressableLED, PowerDistribution, SmartDashboard
 import math, config
 
-class ALeds:
-    led: AddressableLED
+class ALeds():
 
     """
+    Addressable LEDs
 
     """
 
     def __init__(self, id: int, size: int ):
+
+
         self.size = size
         self.id = id
         self.speed = 5 
