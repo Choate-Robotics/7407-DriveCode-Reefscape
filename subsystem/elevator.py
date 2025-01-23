@@ -2,10 +2,11 @@ import config
 import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
+from units.SI import meters
 
 class Elevator(Subsystem):
     def _init_(self):
-        super.__init__()
+        super().__init__()
         self.leader_motor: TalonFX = TalonFX(
             config.elevator_lead_id,
             config.foc_active,
@@ -20,6 +21,16 @@ class Elevator(Subsystem):
         self.leader_motor.init()
         self.follower_motor.init()
         self.follower_motor.follow(self.leader_motor, inverted=True)
+
+    def limit_height(self, height: meters):
+        """
+        limits the height of the elevator to both a max and min
+        """
+        if height > constants.elevator_max_height:
+            return constants.elevator_max_height
+        elif height < 0.0:
+            return 0.0
+        return height
 
     def set_position(self, height):
         """

@@ -44,3 +44,4 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 #elevator
 elevator_gear_ratio = 1 #placeholder
 elevator_driver_gear_circumference = 1 #placeholder
+elevator_max_height = 2.5 #placeholder
