@@ -104,6 +104,18 @@ class FieldConstants:
             Rotation2d.fromDegrees(144.011 - 90),
         )
 
+    class StagingPositions:
+        # Measured from the center of the ice cream
+        leftIceCream = Pose2d(
+            48 * inches_to_meters, 230.5 * inches_to_meters, Rotation2d()
+        )
+        middleIceCream = Pose2d(
+            48 * inches_to_meters, 158.5 * inches_to_meters, Rotation2d()
+        )
+        rightIceCream = Pose2d(
+            48 * inches_to_meters, 86.5 * inches_to_meters, Rotation2d()
+        )
+
     class Reef:
         center = Translation2d(176.746 * inches_to_meters, 158.501 * inches_to_meters)
         faceToZoneLine = (
