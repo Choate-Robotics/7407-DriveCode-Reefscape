@@ -1,14 +1,24 @@
 import commands2
 from toolkit.subsystem import Subsystem
-import phoenix6 as ctre
+
+# import phoenix6 as ctre
 import ntcore
 import wpilib
 import command
 import config
-import constants
-from robot_systems import Robot, Pneumatics, Sensors, LEDs, PowerDistribution, Field
-import sensors
-import subsystem
+
+# import constants
+from robot_systems import (  # noqa
+    Robot,
+    Pneumatics,
+    Sensors,
+    LEDs,
+    PowerDistribution,
+    Field,
+)
+
+# import sensors
+# import subsystem
 import utils
 from oi.OI import OI
 
@@ -16,6 +26,7 @@ from oi.OI import OI
 class _Robot(wpilib.TimedRobot):
     def __init__(self):
         super().__init__()
+        self.field_constants = utils.FieldConstants()
 
         self.log = utils.LocalLogger("Robot")
         self.nt = ntcore.NetworkTableInstance.getDefault()
@@ -24,13 +35,16 @@ class _Robot(wpilib.TimedRobot):
     def robotInit(self):
         # self.log._robot_log_setup()
         # Initialize Operator Interface
-        if config.DEBUG_MODE == True:
+        if config.DEBUG_MODE:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
         OI.init()
         OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
         self.log.info(f"Scheduler period set to {period} seconds")
+        print(self.field_constants.Reef.branch_positions)
+
+        self.field_constants.update_tables()
 
         # Initialize subsystems
         def init_subsystems():
@@ -43,7 +57,8 @@ class _Robot(wpilib.TimedRobot):
             )
 
             # sensors: list = list(
-            #     {k: v for k, v in Sensors.__dict__.items() if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
+            #     {k: v for k, v in Sensors.__dict__.items()
+            #       if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
             # )
 
             for subsystem in subsystems:
@@ -52,7 +67,7 @@ class _Robot(wpilib.TimedRobot):
             # for sensor in sensors:
             #     sensor.init()
 
-        if config.DEBUG_MODE == False:
+        if not config.DEBUG_MODE:
             try:
                 init_subsystems()
             except Exception as e:
@@ -73,7 +88,7 @@ class _Robot(wpilib.TimedRobot):
         if self.isSimulation():
             wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
-        if config.DEBUG_MODE == False:
+        if not config.DEBUG_MODE:
             try:
                 self.scheduler.run()
             except Exception as e:
@@ -86,7 +101,6 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("command scheduler", str(e))
                 raise e
-            
 
         Robot.drivetrain.update_tables()
         ...
@@ -97,10 +111,12 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self):
         self.log.info("Teleop initialized")
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain),
-            command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+        self.scheduler.schedule(
+            commands2.SequentialCommandGroup(
+                command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain),
+            )
+        )
 
     def teleopPeriodic(self):
         pass
