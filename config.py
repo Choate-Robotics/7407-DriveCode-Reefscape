@@ -81,35 +81,3 @@ MOVE_CONFIG = TalonConfig(
 leds_id = 0 #placeholder
 leds_size = 28 #placeholder
 
-class LEDType:
-
-    def KSolid(r, g, b):
-        return {"type": 1, "color": {"r": r, "g": g, "b": b}}
-
-    def KRainbow():
-        return {
-            'type': 2
-        }
-
-    def KMask(r1, g1, b1, r2, g2, b2):
-        return {
-            "type": 3,
-            "color": {"r1": r1, "g1": g1, "b1": b1, "r2": r2, "g2": g2, "b2": b2},
-        }
-
-    def KBlink(r, g, b):
-        return {"type": 4, "color": {"r": r, "g": g, "b": b}}
-
-    def __getitem__(self, item):
-        if item == 1:
-            return self.KSolid
-        elif item == 2:
-            return self.KRainbow
-        elif item == 3:
-            return self.KMask
-        elif item == 4:
-            return self.KBlink
-        else:
-            raise KeyError(f"Type {item} is not supported.")
-
-

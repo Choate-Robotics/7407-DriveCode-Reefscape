@@ -14,22 +14,22 @@ class ALeds():
         self.size = size
         self.id = id
         self.speed = 5 
-        self.track_index = self.size / 2
-        self.blink_index = 0
         self.brightness = 1
-        self.active_mode = None
-        self.last_active_mode = None
-        self.last_brightness = None
-        self.last_speed = None
         
         
     def init(self):
-        self.rainbowFirstPixelHue = 0
-        self.led_data = [self.ledBuffer for i in range(self.size)]
-        self.led.setLength(self.size)
+        """
+        initialize new LED strip connected to PWM port
+        """
         self.led = AddressableLED(self.id)
+        """
+        create new 
+        """
+        global ledBuffer
         self.ledBuffer = self.led.LEDData()
-        self.led.setData(self.led_data)
+        self.ledBuffer.setLength(self.size)
+
+        self.led.setData(self.ledBuffer)
 
         SmartDashboard.putBoolean("LEDs Initialized", True)
 
@@ -39,17 +39,17 @@ class ALeds():
     def disable(self):
         self.led.stop()
 
+    def section(self, starting_pixel: int, ending_pixel: int):
+        self.section = ledBuffer.createView(starting_pixel, ending_pixel)
+
     def set_brightness(self, brightness: float):
         self.brightness = brightness
     
     def get_led_data(self):
         return [self.led.LEDData() for i in range(self.size)].copy()
     
-    def get_current_cycle(self):
-        return self.led_data
-    
     def get_current_type(self):
-        if self.active_mode is None:
+        if self.mode is None:
             return {
                 'type': 0,
                 'color': {
@@ -58,46 +58,37 @@ class ALeds():
                     'b': 0
                 }
             }
-        return self.active_mode
-
-    def store_current(self):
-        self.last_active_mode = self.active_mode
-        self.last_speed = self.speed
-        self.last_brightness = self.brightness
+        return self.mode
     
-    def set_LED(self, type, brightness: float = 1.0, speed: int = 5):
-        self.active_mode = type
+    def set_LED(self, brightness: float = 1.0, speed: int = 5):
         self.speed = speed
         self.brightness = brightness
 
-    def set_last_current(self):
-        self.active_mode = self.last_active_mode
-        self.speed = self.last_speed
-        self.brightness = self.last_brightness
+    def set_Solid(self, r: int, g: int, b: int):
+
+        self.solid = self.LEDPattern.solid(r,g,b)
+        self.solid.applyTo(self.ledBuffer)
+        self.led.setData(self.ledBuffer)
+       
+        self.mode = "solid"
+
+    def set_Rainbow_Ladder(self):
+        
+        self.rainbow = self.LEDPattern.rainbow(self.speed, self.brightness)
+        """ density of *120* per meter"""
+        self.LEDSpacing = 1/120.0;
+        
+        #scrolls the rainbow
+        self.scrollingRainbow = self.rainbow.scrollAtAbsoluteSpeed(self.speed, self.LEDSpacing)
+        
+        """
+        finish this later 
+        """
+
+        self.mode = "rainbow"
     
-    def match(self, type: config.LEDType):
-        res = self.get_led_data()
-        match type['type']:
-            case 1:
-                color = type['color']
-                res = self.set_Solid(color['r'], color['g'], color['b'])
-            case 2:
-                res = self.set_Rainbow()
-            case 3:
-                color = type['color']
-                res = self.set_Mask(color['r1'], color['g1'], color['b1'], color['r2'], color['g2'], color['b2'])
-            case 4:
-                color = type['color']
-                res = self.set_Blink(color['r'], color['g'], color['b'])
-            case _:
-                res = self.set_Rainbow()
-
-        return res
-
-    def cycle(self):
-        self.led.setData(self.match(self.active_mode))
-
     def set_Mask(self, r1, g1, b1, r2, b2, g2):
+        """
         mask = self.get_led_data()
         for i in range(self.size):
             mask[i].setRGB(r1, g1, b1)
@@ -110,28 +101,10 @@ class ALeds():
         if self.mask_index > self.size:
             self.mask_index = 0
 
-        return mask
+        """
 
-    def set_Rainbow_Ladder(self):
-        rainbow = self.get_led_data()
-        for i in range(self.size):
-            hue = math.floor((self.rainbowFirstPixelHue + (i * 180 / self.size)) % 180)
-            rainbow[i].setHSV(hue, 255, 128)
 
-        #move rainbow
-        self.rainbowFirstPixelHue += self.speed
-
-        self.rainbowFirstPixelHue %= 180
-
-        return rainbow
-
-    def set_Solid(self, r: int, g: int, b: int):
-
-        solid = self.get_led_data()
-        for i in range(self.size):
-            solid[i].setRGB(r, g, b)
-
-        return solid
+        self.mode = "mask"
     
     def set_Blink(self, r, g, b):
         blink = self.get_led_data()
