@@ -1,7 +1,9 @@
 from enum import Enum, StrEnum
 from typing import Dict
 import ntcore
+from constants import reef_scoring_distance
 import constants
+
 from ntcore import NetworkTable
 from wpilib import DriverStation  # noqa
 from wpimath.geometry import (
@@ -207,8 +209,10 @@ class FieldConstants:
                 Rotation2d.fromDegrees(120),
             )
 
-        class BranchPositions2d:
-            adjust_x = 30.738 * inches_to_meters
+        class BranchScoringPositions2d:
+            adjust_x = (
+                30.738 * inches_to_meters + 0.051 + reef_scoring_distance
+            )  # the extra is to push to the edge of the reef.
             adjust_y = 6.469 * inches_to_meters
             center = Translation2d(
                 176.746 * inches_to_meters, 158.501 * inches_to_meters
@@ -241,9 +245,9 @@ class FieldConstants:
                 currentbranch += 2
 
         # Dynamically add properties to the class
-        for label, pose in BranchPositions2d.branch_positions_2d.items():
+        for label, pose in BranchScoringPositions2d.branch_positions_2d.items():
             # Assign the property to the class
-            setattr(BranchPositions2d, label, pose)
+            setattr(BranchScoringPositions2d, label, pose)
         # Clean up the class
         face = None
         branch_positions_2d = None
@@ -377,3 +381,6 @@ if __name__ == "__main__":
     FC.debug = True
     FC.update_tables()
     print(FC.Reef.BranchScoringPositions().get_scoring_pose(Branch.L, ReefHeight.L4))
+    print(
+        f"April Tag closest driver's station x:{144*inches_to_meters}, y:{158*inches_to_meters}"
+    )
