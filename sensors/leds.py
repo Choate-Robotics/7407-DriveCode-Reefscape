@@ -10,12 +10,15 @@ class ALeds():
 
     def __init__(self, id: int, size: int ):
 
-
         self.size = size
         self.id = id
         self.speed = 5 
         self.brightness = 1
-        
+        """ density of *120* per meter"""
+        self.LEDSpacing = 1/120.0
+        self.blinkfrequency = 1.5 #seconds
+        self.rightlimit = 100 
+        self.leftlimit = 50
         
     def init(self):
         """
@@ -25,7 +28,6 @@ class ALeds():
         """
         create new 
         """
-        global ledBuffer
         self.ledBuffer = self.led.LEDData()
         self.ledBuffer.setLength(self.size)
 
@@ -38,9 +40,6 @@ class ALeds():
 
     def disable(self):
         self.led.stop()
-
-    def section(self, starting_pixel: int, ending_pixel: int):
-        self.section = ledBuffer.createView(starting_pixel, ending_pixel)
 
     def set_brightness(self, brightness: float):
         self.brightness = brightness
@@ -75,51 +74,44 @@ class ALeds():
     def set_Rainbow_Ladder(self):
         
         self.rainbow = self.LEDPattern.rainbow(self.speed, self.brightness)
-        """ density of *120* per meter"""
-        self.LEDSpacing = 1/120.0;
-        
+
         #scrolls the rainbow
         self.scrollingRainbow = self.rainbow.scrollAtAbsoluteSpeed(self.speed, self.LEDSpacing)
         
-        """
-        finish this later 
-        """
+        self.scrollingRainbow.applyTo(self.ledBuffer)
 
         self.mode = "rainbow"
     
-    def set_Mask(self, r1, g1, b1, r2, b2, g2):
-        """
-        mask = self.get_led_data()
-        for i in range(self.size):
-            mask[i].setRGB(r1, g1, b1)
-        
-        for i in range(self.mask_index, self.size, 4):
-            mask[i].setRGB(r2, g2, b2)
-        
-        self.mask_index += 1
-
-        if self.mask_index > self.size:
-            self.mask_index = 0
-
-        """
-
-
-        self.mode = "mask"
-    
     def set_Blink(self, r, g, b):
-        blink = self.get_led_data()
-        if self.blink_index / (2 * self.speed) <= .5:
-            for i in range(self.size):
-                blink[i].setRGB(r, g, b)
+
+        self.base = self.LEDPattern.discontinousGradient(r,g,b)
+        self.pattern = self.base.blink(self.blinkfrequency)  
+        self.base.applyTo(self.ledBuffer)
+        self.led.setData(self.baseledBuffer)
+
+        self.mode = "blink"
+    
+    def field_position(self, r1, g1, b1, r2, b2, g2):
+        """ 
+        identify where the robot is on the field
+
+        """
+        self.robotposition = 0
+    
+        if self.robotposition > self.rightlimit:
+            
+            #to do: left side green, right side red 
+
+            self.mode = "robot position on starting line is too far right"
+        
+        elif self.robotposition < self.leftlimit:
+            
+            #to do: left side red, right side green 
+            self.mode = "robot positioning on starting line is too far left"
+        
         else:
-            for i in range(self.size):
-                blink[i].setRGB(0, 0, 0)
-
-        self.blink_index += 1
-        if self.blink_index > 2 * self.speed:
-            self.blink_index = 0
-
-        return blink
+            self.set_solid(0, 100, 0) # robot is where it needs to be
+    
 
 class SLEDS:
     """
