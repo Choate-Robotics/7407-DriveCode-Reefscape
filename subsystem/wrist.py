@@ -46,7 +46,7 @@ class Wrist(Subsystem):
         """
         zero the wrist encoder
         """
-        self.motor.set_sensor_position(
+        self.wrist_motor.set_sensor_position(
             self.encoder.get_absolute_position()/constants.wrist_gear_ratio
         )
         self.wrist_angle = (self.encoder.get_absolute_position()/constants.wrist_gear_ratio
@@ -80,7 +80,7 @@ class Wrist(Subsystem):
         check if there is coral in the feed 
         checks if the current is over the threshold for a period of time
         """
-        if self.wrist_motor.get_motor_current() > config.current_threshold:
+        if self.feed_motor.get_motor_current() > config.current_threshold:
 
             if self.detected_time == 0:
                 self.detected_time = wpilib.Timer.getFPGATimestamp()
