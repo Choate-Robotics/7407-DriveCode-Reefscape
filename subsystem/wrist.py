@@ -74,6 +74,7 @@ class Wrist(Subsystem):
             self.detectedTime = 0
             self.currentTime = 0
             self.previousTime = 0
+            self.coral_in_feed = False
             return self.coral_in_feed
 
 # wrist

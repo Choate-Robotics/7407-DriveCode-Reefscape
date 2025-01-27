@@ -43,8 +43,8 @@ class FeedIn(SubsystemCommand[Wrist]):
         pass
 
     def isFinished(self):
-        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
-        return self.subsystem.coral_in_feed
+        return self.subsystem.coral_detected()
+        
 
     def end(self, interrupted):
         self.subsystem.feed_stop()
@@ -66,8 +66,7 @@ class FeedOut(SubsystemCommand[Wrist]):
         pass
 
     def isFinished(self):
-        self.subsystem.coral_in_feed = self.subsystem.coral_detected()
-        return not self.subsystem.coral_in_feed
+        return not self.subsystem.coral_detected()
 
     def end(self, interrupted) -> bool:
         self.subsystem.feed_stop()
