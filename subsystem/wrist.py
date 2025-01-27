@@ -2,6 +2,7 @@ from toolkit.subsystem import Subsystem
 from toolkit.motors.ctre_motors import TalonFX
 from phoenix6.hardware import cancoder
 
+import time
 import math
 from math import pi
 from units.SI import radians
@@ -31,12 +32,12 @@ class Wrist(Subsystem):
         self.target_angle: radians = 0
         self.wrist_moving: bool = False
         self.coral_in_feed: bool = False
-
+        self.detectedTime: float = 0 # time for how long coral was detected seconds
+        self.previousTime: float = 0 # time last time time was checked
+        self.currentTime: float = 0 # current time when time was checked
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
-
-#side roller put it in, side roller kick it out after releasing it, have
 
 # feed
 
@@ -58,12 +59,22 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_target_velocity(0)
 
-    def coral_detected(self):
+    def coral_detected(self) -> bool:
         """
-        check if there is coral in the feed
+        check if there is coral in the feed 
+        checks if the current is over the threshold for a period of time
         """
-        
-        pass
+        if self.wrist_motor.get_motor_current() > config.current_threshold:
+            self.currentTime = time.time()
+            self.detectedTime += (self.currentTime - self.previousTime)
+            self.previousTime = self.currentTime
+            self.coral_in_feed = self.detectedTime > config.current_time_threshold
+            return self.coral_in_feed
+        else:
+            self.detectedTime = 0
+            self.currentTime = 0
+            self.previousTime = 0
+            return self.coral_in_feed
 
 # wrist
 
