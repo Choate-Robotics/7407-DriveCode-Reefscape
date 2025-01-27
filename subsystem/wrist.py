@@ -1,15 +1,16 @@
 from toolkit.subsystem import Subsystem
 from toolkit.motors.ctre_motors import TalonFX
-from phoenix6.hardware import cancoder
 
-import time
 import math
 from math import pi
 from units.SI import radians
 from toolkit.utils.toolkit_math import bounded_angle_diff
-
+from phoenix6.hardware import CANcoder
 import config
 import constants
+
+import wpilib
+from wpilib import Timer
 
 class Wrist(Subsystem):
     def __init__(self):
@@ -27,17 +28,30 @@ class Wrist(Subsystem):
             config=config.WRIST_CONFIG
         )
 
+        self.encoder: CANcoder = CANcoder(config.wrist_cancoder_id)
+
         self.coral_in_wrist: bool = False
         self.wrist_angle: radians = 0
         self.target_angle: radians = 0
         self.wrist_moving: bool = False
         self.coral_in_feed: bool = False
-        self.detectedTime: float = 0 # time for how long coral was detected seconds
-        self.previousTime: float = 0 # time last time time was checked
-        self.currentTime: float = 0 # current time when time was checked
+
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
+
+    def initial_zero(self):
+        """
+        zero the wrist encoder
+        """
+        self.motor.set_sensor_position(
+            self.encoder.get_absolute_position()/constants.wrist_gear_ratio
+        )
+        self.wrist_angle = (self.encoder.get_absolute_position()/constants.wrist_gear_ratio
+        * pi
+        * 2
+        )
+        
 
 # feed
 
@@ -45,36 +59,42 @@ class Wrist(Subsystem):
         """
         spin feed motors in, used in command to stop
         """
-        self.feed_motor.set_target_velocity(config.wrist_feed_vel)
+        self.feed_motor.set_raw_output(1)
 
     def feed_out(self):
         """
         spin feed motors out, used in command to stop
         """
-        self.feed_motor.set_target_velocity(-config.wrist_feed_vel)
+        self.feed_motor.set_raw_output(-1)
 
     def feed_stop(self):
         """
         stop the feed motors
         """
-        self.feed_motor.set_target_velocity(0)
+        self.feed_motor.set_raw_output(0)
 
     def coral_detected(self) -> bool:
         """
         check if there is coral in the feed 
         checks if the current is over the threshold for a period of time
         """
+
         if self.wrist_motor.get_motor_current() > config.current_threshold:
-            self.currentTime = time.time()
-            self.detectedTime += (self.currentTime - self.previousTime)
-            self.previousTime = self.currentTime
-            self.coral_in_feed = self.detectedTime > config.current_time_threshold
-            return self.coral_in_feed
+            """self.current_time = time.time()
+            self.detected_time += (self.current_time - self.previous_time)
+            self.previous_time = self.current_time
+            self.coral_in_feed = self.detected_time > config.current_time_threshold
+            """
+            self.detected_time = wpilib.Timer.getFPGATimestamp() # time for how long coral was detected seconds
+            
+            if wpilib.Timer.getFPGATimestamp() - self.detected_time > config.current_time_threshold:
+                return self.coral_in_feed
+        
         else:
-            self.detectedTime = 0
-            self.currentTime = 0
-            self.previousTime = 0
+
+            self.detected_time = 0
             self.coral_in_feed = False
+
             return self.coral_in_feed
 
 # wrist

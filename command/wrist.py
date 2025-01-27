@@ -18,10 +18,10 @@ class SetWrist(SubsystemCommand[Wrist]):
         self.subsystem.set_wrist_angle(self.angle)
         self.subsystem.wrist_moving = True
     
-    def execute(self):
+    def execute(self) -> None:
         pass
 
-    def isFinished(self):
+    def isFinished(self) -> bool:
         return self.subsystem.is_at_angle(self.angle)
 
     def end(self, interrupted) -> None:
@@ -39,16 +39,15 @@ class FeedIn(SubsystemCommand[Wrist]):
     def initialize(self) -> None:
         self.subsystem.feed_in()
 
-    def execute(self):
+    def execute(self) -> None:
         pass
 
-    def isFinished(self):
+    def isFinished(self) -> bool:
         return self.subsystem.coral_detected()
         
 
-    def end(self, interrupted):
+    def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
-        return self.subsystem.coral_in_feed
 
 
 class FeedOut(SubsystemCommand[Wrist]):
@@ -62,12 +61,11 @@ class FeedOut(SubsystemCommand[Wrist]):
     def initialize(self) -> None:
         self.subsystem.feed_out()
     
-    def execute(self):
+    def execute(self) -> None:
         pass
 
-    def isFinished(self):
+    def isFinished(self) -> bool:
         return not self.subsystem.coral_detected()
 
-    def end(self, interrupted) -> bool:
+    def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
-        return not self.subsystem.coral_in_feed

@@ -91,14 +91,14 @@ WRIST_FEED_CONFIG = TalonConfig(
 )
 wrist_id = 9
 WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+wrist_cancoder_id = 11
+
 
 wrist_max_angle = 2 * math.pi
 wrist_min_angle = 0 * math.pi
 angle_threshold = math.radians(2)  # radians
 current_threshold = 5  # amps PLACEHOLDER
 current_time_threshold = 0.3  # seconds PLACEHOLDER
-
-wrist_feed_vel = 1  # placeholder
 
 intake_speed = 1  # placeholder
 intake_eject_speed = -1  # placeholder
