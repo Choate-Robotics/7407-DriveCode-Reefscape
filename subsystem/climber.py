@@ -49,7 +49,6 @@ class Climber(Subsystem):
     # Set raw output of climber motor
     def set_raw_output(self, raw_value: float) -> None:
         self.climber_motor.set_raw_output(raw_value)
-        self.climber_motor.set_raw_output(raw_value)
 
     # Recieve voltage of motor output
     def get_raw_output(self) -> float:

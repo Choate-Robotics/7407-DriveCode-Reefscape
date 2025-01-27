@@ -1,13 +1,11 @@
 from unittest.mock import MagicMock
 
 import pytest
-import rev
+import math
 from pytest import MonkeyPatch
 
-import config
 import constants
 from subsystem import Climber
-from toolkit.motors.ctre_motors import TalonFX
 
 @pytest.fixture()
 def climber() -> Climber:
@@ -37,8 +35,10 @@ def climber_zero(climber: Climber):
 
 def test_set_angle(test_input, climber: Climber):
     climber.set_angle(test_input)
-    climber.climber_motor.set_target_position.assert_called_with(test_input * constants.climber_gear_ratio)
-
+    climber.climber_motor.set_target_position.assert_called_with(
+        max(min(test_input, math.radians(constants.upper_climber_bound)), math.radians(constants.lower_climber_bound)) * constants.climber_gear_ratio
+    )
+    
 def test_get_angle(climber: Climber):
     climber.get_angle()
     climber.climber_motor.get_sensor_position.assert_called()
