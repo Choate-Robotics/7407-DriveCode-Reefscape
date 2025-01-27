@@ -1,5 +1,7 @@
 import config
 import constants
+
+import ntcore
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 from units.SI import meters
@@ -16,6 +18,9 @@ class Elevator(Subsystem):
             config.elevator_follower_id,
             config.foc_active,
         )
+
+        self.zeroed: bool = False
+        self.target_height: meters = 0.0
 
     def init(self):
         self.leader_motor.init()
@@ -39,6 +44,9 @@ class Elevator(Subsystem):
         Args:
             height (float): intended elevator height in meters
         """
+        height = self.limit_height(height)
+        self.target_height = height
+
         self.rotations = (height * constants.elevator_gear_ratio) / constants.elevator_driver_gear_circumference
         self.leader_motor.set_target_position(self.rotations)
 
@@ -66,6 +74,7 @@ class Elevator(Subsystem):
         Tells the elevator that its position is at zero
         """
         self.leader_motor.set_sensor_position(0)
+        self.zeroed = True
 
     def is_at_position(self, height):
         """
@@ -76,3 +85,16 @@ class Elevator(Subsystem):
         """
         # Rounding to make sure it's not too precise (will cause err)
         return round(self.get_position(), 2) == round(height, 2)
+    
+    def update_network_table(self):
+        table = ntcore.NetworkTableInstance.getDefault().getTable('elevator')
+
+        table.putNumber('elevator height', self.get_position())
+        table.putBoolean('elevator zeroed', self.zeroed)
+        table.putNumber('elevator target height', self.target_height)
+        table.putNumber('elevator motor lead applied output', self.leader_motor.get_applied_output())
+        table.putNumber('elevator motor follow applied output', self.follower_motor.get_applied_output())
+
+    def periodic(self):
+        if config.NT_ELEVATOR:
+            self.update_network_table()
