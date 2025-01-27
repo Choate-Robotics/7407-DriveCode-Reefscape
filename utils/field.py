@@ -1,7 +1,9 @@
 from enum import Enum, StrEnum
 from typing import Dict
 import ntcore
+import constants
 from ntcore import NetworkTable
+from wpilib import DriverStation  # noqa
 from wpimath.geometry import (
     Pose2d,
     Pose3d,
@@ -16,10 +18,11 @@ from units.SI import degrees_to_radians, inches_to_meters
 
 
 def post_pose(
-    table: ntcore.NetworkTableInstance,
+    table: ntcore.NetworkTable,
     name: str,
     pose: Pose2d | Pose3d | Translation2d,
     debug=False,
+    red=False,
 ) -> None:
     """Helper to post Pose2d, Pose3d, or Translation2d as an array to NetworkTables.
 
@@ -29,7 +32,7 @@ def post_pose(
         pose (Pose2d | Pose3d | Translation2d): Pose to post.
 
     """
-    # publisher = ntcore.NetworkTableInstance.getDefault()
+    pose = FieldConstants.get_red_pose(pose) if red else pose
     if isinstance(pose, Pose2d):
         pose_array = [pose.X(), pose.Y(), pose.rotation().radians()]
         if debug:
@@ -67,7 +70,7 @@ class Branch(StrEnum):
     F = "F"
     G = "G"
     H = "H"
-    I = "I"  # noqa: E741
+    I = "I"  # noqa
     J = "J"
     K = "K"
     L = "L"
@@ -305,14 +308,14 @@ class FieldConstants:
                     ),
                 )
 
-    def update_tables(self) -> None:
+    def update_tables(self, red=False) -> None:
         # Initialize NetworkTables
         table = self.table
 
-        def process_value(table, name, value, debug=False):
+        def process_value(table: NetworkTable, name, value, debug=False):
             """Recursive processing of a value to post it to NetworkTables."""
             if isinstance(value, (Pose2d, Pose3d, Translation2d)):
-                post_pose(table, name, value, self.debug)
+                post_pose(table, name, value, self.debug, red)
             elif isinstance(value, list):
                 # Process each element in the list
                 for i, sub_value in enumerate(value):
@@ -333,7 +336,7 @@ class FieldConstants:
                 else:
                     table.putValue(name, value)
 
-        def process_class(table, prefix, cls):
+        def process_class(table: NetworkTable, prefix, cls):
             """Recursively process a class and its nested classes."""
             cls.__init__(cls)
             for attr_name, attr_value in vars(cls).items():
@@ -348,6 +351,25 @@ class FieldConstants:
 
         # Start processing FieldConstants and its attributes
         process_class(table, "", FieldConstants)
+
+    @staticmethod
+    def get_red_pose(pose: Pose2d | Pose3d):
+        if isinstance(pose, Pose2d):
+            return Pose2d(
+                Translation2d(
+                    constants.field_length - pose.X(), constants.field_width - pose.Y()
+                ),
+                pose.rotation().rotateBy(Rotation2d(180 * degrees_to_radians)),
+            )
+        elif isinstance(pose, Pose3d):
+            return Pose3d(
+                Translation3d(
+                    constants.field_length - pose.X(),
+                    constants.field_width - pose.Y(),
+                    pose.Z(),
+                ),
+                pose.rotation().rotateBy(Rotation3d(0, 0, 180 * degrees_to_radians)),
+            )
 
 
 if __name__ == "__main__":

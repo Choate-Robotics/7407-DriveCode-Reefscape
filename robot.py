@@ -42,7 +42,6 @@ class _Robot(wpilib.TimedRobot):
         period = 0.03
         self.scheduler.setPeriod(period)
         self.log.info(f"Scheduler period set to {period} seconds")
-        print(self.field_constants.Reef.branch_positions)
 
         self.field_constants.update_tables()
 
