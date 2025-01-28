@@ -30,13 +30,12 @@ class Wrist(Subsystem):
 
         self.encoder: CANcoder = CANcoder(config.wrist_cancoder_id)
 
-        self.coral_in_wrist: bool = False
         self.wrist_angle: radians = 0
         self.target_angle: radians = 0
         self.wrist_moving: bool = False
         self.coral_in_feed: bool = False
 
-        self.detected_time = 0
+        self.timer = Timer()
 
     def init(self):
         self.feed_motor.init()
@@ -75,26 +74,26 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_raw_output(0)
 
-    def coral_detected(self) -> bool:
+    def coral_in_wrist(self) -> bool:
         """
         check if there is coral in the feed 
         checks if the current is over the threshold for a period of time
         """
         if self.feed_motor.get_motor_current() > config.current_threshold:
-
-            if self.detected_time == 0:
-                self.detected_time = wpilib.Timer.getFPGATimestamp()
             
-            if wpilib.Timer.getFPGATimestamp() - self.detected_time > config.current_time_threshold:
-                self.coral_in_feed = True
-            else:
-                self.coral_in_feed = False
-        
-        else:
-            self.detected_time = 0
-            self.coral_in_feed = False
+            if not self.timer.isRunning():
+                self.timer.start()
+            
+            self.coral_in_feed = self.timer.hasElapsed(config.current_time_threshold)
 
-        return self.coral_in_feed
+        else:
+            self.timer.stop()
+            self.timer.reset()
+        
+        return self.coral_in_feed  
+    
+    def coral_in_back(self) -> bool:
+        pass
 
 # wrist
 
