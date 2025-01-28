@@ -56,12 +56,12 @@ class Elevator(Subsystem):
         """
         self.set_position(0)
 
-    def get_position(self):
+    def get_position(self) -> float:
         """
         Obtains the current height of the elevator
 
         Returns:
-            return_float: current elevator height
+            return_float: current elevator height in meters
         """
         return (
             self.leader_motor.get_sensor_position()
@@ -76,12 +76,12 @@ class Elevator(Subsystem):
         self.leader_motor.set_sensor_position(0)
         self.zeroed = True
 
-    def is_at_position(self, height):
+    def is_at_position(self, height: meters) -> bool:
         """
         checks if the elevator is at a certain height
 
         Args:
-            height (float): height to be checked in meters
+            height (meters): height to be checked in meters
         """
         # Rounding to make sure it's not too precise (will cause err)
         return round(self.get_position(), 2) == round(height, 2)
@@ -89,11 +89,11 @@ class Elevator(Subsystem):
     def update_network_table(self):
         table = ntcore.NetworkTableInstance.getDefault().getTable('elevator')
 
-        table.putNumber('elevator height', self.get_position())
-        table.putBoolean('elevator zeroed', self.zeroed)
-        table.putNumber('elevator target height', self.target_height)
-        table.putNumber('elevator motor lead applied output', self.leader_motor.get_applied_output())
-        table.putNumber('elevator motor follow applied output', self.follower_motor.get_applied_output())
+        table.putNumber('height', self.get_position())
+        table.putBoolean('zeroed', self.zeroed)
+        table.putNumber('target height', self.target_height)
+        table.putNumber('motor lead applied output', self.leader_motor.get_applied_output())
+        table.putNumber('motor follow applied output', self.follower_motor.get_applied_output())
 
     def periodic(self):
         if config.NT_ELEVATOR:
