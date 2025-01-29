@@ -1,5 +1,5 @@
 from enum import Enum, StrEnum
-from typing import Dict
+
 import ntcore
 from constants import reef_scoring_distance
 import constants
@@ -107,22 +107,27 @@ class Branch(StrEnum):
                     pose_direction.rotation(),
                 )
             ).Y(),
-            pose_direction.rotation(),
+            pose_direction.rotation() + Rotation2d.fromDegrees(180),
         )
 
 
-class ReefFace(StrEnum):
-    Face1: ("Face1", Branch.A, Branch.B)
-    Face2: ("Face2", Branch.C, Branch.D)
-    Face3: ("Face3", Branch.E, Branch.F)
-    Face4: ("Face4", Branch.G, Branch.H)
-    Face5: ("Face5", Branch.I, Branch.J)
-    Face6: ("Face6", Branch.K, Branch.L)
+class ReefFace(Enum):
+    Face1 = ("Face1", Branch.A, Branch.B)
+    Face2 = ("Face2", Branch.C, Branch.D)
+    Face3 = ("Face3", Branch.E, Branch.F)
+    Face4 = ("Face4", Branch.G, Branch.H)
+    Face5 = ("Face5", Branch.I, Branch.J)
+    Face6 = ("Face6", Branch.K, Branch.L)
 
-    def __init__(self, name, left, right):
-        self.name = name
+    def __init__(self, label, left, right):
+        self.label = label
         self.left = left
         self.right = right
+        self.scoring_pose = Pose2d(
+            (self.left.scoring_pose.X() + self.right.scoring_pose.X()) / 2,
+            (self.left.scoring_pose.Y() + self.right.scoring_pose.Y()) / 2,
+            self.left.scoring_pose.rotation(),
+        )
 
 
 class ReefHeight(Enum):
@@ -227,153 +232,7 @@ class FieldConstants:
                 ),
             )
 
-        class CenterScoringPositions:
-            _face = {}
-            center = Translation2d(
-                176.746 * inches_to_meters, 158.501 * inches_to_meters
-            )
-
-            face0 = Pose2d(
-                144.003 * inches_to_meters,
-                158.5 * inches_to_meters,
-                Rotation2d.fromDegrees(180),
-            )
-            face1 = Pose2d(
-                160.375 * inches_to_meters,
-                130.144 * inches_to_meters,
-                Rotation2d.fromDegrees(-120),
-            )
-            face2 = Pose2d(
-                193.118 * inches_to_meters,
-                130.145 * inches_to_meters,
-                Rotation2d.fromDegrees(-60),
-            )
-            face3 = Pose2d(
-                209.489 * inches_to_meters,
-                158.502 * inches_to_meters,
-                Rotation2d.fromDegrees(0),
-            )
-            face4 = Pose2d(
-                193.116 * inches_to_meters,
-                186.858 * inches_to_meters,
-                Rotation2d.fromDegrees(60),
-            )
-            face5 = Pose2d(
-                160.373 * inches_to_meters,
-                186.857 * inches_to_meters,
-                Rotation2d.fromDegrees(120),
-            )
-
-        class BranchScoringPositions2d:
-            adjust_x = (
-                30.738 * inches_to_meters
-                + 0.051
-                + reef_scoring_distance * inches_to_meters
-            )  # the extra is to push to the edge of the reef.
-            print(f"adjust_x: {adjust_x}")
-            adjust_y = 6.469 * inches_to_meters
-            center = Translation2d(
-                176.746 * inches_to_meters, 158.501 * inches_to_meters
-            )
-            branchlabels = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
-            currentbranch = 0
-            branch_positions_2d = {}
-            for face in range(6):
-                # print(f"center: {center}")
-                pose_direction = Pose2d(
-                    center, Rotation2d.fromDegrees(-180 + (60 * face))
-                )
-                print(f"pose_direction: {pose_direction}")
-                branch_positions_2d[branchlabels[currentbranch]] = Pose2d(
-                    pose_direction.transformBy(
-                        Transform2d(adjust_x, -adjust_y, pose_direction.rotation())
-                    ).X(),
-                    pose_direction.transformBy(
-                        Transform2d(adjust_x, -adjust_y, pose_direction.rotation())
-                    ).Y(),
-                    pose_direction.rotation(),
-                )
-                print(f"left branch {branch_positions_2d[branchlabels[currentbranch]]}")
-                branch_positions_2d[branchlabels[currentbranch + 1]] = Pose2d(
-                    pose_direction.transformBy(
-                        Transform2d(adjust_x, adjust_y, pose_direction.rotation())
-                    ).X(),
-                    pose_direction.transformBy(
-                        Transform2d(adjust_x, adjust_y, pose_direction.rotation())
-                    ).Y(),
-                    pose_direction.rotation(),
-                )
-                currentbranch += 2
-
-        # Dynamically add properties to the class
-        for label, pose in BranchScoringPositions2d.branch_positions_2d.items():
-            # Assign the property to the class
-            setattr(BranchScoringPositions2d, label, pose)
-        # Clean up the class
-        face = None
-        branch_positions_2d = None
-        currentbranch = None
-
-        class BranchScoringPositions:
-            def __init__(self):
-                adjust_x = 30.738 * inches_to_meters
-                adjust_y = 6.469 * inches_to_meters
-                center = Translation2d(
-                    176.746 * inches_to_meters, 158.501 * inches_to_meters
-                )
-                branchlabels = [
-                    "A",
-                    "B",
-                    "C",
-                    "D",
-                    "E",
-                    "F",
-                    "G",
-                    "H",
-                    "I",
-                    "J",
-                    "K",
-                    "L",
-                ]
-                currentbranch = 0
-                self.branch_positions_2d: Dict[str, Pose2d] = {}
-                for face in range(6):
-                    pose_direction = Pose2d(
-                        center, Rotation2d.fromDegrees(-180 + (60 * face))
-                    )
-                    self.branch_positions_2d[branchlabels[currentbranch]] = Pose2d(
-                        pose_direction.transformBy(
-                            Transform2d(adjust_x, -adjust_y, pose_direction.rotation())
-                        ).X(),
-                        pose_direction.transformBy(
-                            Transform2d(adjust_x, -adjust_y, pose_direction.rotation())
-                        ).Y(),
-                        pose_direction.rotation(),
-                    )
-                    self.branch_positions_2d[branchlabels[currentbranch + 1]] = Pose2d(
-                        pose_direction.transformBy(
-                            Transform2d(adjust_x, adjust_y, pose_direction.rotation())
-                        ).X(),
-                        pose_direction.transformBy(
-                            Transform2d(adjust_x, adjust_y, pose_direction.rotation())
-                        ).Y(),
-                        pose_direction.rotation(),
-                    )
-                    currentbranch += 2
-
-            def get_scoring_pose(self, branch: Branch, level: ReefHeight) -> Pose3d:
-                return Pose3d(
-                    self.branch_positions_2d[branch].X(),
-                    self.branch_positions_2d[branch].Y(),
-                    level.height,
-                    Rotation3d(
-                        0,
-                        level.pitch * degrees_to_radians,
-                        self.branch_positions_2d[branch].rotation().radians(),
-                    ),
-                )
-
-    def update_tables(self, red=False) -> None:
+    def update_tables(self, red=False, debug=False) -> None:
         # Initialize NetworkTables
         table = self.table
 
@@ -401,9 +260,9 @@ class FieldConstants:
                 else:
                     table.putValue(name, value)
 
-        def process_class(table: NetworkTable, prefix, cls):
+        def process_class(table: NetworkTable, prefix, cls, debug=False):
             """Recursively process a class and its nested classes."""
-            cls.__init__(cls)
+            # cls.__init__(cls)
             for attr_name, attr_value in vars(cls).items():
                 attr_path = f"{prefix}.{attr_name}" if prefix else attr_name
                 if isinstance(attr_value, type):  # Handle nested classes
@@ -412,10 +271,27 @@ class FieldConstants:
                         print(f"Nested class: {attr_path}")
                     process_class(nested_class_table, attr_path, attr_value)
                 else:
-                    process_value(table, attr_path, attr_value, self.debug)
+                    process_value(table, attr_path, attr_value, debug)
+
+        def process_enum(table, prefix, enum_class, debug=False):
+            for member in enum_class:
+                # print(f"\nProcessing {member.name} ({member.value[0]}):")
+                for attr_name, attr_value in vars(member).items():
+                    attr_path = (
+                        f"{prefix}.{str(member)}.{attr_name}" if prefix else attr_name
+                    )
+                    if isinstance(attr_value, type):  # Handle nested classes
+                        nested_class_table = table.getSubTable(attr_name)
+                        if self.debug:
+                            print(f"Nested class: {attr_path}")
+                        process_class(nested_class_table, attr_path, attr_value)
+                    elif isinstance(attr_value, Pose2d):
+                        process_value(table, attr_path, attr_value, debug)
 
         # Start processing FieldConstants and its attributes
         process_class(table, "", FieldConstants)
+        process_enum(table, "Branch", Branch)
+        process_enum(table, "ReefFace", ReefFace)
 
     @staticmethod
     def get_red_pose(pose: Pose2d | Pose3d):
@@ -439,13 +315,16 @@ class FieldConstants:
 
 if __name__ == "__main__":
     FC = FieldConstants()
-    FC.debug = True
-    FC.update_tables()
-    print(FC.Reef.BranchScoringPositions().get_scoring_pose(Branch.L, ReefHeight.L4))
+    FC.update_tables(debug=True)
+    # print(FC.Reef.BranchScoringPositions().get_scoring_pose(Branch.L, ReefHeight.L4))
     print(
         f"April Tag closest driver's station x:{144 * inches_to_meters}, y:{158 * inches_to_meters}"
     )
     # branches = Branch()
     # print(branches)
     for branch in Branch:
-        print(branch.name, branch.scoring_pose)
+        print(branch.label, branch.scoring_pose)
+    for face in ReefFace:
+        # print(here)
+        print(f"{face.label} {face.scoring_pose}")
+    print(type(Branch.A))

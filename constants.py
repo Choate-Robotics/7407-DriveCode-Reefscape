@@ -17,7 +17,7 @@ track_length: meters = 18.25 * inches_to_meters  # (left/right side)
 drivetrain_length: meters = 20  # length of one side of the robot, placeholder
 bumper_thickness: float = 3.5
 drivetrain_length_with_bumpers = drivetrain_length + (2 * bumper_thickness)
-reef_scoring_distance = drivetrain_length_with_bumpers / 2
+reef_scoring_distance = 16
 
 
 drivetrain_move_motor_free_speed: rotations_per_minute = (
