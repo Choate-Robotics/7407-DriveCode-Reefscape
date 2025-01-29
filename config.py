@@ -97,7 +97,7 @@ wrist_cancoder_id = 11
 wrist_max_angle = 2 * math.pi
 wrist_min_angle = 0 * math.pi
 angle_threshold = math.radians(2)  # radians
-current_threshold = 5  # amps PLACEHOLDER
+out_current_threshold = 2  # amps PLACEHOLDER
 back_current_threshold = 10  # amps PLACEHOLDER
 current_time_threshold = 0.3  # seconds PLACEHOLDER
 
