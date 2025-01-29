@@ -110,6 +110,14 @@ class Branch(StrEnum):
             pose_direction.rotation() + Rotation2d.fromDegrees(180),
         )
 
+    @staticmethod
+    def get_right_branches() -> list:
+        return [Branch.B, Branch.D, Branch.F, Branch.H, Branch.J, Branch.L]
+
+    @staticmethod
+    def get_left_branches() -> list:
+        return [Branch.A, Branch.C, Branch.E, Branch.G, Branch.I, Branch.K]
+
 
 class ReefFace(Enum):
     Face1 = ("Face1", Branch.A, Branch.B)
@@ -328,3 +336,4 @@ if __name__ == "__main__":
         # print(here)
         print(f"{face.label} {face.scoring_pose}")
     print(type(Branch.A))
+    print(Branch.get_right_branches())
