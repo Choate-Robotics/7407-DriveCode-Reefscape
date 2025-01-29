@@ -34,8 +34,10 @@ class Wrist(Subsystem):
         self.target_angle: radians = 0
         self.wrist_moving: bool = False
         self.coral_in_feed: bool = False
+        self.coral_in_back_feed: bool = False
 
         self.timer = Timer()
+        self.back_timer = Timer()
 
     def init(self):
         self.feed_motor.init()
@@ -74,26 +76,43 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_raw_output(0)
 
-    def coral_in_wrist(self) -> bool:
-        """
-        check if there is coral in the feed 
-        checks if the current is over the threshold for a period of time
-        """
-        if self.feed_motor.get_motor_current() > config.current_threshold:
+    # def coral_in_wrist(self) -> bool:
+    #     """
+    #     check if there is coral in the feed 
+    #     checks if the current is over the threshold for a period of time
+    #     """
+    #     if self.feed_motor.get_motor_current() > config.current_threshold:
             
-            if not self.timer.isRunning():
-                self.timer.start()
+    #         if not self.timer.isRunning():
+    #             self.timer.start()
             
-            self.coral_in_feed = self.timer.hasElapsed(config.current_time_threshold)
+    #         self.coral_in_feed = self.timer.hasElapsed(config.current_time_threshold)
 
-        else:
-            self.timer.stop()
-            self.timer.reset()
+    #     else:
+    #         self.timer.stop()
+    #         self.timer.reset()
+    #         self.coral_in_feed = False
         
-        return self.coral_in_feed  
+    #     return self.coral_in_feed  
     
-    def coral_in_back(self) -> bool:
-        pass
+    # def coral_in_back(self) -> bool:
+    #     """
+    #     checks if the coral is in in the back of the wrist feed
+    #     checks if the highest current is held for a period of time
+    #     """
+    #     if self.feed_motor.get_motor_current() > config.back_current_threshold:
+    #         if not self.back_timer.isRunning():
+    #             self.back_timer.start()
+
+    #         self.coral_in_back_feed = self.back_timer.hasElapsed(config.current_time_threshold)
+    #         self.coral_in_feed = self.coral_in_back_feed
+
+    #     else:
+    #         self.back_timer.stop()
+    #         self.back_timer.reset()
+        
+    #     return self.coral_in_back_feed 
+
 
 # wrist
 

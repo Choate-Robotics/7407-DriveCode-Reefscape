@@ -98,6 +98,7 @@ wrist_max_angle = 2 * math.pi
 wrist_min_angle = 0 * math.pi
 angle_threshold = math.radians(2)  # radians
 current_threshold = 5  # amps PLACEHOLDER
+back_current_threshold = 10  # amps PLACEHOLDER
 current_time_threshold = 0.3  # seconds PLACEHOLDER
 
 intake_speed = 1  # placeholder
