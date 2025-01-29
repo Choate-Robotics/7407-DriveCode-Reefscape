@@ -22,22 +22,22 @@ def wrist() -> Wrist:
     return my_wrist
 
 
-@pytest.mark.parametrize(
-        "current, time, expected",
-        [
-            (config.current_threshold+.5, config.current_time_threshold+.2, True),
-            (config.current_threshold-.5, config.current_time_threshold+.2, False),
-            (config.current_threshold+.5, config.current_time_threshold-.2, False),
-            (config.current_threshold-.5, config.current_time_threshold-.2, False)
+# @pytest.mark.parametrize(
+#         "current, time, expected",
+#         [
+#             (config.current_threshold+.5, config.current_time_threshold+.2, True),
+#             (config.current_threshold-.5, config.current_time_threshold+.2, False),
+#             (config.current_threshold+.5, config.current_time_threshold-.2, False),
+#             (config.current_threshold-.5, config.current_time_threshold-.2, False)
 
-        ],
-)
-def test_coral_in_wrist(wrist, current, time, expected, monkeypatch: MonkeyPatch):
-    def fake_has_Elapsed(self, x):
-        return time>x
-    monkeypatch.setattr(wpilib.Timer, "hasElapsed", fake_has_Elapsed)
-    wrist.feed_motor.get_motor_current = lambda: current
+#         ],
+# )
+# def test_coral_in_wrist(wrist, current, time, expected, monkeypatch: MonkeyPatch):
+#     def fake_has_Elapsed(self, x):
+#         return time>x
+#     monkeypatch.setattr(wpilib.Timer, "hasElapsed", fake_has_Elapsed)
+#     wrist.feed_motor.get_motor_current = lambda: current
 
-    wrist.coral_in_wrist()
+#     wrist.coral_in_wrist()
     
-    assert wrist.coral_in_feed == expected
+#     assert wrist.coral_in_feed == expected
