@@ -1,6 +1,7 @@
 from toolkit.subsystem import Subsystem
 from toolkit.motors.ctre_motors import TalonFX
 
+import ntcore
 import math
 from math import pi
 from units.SI import radians
@@ -41,6 +42,7 @@ class Wrist(Subsystem):
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable('wrist')
 
     def initial_zero(self):
         """
@@ -159,3 +161,12 @@ class Wrist(Subsystem):
         """
         return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < config.angle_threshold
 
+    def periodic(self) -> None:
+        
+        if config.NT_WRIST:
+
+            self.table.putNumber('wrist angle', math.degrees(self.get_wrist_angle()))
+            self.table.putNumber('target angle', math.degrees(self.target_angle))
+            self.table.putBoolean('wrist moving', self.wrist_moving)
+            self.table.putNumber('feed current', self.feed_motor.get_motor_current())
+            self.table.putBoolean('coral in feed', self.coral_in_feed)

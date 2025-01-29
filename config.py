@@ -27,6 +27,9 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
+NT_WRIST = True
+
+
 # Drivetrain
 gyro_id: int = 13
 
