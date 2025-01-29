@@ -77,6 +77,53 @@ class Branch(StrEnum):
     K = "K"
     L = "L"
 
+    def __init__(self, label):
+        self.label = label
+        branches = list(self.__class__)  # Get all enum members
+        index = len(branches)  # Find the index of the current face
+        adjust_x = (
+            30.738 * inches_to_meters + 0.051 + reef_scoring_distance * inches_to_meters
+        )  # the extra is to push to the edge of the reef.
+        print(adjust_x)
+        adjust_y = 6.469 * inches_to_meters
+        center = Translation2d(176.746 * inches_to_meters, 158.501 * inches_to_meters)
+        face = int(index / 2)
+
+        pose_direction = Pose2d(center, Rotation2d.fromDegrees(-180 + (60 * face)))
+        print(f"new pose direction {pose_direction}")
+
+        self.scoring_pose = Pose2d(
+            pose_direction.transformBy(
+                Transform2d(
+                    adjust_x,
+                    (-1) ** (index % 2 + 1) * adjust_y,
+                    pose_direction.rotation(),
+                )
+            ).X(),
+            pose_direction.transformBy(
+                Transform2d(
+                    adjust_x,
+                    (-1) ** (index % 2 + 1) * adjust_y,
+                    pose_direction.rotation(),
+                )
+            ).Y(),
+            pose_direction.rotation(),
+        )
+
+
+class ReefFace(StrEnum):
+    Face1: ("Face1", Branch.A, Branch.B)
+    Face2: ("Face2", Branch.C, Branch.D)
+    Face3: ("Face3", Branch.E, Branch.F)
+    Face4: ("Face4", Branch.G, Branch.H)
+    Face5: ("Face5", Branch.I, Branch.J)
+    Face6: ("Face6", Branch.K, Branch.L)
+
+    def __init__(self, name, left, right):
+        self.name = name
+        self.left = left
+        self.right = right
+
 
 class ReefHeight(Enum):
     L4 = (72 * inches_to_meters, -90)
@@ -150,6 +197,9 @@ class FieldConstants:
         )
 
     class Reef:
+        right_branches = [Branch.B, Branch.D, Branch.F, Branch.H, Branch.J, Branch.L]
+        left_branches = [Branch.A, Branch.C, Branch.E, Branch.G, Branch.I, Branch.K]
+        # faces=[ReefFace.Face1, ReefFace.Face2, ReefFace.Face3, ReefFace.Face4, ReefFace.Face5, ReefFace.Face6]
         center = Translation2d(176.746 * inches_to_meters, 158.501 * inches_to_meters)
         faceToZoneLine = (
             12 * inches_to_meters
@@ -177,7 +227,12 @@ class FieldConstants:
                 ),
             )
 
-        class CenterFaces:
+        class CenterScoringPositions:
+            _face = {}
+            center = Translation2d(
+                176.746 * inches_to_meters, 158.501 * inches_to_meters
+            )
+
             face0 = Pose2d(
                 144.003 * inches_to_meters,
                 158.5 * inches_to_meters,
@@ -211,8 +266,11 @@ class FieldConstants:
 
         class BranchScoringPositions2d:
             adjust_x = (
-                30.738 * inches_to_meters + 0.051 + reef_scoring_distance
+                30.738 * inches_to_meters
+                + 0.051
+                + reef_scoring_distance * inches_to_meters
             )  # the extra is to push to the edge of the reef.
+            print(f"adjust_x: {adjust_x}")
             adjust_y = 6.469 * inches_to_meters
             center = Translation2d(
                 176.746 * inches_to_meters, 158.501 * inches_to_meters
@@ -221,9 +279,11 @@ class FieldConstants:
             currentbranch = 0
             branch_positions_2d = {}
             for face in range(6):
+                # print(f"center: {center}")
                 pose_direction = Pose2d(
                     center, Rotation2d.fromDegrees(-180 + (60 * face))
                 )
+                print(f"pose_direction: {pose_direction}")
                 branch_positions_2d[branchlabels[currentbranch]] = Pose2d(
                     pose_direction.transformBy(
                         Transform2d(adjust_x, -adjust_y, pose_direction.rotation())
@@ -233,6 +293,7 @@ class FieldConstants:
                     ).Y(),
                     pose_direction.rotation(),
                 )
+                print(f"left branch {branch_positions_2d[branchlabels[currentbranch]]}")
                 branch_positions_2d[branchlabels[currentbranch + 1]] = Pose2d(
                     pose_direction.transformBy(
                         Transform2d(adjust_x, adjust_y, pose_direction.rotation())
@@ -382,5 +443,9 @@ if __name__ == "__main__":
     FC.update_tables()
     print(FC.Reef.BranchScoringPositions().get_scoring_pose(Branch.L, ReefHeight.L4))
     print(
-        f"April Tag closest driver's station x:{144*inches_to_meters}, y:{158*inches_to_meters}"
+        f"April Tag closest driver's station x:{144 * inches_to_meters}, y:{158 * inches_to_meters}"
     )
+    # branches = Branch()
+    # print(branches)
+    for branch in Branch:
+        print(branch.name, branch.scoring_pose)
