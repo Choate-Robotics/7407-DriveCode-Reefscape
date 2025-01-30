@@ -80,5 +80,6 @@ MOVE_CONFIG = TalonConfig(
 )
 
 #elevator
-elevator_lead_id = 10
+elevator_lead_id = 10 
 elevator_follower_id = 11
+magsensor_id = 12 #placeholder

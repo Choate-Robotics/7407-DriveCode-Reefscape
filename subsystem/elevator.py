@@ -5,6 +5,7 @@ import ntcore
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 from units.SI import meters
+from wpilib import DigitalInput
 
 class Elevator(Subsystem):
     def _init_(self):
@@ -26,6 +27,7 @@ class Elevator(Subsystem):
         self.leader_motor.init()
         self.follower_motor.init()
         self.follower_motor.follow(self.leader_motor, inverted=True)
+        self.magsensor = DigitalInput(config.magsensor_id)
 
     def limit_height(self, height: meters):
         """
@@ -49,6 +51,18 @@ class Elevator(Subsystem):
 
         self.rotations = (height * constants.elevator_gear_ratio) / constants.elevator_driver_gear_circumference
         self.leader_motor.set_target_position(self.rotations)
+
+    def set_elevator_climb_down(self):
+        """
+        Moves the elevator down
+        """
+        self.leader_motor.set_raw_output(-.25)
+
+    def stop(self):
+        """
+        Stops the elevator
+        """
+        self.leader_motor.set_raw_output(0)
 
     def set_zero(self):
         """
@@ -81,7 +95,7 @@ class Elevator(Subsystem):
         checks if the elevator is at a certain height
 
         Args:
-            height (meters): height to be checked in meters
+            height (meters): height to be checked
         """
         # Rounding to make sure it's not too precise (will cause err)
         return round(self.get_position(), 2) == round(height, 2)
