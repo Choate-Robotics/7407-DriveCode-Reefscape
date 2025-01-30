@@ -51,6 +51,6 @@ def test_stop(intake: Intake):
 
 
 def detect_coral(intake: Intake):
-    intake.imaginarysensor.getVoltage.return_value = 1
-    intake.detect_note()
-    intake.imaginarysensor.getVoltage.assert_called()
+    # intake.sensor.getVoltage.return_value = 1
+    intake.detect_coral()
+    intake.sensor.getVoltage.assert_called()

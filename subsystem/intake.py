@@ -4,6 +4,7 @@ import config
 import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
+import ntcore
 
 
 class Intake(Subsystem):
@@ -44,5 +45,21 @@ class Intake(Subsystem):
         """
         check if coral is in the intake
         """
-        self.coral_in_intake = self.sensor.get()
+        self.coral_in_intake = self.sensor.getVoltage()
         return self.coral_in_intake
+    
+    def get_current(self) -> int:
+        pass
+
+    def getAppliedOutput():
+        pass
+    
+    def periodic(self) -> None:
+        if config.NT_INTAKE:
+            table = ntcore.NetworkTableInstance.getDefault().getTable('intake')
+
+            table.putBoolean('coral in intake', self.coral_in_intake)
+            table.putBoolean('coral detected', self.detect_coral())
+            table.putBoolean('intake running', self.intake_running)
+            table.putNumber('outer current', self.get_current())
+            table.putNumber('intake applied output', self.motor.getAppliedOutput())
