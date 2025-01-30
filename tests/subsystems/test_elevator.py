@@ -11,12 +11,25 @@ def elevator() -> Elevator:
     elevator = Elevator()
     elevator.leader_motor = MagicMock()
     elevator.follower_motor = MagicMock()
+    elevator.magsensor = MagicMock()
     return elevator 
 
 def test_elevator_init(elevator: Elevator):
     elevator.init()
     elevator.leader_motor.init.assert_called()
     elevator.follower_motor.init.assert_called()
+
+@pytest.mark.parametrize(
+    "test_input, test_output",
+    [
+        (0, 0),
+        (constants.elevator_max_height/2, constants.elevator_max_height/2),
+        (constants.elevator_max_height*2, constants.elevator_max_height),
+        (-10, 0)
+    ]
+)
+def test_limit_height(test_input, test_output, elevator: Elevator):
+    assert elevator.limit_height(test_input) == test_output
 
 @pytest.mark.parametrize(
     "test_input",
