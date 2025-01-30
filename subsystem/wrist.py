@@ -36,8 +36,8 @@ class Wrist(Subsystem):
         self.wrist_moving: bool = False
         self.coral_in_feed: bool = False
 
-        #self.timer = Timer()
-        #self.back_timer = Timer()
+        self.in_timer = Timer()
+        self.out_timer = Timer()
 
     def init(self):
         self.feed_motor.init()

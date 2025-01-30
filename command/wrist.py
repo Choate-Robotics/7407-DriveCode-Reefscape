@@ -39,7 +39,7 @@ class FeedIn(SubsystemCommand[Wrist]):
 
     def initialize(self) -> None:
         self.subsystem.feed_in()
-        self.in_timer = Timer()
+        self.subsystem.in_timer = Timer()
 
     def execute(self) -> None:
         pass
@@ -73,7 +73,7 @@ class FeedOut(SubsystemCommand[Wrist]):
 
     def initialize(self) -> None:
         self.subsystem.feed_out()
-        self.out_timer = Timer()
+        self.subsystem.out_timer = Timer()
     
     def execute(self) -> None:
         pass
