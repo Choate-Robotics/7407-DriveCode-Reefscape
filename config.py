@@ -3,7 +3,7 @@ import math
 from wpilib import AnalogEncoder
 
 from toolkit.motors.ctre_motors import TalonConfig
-from units.SI import radians
+from units.SI import radians, meters
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
@@ -27,11 +27,12 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
+# NETWORK TABLES
 NT_WRIST = True
 NT_INTAKE = True
 
 
-# Drivetrain
+# DRIVETRAIN
 gyro_id: int = 13
 
 front_left_move_id: int = 2
@@ -80,12 +81,13 @@ MOVE_CONFIG = TalonConfig(
     0.11, 0, 0, 0.25, 0.01, brake_mode=True, current_limit=40, kV=0.12
 )
 
-# intake
-intake_id = 9
-INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 
-# Wrist
+
+# WRIST
 wrist_feed_id = 10
+wrist_id = 9
+wrist_cancoder_id = 11
+
 WRIST_FEED_CONFIG = TalonConfig(
     1,
     0,
@@ -93,17 +95,41 @@ WRIST_FEED_CONFIG = TalonConfig(
     0,
     0
 )
-wrist_id = 9
-WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
-wrist_cancoder_id = 11
 
+WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 
 wrist_max_angle = 2 * math.pi
 wrist_min_angle = 0 * math.pi
+
 angle_threshold = math.radians(2)  # radians
 out_current_threshold = 2  # amps PLACEHOLDER
 back_current_threshold = 10  # amps PLACEHOLDER
 current_time_threshold = 0.3  # seconds PLACEHOLDER
 
+
+
+# INTAKE
+intake_id = 9
+INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+
 intake_speed = 1  # placeholder
 intake_eject_speed = -1  # placeholder
+
+
+
+# SCORING POSITIONS
+class CustomPos:
+    def __init__(self, elevator_height: meters, wrist_angle: radians, intake_up: bool):
+        self.elevator_height = elevator_height
+        self.wrist_angle = wrist_angle
+        self.intake_up = intake_up
+    
+
+
+class ScoringPos:
+    IDLE = CustomPos(0, 0, False) # Placeholder
+    STATION_INTAKE = CustomPos(0, 0, True) # Placeholder
+
+    SCORE_LOW = CustomPos(0, 0, False) # Placeholder
+    SCORE_MID = CustomPos(0, 0, False) # Placeholder
+    SCORE_HIGH = CustomPos(0, 0, False) # Placeholder
