@@ -1,5 +1,5 @@
 import math
-
+from dataclasses import dataclass
 from wpilib import AnalogEncoder
 
 from toolkit.motors.ctre_motors import TalonConfig
@@ -127,6 +127,7 @@ intake_eject_speed = -1  # placeholder
 
 
 # SCORING POSITIONS
+@dataclass
 class TargetData:
     target_pose: Pose2d | None
     elevator_height: meters
