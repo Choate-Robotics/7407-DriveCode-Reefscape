@@ -26,6 +26,8 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  #foc for TalonFX requires paid subscription
 
+NT_INTAKE = True
+
 #Drivetrain
 gyro_id: int = 13
 
@@ -87,6 +89,18 @@ INTAKE_CONFIG = TalonConfig(
     0
 )
 
+intake_pivot_id = 10
+INTAKE_PIVOT_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+
+intake_max_angle = math.radians(90)
+intake_min_angle = math.radians(60)
+intake_angle_threshold = math.radians(5)
+
 intake_speed = 1 #placeholder
-intake_gear_ratio = 1 #placeholder
 intake_eject_speed = 1 #placeholder

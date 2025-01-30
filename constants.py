@@ -43,4 +43,5 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 ) * drivetrain_wheel_gear_ratio
 
 # intake
+intake_pivot_gear_ratio: float = 1  # placeholder
 intake_gear_ratio: float = 1  # placeholder
