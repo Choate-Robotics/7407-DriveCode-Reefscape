@@ -5,6 +5,8 @@ from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 from units.SI import radians, meters
 
+from wpimath.geometry import Pose2d
+
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -118,18 +120,62 @@ intake_eject_speed = -1  # placeholder
 
 
 # SCORING POSITIONS
-class CustomPos:
-    def __init__(self, elevator_height: meters, wrist_angle: radians, intake_up: bool):
-        self.elevator_height = elevator_height
-        self.wrist_angle = wrist_angle
-        self.intake_up = intake_up
-    
+class TargetData:
+    target_pose: Pose2d | None
+    elevator_height: meters
+    wrist_angle: radians
+
+    intake_enabled: bool
+    intake_running: bool
+
+    extake_running: bool
 
 
-class ScoringPos:
-    IDLE = CustomPos(0, 0, False) # Placeholder
-    STATION_INTAKE = CustomPos(0, 0, True) # Placeholder
+target_positions: dict[str, TargetData] = {
+    # ALL PLACEHOLDERS
 
-    SCORE_LOW = CustomPos(0, 0, False) # Placeholder
-    SCORE_MID = CustomPos(0, 0, False) # Placeholder
-    SCORE_HIGH = CustomPos(0, 0, False) # Placeholder
+    "IDLE": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=True,
+        intake_running=False,
+        extake_running=False
+    ),
+
+    "STATION_INTAKING": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=True,
+        intake_running=True,
+        extake_running=False
+    ),
+
+    "LOW": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_running=False,
+        extake_running=True
+    ),
+
+    "MID": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_running=False,
+        extake_running=True
+    ),
+
+    "HIGH": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_running=False,
+        extake_running=True
+    )
+}
