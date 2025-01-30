@@ -1,14 +1,15 @@
+import ntcore
+
 import config
 import constants
-
-import ntcore
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 from units.SI import meters
 from wpilib import DigitalInput
 
+
 class Elevator(Subsystem):
-    def _init_(self):
+    def __init__(self):
         super().__init__()
         self.leader_motor: TalonFX = TalonFX(
             config.elevator_lead_id,
@@ -29,7 +30,8 @@ class Elevator(Subsystem):
         self.follower_motor.follow(self.leader_motor, inverted=True)
         self.magsensor = DigitalInput(config.magsensor_id)
 
-    def limit_height(self, height: meters):
+    @staticmethod
+    def limit_height(height: meters):
         """
         limits the height of the elevator to both a max and min
         """
@@ -49,7 +51,9 @@ class Elevator(Subsystem):
         height = self.limit_height(height)
         self.target_height = height
 
-        self.rotations = (height * constants.elevator_gear_ratio) / constants.elevator_driver_gear_circumference
+        self.rotations = (
+            height * constants.elevator_gear_ratio
+        ) / constants.elevator_driver_gear_circumference
         self.leader_motor.set_target_position(self.rotations)
 
     def set_elevator_climb_down(self):
@@ -99,15 +103,19 @@ class Elevator(Subsystem):
         """
         # Rounding to make sure it's not too precise (will cause err)
         return round(self.get_position(), 2) == round(height, 2)
-    
-    def update_network_table(self):
-        table = ntcore.NetworkTableInstance.getDefault().getTable('elevator')
 
-        table.putNumber('height', self.get_position())
-        table.putBoolean('zeroed', self.zeroed)
-        table.putNumber('target height', self.target_height)
-        table.putNumber('motor lead applied output', self.leader_motor.get_applied_output())
-        table.putNumber('motor follow applied output', self.follower_motor.get_applied_output())
+    def update_network_table(self):
+        table = ntcore.NetworkTableInstance.getDefault().getTable("elevator")
+
+        table.putNumber("height", self.get_position())
+        table.putBoolean("zeroed", self.zeroed)
+        table.putNumber("target height", self.target_height)
+        table.putNumber(
+            "motor lead applied output", self.leader_motor.get_applied_output()
+        )
+        table.putNumber(
+            "motor follow applied output", self.follower_motor.get_applied_output()
+        )
 
     def periodic(self):
         if config.NT_ELEVATOR:
