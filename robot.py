@@ -16,6 +16,7 @@ from robot_systems import (  # noqa
     PowerDistribution,
     Field,
 )
+from wpilib import DriverStation
 
 # import sensors
 # import subsystem
@@ -26,11 +27,11 @@ from oi.OI import OI
 class _Robot(wpilib.TimedRobot):
     def __init__(self):
         super().__init__()
-        self.field_constants = utils.FieldConstants()
 
         self.log = utils.LocalLogger("Robot")
         self.nt = ntcore.NetworkTableInstance.getDefault()
         self.scheduler = commands2.CommandScheduler.getInstance()
+        self.color = DriverStation.Alliance.kRed
 
     def robotInit(self):
         # self.log._robot_log_setup()
@@ -41,9 +42,10 @@ class _Robot(wpilib.TimedRobot):
         OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
-        self.log.info(f"Scheduler period set to {period} seconds")
 
-        self.field_constants.update_tables()
+        Field.flip_poses()
+        Field.update_field_table("Field")
+        self.log.info(f"Scheduler period set to {period} seconds")
 
         # Initialize subsystems
         def init_subsystems():
@@ -84,6 +86,21 @@ class _Robot(wpilib.TimedRobot):
         ...
 
     def robotPeriodic(self):
+        table = ntcore.NetworkTableInstance.getDefault().getTable("Color")
+        table.putValue("self.color", self.color)
+
+        fms_table = ntcore.NetworkTableInstance.getDefault().getTable("FMSInfo")
+        is_red = fms_table.getBoolean("IsRedAlliance", True)
+        if is_red:
+            color_now = DriverStation.Alliance.kRed
+        else:
+            color_now = DriverStation.Alliance.kBlue
+
+        # current_alliance = DriverStation.getAlliance()
+        if not color_now == self.color:
+            Field.flip_poses()
+            self.color = color_now
+            Field.update_field_table()
         if self.isSimulation():
             wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
