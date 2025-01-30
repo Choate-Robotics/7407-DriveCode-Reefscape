@@ -60,3 +60,8 @@ wrist_gear_ratio = 10  # placeholder
 
 # intake
 intake_gear_ratio: float = 1  # placeholder
+
+#elevator
+elevator_gear_ratio = 1 #placeholder
+elevator_driver_gear_circumference = 1 #placeholder
+elevator_max_height = 2.5 #placeholder

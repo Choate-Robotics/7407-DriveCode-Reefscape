@@ -32,6 +32,7 @@ foc_active = False  # foc for TalonFX requires paid subscription
 # NETWORK TABLES
 NT_WRIST = True
 NT_INTAKE = True
+NT_ELEVATOR = True
 
 
 # DRIVETRAIN
@@ -107,6 +108,12 @@ angle_threshold = math.radians(2)  # radians
 out_current_threshold = 2  # amps PLACEHOLDER
 back_current_threshold = 10  # amps PLACEHOLDER
 current_time_threshold = 0.3  # seconds PLACEHOLDER
+
+
+
+# ELEVATOR
+elevator_lead_id = 10
+elevator_follower_id = 11
 
 
 
