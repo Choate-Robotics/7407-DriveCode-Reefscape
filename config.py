@@ -1,8 +1,9 @@
-from units.SI import radians
-from wpilib import AnalogEncoder
-from toolkit.motors.ctre_motors import TalonConfig
 import math
 
+from wpilib import AnalogEncoder
+
+from toolkit.motors.ctre_motors import TalonConfig
+from units.SI import radians
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
@@ -24,9 +25,12 @@ LOG_FILE_LEVEL: int = 1
 # anything else will log nothing
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-foc_active = False  #foc for TalonFX requires paid subscription
+foc_active = False  # foc for TalonFX requires paid subscription
 
-#Drivetrain
+NT_WRIST = True
+
+
+# Drivetrain
 gyro_id: int = 13
 
 front_left_move_id: int = 2
@@ -63,16 +67,42 @@ drivetrain_curve: float = 2
 drivetrain_zero: radians = math.radians(180)
 
 TURN_CONFIG = TalonConfig(
-    .9, 0, 0, 0, 0, brake_mode=True,
+    0.9,
+    0,
+    0,
+    0,
+    0,
+    brake_mode=True,
 )
 
 MOVE_CONFIG = TalonConfig(
-    0.11,
-    0,
-    0,
-    0.25,
-    0.01,
-    brake_mode=True,
-    current_limit=40,
-    kV=0.12
+    0.11, 0, 0, 0.25, 0.01, brake_mode=True, current_limit=40, kV=0.12
 )
+
+# intake
+intake_id = 9
+INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+
+# Wrist
+wrist_feed_id = 10
+WRIST_FEED_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+wrist_id = 9
+WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+wrist_cancoder_id = 11
+
+
+wrist_max_angle = 2 * math.pi
+wrist_min_angle = 0 * math.pi
+angle_threshold = math.radians(2)  # radians
+out_current_threshold = 2  # amps PLACEHOLDER
+back_current_threshold = 10  # amps PLACEHOLDER
+current_time_threshold = 0.3  # seconds PLACEHOLDER
+
+intake_speed = 1  # placeholder
+intake_eject_speed = -1  # placeholder
