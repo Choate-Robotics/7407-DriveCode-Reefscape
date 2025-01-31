@@ -39,31 +39,31 @@ class Intake(Subsystem):
         self.motor.init()
         self.pivot_motor.init()
 
-    def roll_in(self):
+    def roll_in(self) -> None:
         """
         spin the motors inwards to collect the corral
         """
         self.motor.set_raw_output(config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
 
-    def stop(self):
+    def stop(self) -> None:
         """
         stop the motors
         """
         self.motor.set_raw_output(0)
         self.intake_running = False
 
-    def roll_out(self):
+    def roll_out(self) -> None:
         """
         eject coral in the intake
         """
         self.motor.set_raw_output(-config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
 
-    def get_current(self) -> int:
+    def get_current(self ->) -> float:
         return self.motor.get_motor_current()
     
-    def is_pivot_up(self) -> float:
+    def is_pivot_up(self) -> bool:
         "returns the angle in radians of the pivot"
         self.pivot_angle = (
             self.pivot_motor.get_sensor_position() / constants.intake_pivot_gear_ratio
@@ -76,7 +76,7 @@ class Intake(Subsystem):
             self.intake_up = True
         return self.intake_up
     
-    def pivot_up(self):
+    def pivot_up(self) -> None:
         """
         pivot the intake up
         """
@@ -85,7 +85,7 @@ class Intake(Subsystem):
         )
         self.intake_up = True
 
-    def pivot_down(self):
+    def pivot_down(self) -> None:
         """
         pivot the intake down
         """
