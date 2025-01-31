@@ -94,12 +94,14 @@ class Intake(Subsystem):
         )
         self.intake_up = False
 
+    def update_table(self) -> None:
+        table = ntcore.NetworkTableInstance.getDefault().getTable('intake')
+
+        table.putBoolean('intake running', self.intake_running)
+        table.putNumber('outer current', self.get_current())
+        table.putNumber('pivot angle', self.pivot_angle())
+        table.putBoolean('pivot moving', self.intake_pivoting)
     
     def periodic(self) -> None:
         if config.NT_INTAKE:
-            table = ntcore.NetworkTableInstance.getDefault().getTable('intake')
-
-            table.putBoolean('intake running', self.intake_running)
-            table.putNumber('outer current', self.get_current())
-            table.putNumber('pivot angle', self.pivot_angle())
-            table.putBoolean('pivot moving', self.intake_pivoting)
+            self.update_table()
