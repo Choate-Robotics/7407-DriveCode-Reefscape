@@ -25,13 +25,12 @@ class Intake(Subsystem):
             inverted=False,
             config=config.INTAKE_PIVOT_CONFIG,
         )
-        self.coral_in_intake: bool = False
         self.intake_running: bool = False
 
         self.pivot_angle = math.radians(90)
         self.intake_pivoting: bool = False
         self.intake_up: bool = True # True is up, False is down
-        self.target_position: bool = True # True is up, False is down
+        self.target_intake_position: bool = True # True is up, False is down
 
         self.timer = Timer()
 
@@ -60,7 +59,7 @@ class Intake(Subsystem):
         self.motor.set_raw_output(-config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
 
-    def get_current(self ->) -> float:
+    def get_current(self) -> float:
         return self.motor.get_motor_current()
     
     def is_pivot_up(self) -> bool:
@@ -70,10 +69,8 @@ class Intake(Subsystem):
             * pi
             * 2
             )
-        if self.pivot_angle < config.intake_max_angle - config.intake_angle_threshold:
-            self.intake_up = False
-        else:
-            self.intake_up = True
+        self.intake_up = not self.pivot_angle < config.intake_max_angle - config.intake_angle_threshold
+
         return self.intake_up
     
     def pivot_up(self) -> None:
@@ -99,7 +96,7 @@ class Intake(Subsystem):
 
         table.putBoolean('intake running', self.intake_running)
         table.putNumber('outer current', self.get_current())
-        table.putNumber('pivot angle', self.pivot_angle())
+        table.putNumber('pivot angle', self.pivot_angle)
         table.putBoolean('pivot moving', self.intake_pivoting)
     
     def periodic(self) -> None:
