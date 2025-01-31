@@ -59,19 +59,19 @@ class Wrist(Subsystem):
 
 # feed
 
-    def feed_in(self):
+    def feed_in(self) -> None:
         """
         spin feed motors in, used in command to stop
         """
         self.feed_motor.set_raw_output(1)
 
-    def feed_out(self):
+    def feed_out(self) -> None:
         """
         spin feed motors out, used in command to stop
         """
         self.feed_motor.set_raw_output(-1)
 
-    def feed_stop(self):
+    def feed_stop(self) -> None:
         """
         stop the feed motors
         """
@@ -131,7 +131,7 @@ class Wrist(Subsystem):
             return config.wrist_max_angle
         return angle
 
-    def set_wrist_angle(self, angle: radians):
+    def set_wrist_angle(self, angle: radians) -> None:
         """
         move to motor until the wrist is at given angle
         """
@@ -155,18 +155,26 @@ class Wrist(Subsystem):
         )
         
 
-    def is_at_angle(self, angle: radians):
+    def is_at_angle(self, angle: radians) -> radians:
         """
         check if the wrist angle is at the given angle
         """
         return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < config.angle_threshold
+    
+    def update_table(self) -> None:
+        """
+        update the network table with the wrist data
+        """
+        table = ntcore.NetworkTableInstance.getDefault().getTable('wrist')
+
+        self.table.putNumber('wrist angle', math.degrees(self.get_wrist_angle()))
+        self.table.putNumber('target angle', math.degrees(self.target_angle))
+        self.table.putBoolean('wrist moving', self.wrist_moving)
+        self.table.putNumber('feed current', self.feed_motor.get_motor_current())
+        self.table.putBoolean('coral in feed', self.coral)
 
     def periodic(self) -> None:
         
         if config.NT_WRIST:
 
-            self.table.putNumber('wrist angle', math.degrees(self.get_wrist_angle()))
-            self.table.putNumber('target angle', math.degrees(self.target_angle))
-            self.table.putBoolean('wrist moving', self.wrist_moving)
-            self.table.putNumber('feed current', self.feed_motor.get_motor_current())
-            self.table.putBoolean('coral in feed', self.coral_in_feed)
+            self.update_table()
