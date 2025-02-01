@@ -33,8 +33,11 @@ class Wrist(Subsystem):
 
         self.wrist_angle: radians = 0
         self.target_angle: radians = 0
-        self.wrist_moving: bool = False
+        self.wrist_angle_moving: bool = False
+        self.wrist_feeding: bool = False
+        self.wrist_ejecting: bool = False
         self.coral_in_feed: bool = False
+        self.wrist_zeroed: bool = False
 
         self.in_timer = Timer()
         self.out_timer = Timer()
@@ -44,7 +47,7 @@ class Wrist(Subsystem):
         self.wrist_motor.init()
         self.table = ntcore.NetworkTableInstance.getDefault().getTable('wrist')
 
-    def initial_zero(self):
+    def initial_zero(self) -> None:
         """
         zero the wrist encoder
         """
@@ -55,64 +58,29 @@ class Wrist(Subsystem):
         * pi
         * 2
         )
+        self.wrist_zeroed = True
         
 
 # feed
 
-    def feed_in(self):
+    def feed_in(self) -> None:
         """
         spin feed motors in, used in command to stop
         """
         self.feed_motor.set_raw_output(1)
 
-    def feed_out(self):
+    def feed_out(self) -> None:
         """
         spin feed motors out, used in command to stop
         """
         self.feed_motor.set_raw_output(-1)
 
-    def feed_stop(self):
+    def feed_stop(self) -> None:
         """
         stop the feed motors
         """
         self.feed_motor.set_raw_output(0)
 
-    # def coral_in_wrist(self) -> bool:
-    #     """
-    #     check if there is coral in the feed 
-    #     checks if the current is over the threshold for a period of time
-    #     """
-    #     if self.feed_motor.get_motor_current() > config.current_threshold:
-            
-    #         if not self.timer.isRunning():
-    #             self.timer.start()
-            
-    #         self.coral_in_feed = self.timer.hasElapsed(config.current_time_threshold)
-
-    #     else:
-    #         self.timer.stop()
-    #         self.timer.reset()
-    #         self.coral_in_feed = False
-        
-    #     return self.coral_in_feed  
-    
-    # def coral_in_back(self) -> bool:
-    #     """
-    #     checks if the coral is in in the back of the wrist feed
-    #     checks if the highest current is held for a period of time
-    #     """
-    #     if self.feed_motor.get_motor_current() > config.back_current_threshold:
-    #         if not self.back_timer.isRunning():
-    #             self.back_timer.start()
-
-    #         self.coral_in_back_feed = self.back_timer.hasElapsed(config.current_time_threshold)
-    #         self.coral_in_feed = self.coral_in_back_feed
-
-    #     else:
-    #         self.back_timer.stop()
-    #         self.back_timer.reset()
-        
-    #     return self.coral_in_back_feed 
 
 
 # wrist
@@ -131,7 +99,7 @@ class Wrist(Subsystem):
             return config.wrist_max_angle
         return angle
 
-    def set_wrist_angle(self, angle: radians):
+    def set_wrist_angle(self, angle: radians) -> None:
         """
         move to motor until the wrist is at given angle
         """
@@ -155,18 +123,28 @@ class Wrist(Subsystem):
         )
         
 
-    def is_at_angle(self, angle: radians):
+    def is_at_angle(self, angle: radians) -> radians:
         """
         check if the wrist angle is at the given angle
         """
         return abs(bounded_angle_diff(self.get_wrist_angle(), angle)) < config.angle_threshold
+    
+    def update_table(self) -> None:
+        """
+        update the network table with the wrist data
+        """
+        table = ntcore.NetworkTableInstance.getDefault().getTable('wrist')
+
+        self.table.putNumber('wrist angle', math.degrees(self.get_wrist_angle()))
+        self.table.putNumber('target angle', math.degrees(self.target_angle))
+        self.table.putBoolean('wrist moving', self.wrist_angle_moving)
+        self.table.putBoolean('wrist feeding', self.wrist_feeding)
+        self.table.putBoolean('wrist ejecting', self.wrist_ejecting)
+        self.table.putNumber('feed current', self.feed_motor.get_motor_current())
+        self.table.putBoolean('wrist zeroed', self.wrist_zeroed)
 
     def periodic(self) -> None:
         
         if config.NT_WRIST:
 
-            self.table.putNumber('wrist angle', math.degrees(self.get_wrist_angle()))
-            self.table.putNumber('target angle', math.degrees(self.target_angle))
-            self.table.putBoolean('wrist moving', self.wrist_moving)
-            self.table.putNumber('feed current', self.feed_motor.get_motor_current())
-            self.table.putBoolean('coral in feed', self.coral_in_feed)
+            self.update_table()

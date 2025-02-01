@@ -16,7 +16,7 @@ class SetWrist(SubsystemCommand[Wrist]):
 
     def initialize(self) -> None:
         self.subsystem.set_wrist_angle(self.angle)
-        self.subsystem.wrist_moving = True
+        self.subsystem.wrist_angle_moving = True
     
     def execute(self) -> None:
         pass
@@ -25,7 +25,28 @@ class SetWrist(SubsystemCommand[Wrist]):
         return self.subsystem.is_at_angle(self.angle)
 
     def end(self, interrupted) -> None:
-        self.subsystem.wrist_moving = False
+        self.subsystem.wrist_angle_moving = False
+
+
+class ZeroWrist(SubsystemCommand[Wrist]):
+    """
+    Zero the wrist encoder
+    """
+    def __init__(self, subsystem: Wrist):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self) -> None:
+        self.subsystem.initial_zero()
+    
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return self.subsystem.wrist_zeroed
+
+    def end(self, interrupted) -> None:
+        pass
 
 
 class FeedIn(SubsystemCommand[Wrist]):
@@ -40,6 +61,7 @@ class FeedIn(SubsystemCommand[Wrist]):
     def initialize(self) -> None:
         self.subsystem.feed_in()
         self.subsystem.in_timer = Timer()
+        self.subsystem.wrist_feeding = True
 
     def execute(self) -> None:
         pass
@@ -61,6 +83,7 @@ class FeedIn(SubsystemCommand[Wrist]):
 
     def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
+        self.subsystem.wrist_feeding = False
 
 
 class FeedOut(SubsystemCommand[Wrist]):
@@ -74,6 +97,7 @@ class FeedOut(SubsystemCommand[Wrist]):
     def initialize(self) -> None:
         self.subsystem.feed_out()
         self.subsystem.out_timer = Timer()
+        self.subsystem.wrist_ejecting = True
     
     def execute(self) -> None:
         pass
@@ -95,4 +119,5 @@ class FeedOut(SubsystemCommand[Wrist]):
     
     def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
+        self.subsystem.wrist_ejecting = False
 
