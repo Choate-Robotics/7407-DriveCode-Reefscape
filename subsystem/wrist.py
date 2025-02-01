@@ -35,6 +35,7 @@ class Wrist(Subsystem):
         self.target_angle: radians = 0
         self.wrist_moving: bool = False
         self.coral_in_feed: bool = False
+        self.wrist_zeroed: bool = False
 
         self.in_timer = Timer()
         self.out_timer = Timer()
@@ -44,7 +45,7 @@ class Wrist(Subsystem):
         self.wrist_motor.init()
         self.table = ntcore.NetworkTableInstance.getDefault().getTable('wrist')
 
-    def initial_zero(self):
+    def initial_zero(self) -> None:
         """
         zero the wrist encoder
         """
@@ -55,6 +56,7 @@ class Wrist(Subsystem):
         * pi
         * 2
         )
+        self.wrist_zeroed = True
         
 
 # feed
@@ -77,42 +79,6 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_raw_output(0)
 
-    # def coral_in_wrist(self) -> bool:
-    #     """
-    #     check if there is coral in the feed 
-    #     checks if the current is over the threshold for a period of time
-    #     """
-    #     if self.feed_motor.get_motor_current() > config.current_threshold:
-            
-    #         if not self.timer.isRunning():
-    #             self.timer.start()
-            
-    #         self.coral_in_feed = self.timer.hasElapsed(config.current_time_threshold)
-
-    #     else:
-    #         self.timer.stop()
-    #         self.timer.reset()
-    #         self.coral_in_feed = False
-        
-    #     return self.coral_in_feed  
-    
-    # def coral_in_back(self) -> bool:
-    #     """
-    #     checks if the coral is in in the back of the wrist feed
-    #     checks if the highest current is held for a period of time
-    #     """
-    #     if self.feed_motor.get_motor_current() > config.back_current_threshold:
-    #         if not self.back_timer.isRunning():
-    #             self.back_timer.start()
-
-    #         self.coral_in_back_feed = self.back_timer.hasElapsed(config.current_time_threshold)
-    #         self.coral_in_feed = self.coral_in_back_feed
-
-    #     else:
-    #         self.back_timer.stop()
-    #         self.back_timer.reset()
-        
-    #     return self.coral_in_back_feed 
 
 
 # wrist
@@ -171,7 +137,7 @@ class Wrist(Subsystem):
         self.table.putNumber('target angle', math.degrees(self.target_angle))
         self.table.putBoolean('wrist moving', self.wrist_moving)
         self.table.putNumber('feed current', self.feed_motor.get_motor_current())
-        self.table.putBoolean('coral in feed', self.coral)
+        self.table.putBoolean('wrist zeroed', self.wrist_zeroed)
 
     def periodic(self) -> None:
         

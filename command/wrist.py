@@ -28,6 +28,27 @@ class SetWrist(SubsystemCommand[Wrist]):
         self.subsystem.wrist_moving = False
 
 
+class ZeroWrist(SubsystemCommand[Wrist]):
+    """
+    Zero the wrist encoder
+    """
+    def __init__(self, subsystem: Wrist):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self) -> None:
+        self.subsystem.initial_zero()
+    
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return self.subsystem.wrist_zeroed
+
+    def end(self, interrupted) -> None:
+        pass
+
+
 class FeedIn(SubsystemCommand[Wrist]):
     """
     run the feed intake in until there is coral detected in the feed
