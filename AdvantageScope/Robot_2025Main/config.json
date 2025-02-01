@@ -1,0 +1,20 @@
+{
+  "cameras": [],
+  "components": [],
+  "name": "2025Main",
+  "position": [
+    0,
+    0,
+    0.04699
+  ],
+  "rotations": [
+    {
+      "axis": "x",
+      "degrees": 90
+    },
+    {
+      "axis": "z",
+      "degrees": -90
+    }
+  ]
+}

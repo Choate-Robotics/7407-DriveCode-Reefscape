@@ -1,16 +1,22 @@
 import commands2
-from toolkit.subsystem import Subsystem
-import phoenix6 as ctre
+
+# import phoenix6 as ctre
 import ntcore
 import wpilib
+from wpilib import DriverStation
+
 import command
 import config
-import constants
-from robot_systems import Robot, Pneumatics, Sensors, LEDs, PowerDistribution, Field
-import sensors
-import subsystem
+
+# import sensors
+# import subsystem
 import utils
 from oi.OI import OI
+
+# import constants
+from robot_systems import PowerDistribution  # noqa
+from robot_systems import Field, LEDs, Pneumatics, Robot, Sensors  # noqa
+from toolkit.subsystem import Subsystem
 
 
 class _Robot(wpilib.TimedRobot):
@@ -20,16 +26,20 @@ class _Robot(wpilib.TimedRobot):
         self.log = utils.LocalLogger("Robot")
         self.nt = ntcore.NetworkTableInstance.getDefault()
         self.scheduler = commands2.CommandScheduler.getInstance()
+        self.color = DriverStation.Alliance.kRed
 
     def robotInit(self):
         # self.log._robot_log_setup()
         # Initialize Operator Interface
-        if config.DEBUG_MODE == True:
+        if config.DEBUG_MODE:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
         OI.init()
         OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
+
+        Field.flip_poses()
+        Field.update_field_table("Field")
         self.log.info(f"Scheduler period set to {period} seconds")
 
         # Initialize subsystems
@@ -43,7 +53,8 @@ class _Robot(wpilib.TimedRobot):
             )
 
             # sensors: list = list(
-            #     {k: v for k, v in Sensors.__dict__.items() if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
+            #     {k: v for k, v in Sensors.__dict__.items()
+            #       if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
             # )
 
             for subsystem in subsystems:
@@ -52,7 +63,7 @@ class _Robot(wpilib.TimedRobot):
             # for sensor in sensors:
             #     sensor.init()
 
-        if config.DEBUG_MODE == False:
+        if not config.DEBUG_MODE:
             try:
                 init_subsystems()
             except Exception as e:
@@ -70,10 +81,25 @@ class _Robot(wpilib.TimedRobot):
         ...
 
     def robotPeriodic(self):
+        table = ntcore.NetworkTableInstance.getDefault().getTable("Color")
+        table.putValue("self.color", self.color)
+
+        fms_table = ntcore.NetworkTableInstance.getDefault().getTable("FMSInfo")
+        is_red = fms_table.getBoolean("IsRedAlliance", True)
+        if is_red:
+            color_now = DriverStation.Alliance.kRed
+        else:
+            color_now = DriverStation.Alliance.kBlue
+
+        # current_alliance = DriverStation.getAlliance()
+        if not color_now == self.color:
+            Field.flip_poses()
+            self.color = color_now
+            Field.update_field_table()
         if self.isSimulation():
             wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
-        if config.DEBUG_MODE == False:
+        if not config.DEBUG_MODE:
             try:
                 self.scheduler.run()
             except Exception as e:
@@ -86,7 +112,6 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("command scheduler", str(e))
                 raise e
-            
 
         Robot.drivetrain.update_tables()
         ...
@@ -97,10 +122,12 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self):
         self.log.info("Teleop initialized")
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain),
-            command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+        self.scheduler.schedule(
+            commands2.SequentialCommandGroup(
+                command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain),
+            )
+        )
 
     def teleopPeriodic(self):
         pass
