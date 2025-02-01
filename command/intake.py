@@ -66,8 +66,7 @@ class PivotIntake(SubsystemCommand[Intake]):
         pass
 
     def isFinished(self) -> bool:
-        if self.subsystem.is_pivot_up() == self.subsystem.target_intake_position:
-            return True
+        return self.subsystem.is_pivot_up() == self.subsystem.target_intake_position
 
     def end(self, interrupted) -> None:
         self.subsystem.intake_pivoting = False

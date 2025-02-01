@@ -33,7 +33,7 @@ class FeedIn(SubsystemCommand[Wrist]):
     run the feed intake in until there is coral detected in the feed
     checks if the current is over the threshold for a period of time
     """
-    def __init__(self, subsystem: Wrist, angle: radians):
+    def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
 
@@ -67,7 +67,7 @@ class FeedOut(SubsystemCommand[Wrist]):
     """
     run the feed out until coral is no longer detected in the feed
     """
-    def __init__(self, subsystem: Wrist, angle: radians):
+    def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
 

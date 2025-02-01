@@ -136,9 +136,10 @@ class TargetData:
     wrist_angle: radians
 
     intake_enabled: bool
-    intake_running: bool
+    intake_on: bool
 
-    extake_running: bool
+    extake_feed_on: bool
+    extake_score_on: bool
 
 
 target_positions: dict[str, TargetData] = {
@@ -149,8 +150,9 @@ target_positions: dict[str, TargetData] = {
         elevator_height=0,
         wrist_angle=0,
         intake_enabled=True,
-        intake_running=False,
-        extake_running=False
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=False
     ),
 
     "STATION_INTAKING": TargetData(
@@ -158,8 +160,9 @@ target_positions: dict[str, TargetData] = {
         elevator_height=0,
         wrist_angle=0,
         intake_enabled=True,
-        intake_running=True,
-        extake_running=False
+        intake_on=True,
+        extake_feed_on=True,
+        extake_score_on=False
     ),
 
     "LOW": TargetData(
@@ -167,8 +170,9 @@ target_positions: dict[str, TargetData] = {
         elevator_height=0,
         wrist_angle=0,
         intake_enabled=False,
-        intake_running=False,
-        extake_running=True
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
     ),
 
     "MID": TargetData(
@@ -176,8 +180,9 @@ target_positions: dict[str, TargetData] = {
         elevator_height=0,
         wrist_angle=0,
         intake_enabled=False,
-        intake_running=False,
-        extake_running=True
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
     ),
 
     "HIGH": TargetData(
@@ -185,7 +190,8 @@ target_positions: dict[str, TargetData] = {
         elevator_height=0,
         wrist_angle=0,
         intake_enabled=False,
-        intake_running=False,
-        extake_running=True
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
     )
 }
