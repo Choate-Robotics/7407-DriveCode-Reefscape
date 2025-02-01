@@ -42,6 +42,13 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio
 
+
 # intake
 intake_pivot_gear_ratio: float = 1  # placeholder
 intake_gear_ratio: float = 1  # placeholder
+
+#elevator
+elevator_gear_ratio = 1 #placeholder
+elevator_driver_gear_circumference = 1 #placeholder
+elevator_max_height = 2.5 #placeholder
+
