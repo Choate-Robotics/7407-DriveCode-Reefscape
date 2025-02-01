@@ -26,7 +26,10 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  #foc for TalonFX requires paid subscription
 
+# DEBUGGING NETWORK TABLES
+NT_INTAKE = False
 NT_ELEVATOR: bool = False
+
 
 #Drivetrain
 gyro_id: int = 13
@@ -79,7 +82,35 @@ MOVE_CONFIG = TalonConfig(
     kV=0.12
 )
 
+
+#intake
+intake_id = 9
+INTAKE_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+
+intake_pivot_id = 10
+INTAKE_PIVOT_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+
+intake_max_angle = math.radians(90)
+intake_min_angle = math.radians(60)
+intake_angle_threshold = math.radians(5)
+
+intake_speed = 1 #placeholder
+intake_eject_speed = 1 #placeholder
+
 #elevator
 elevator_lead_id = 10 
 elevator_follower_id = 11
 magsensor_id = 12 #placeholder
+
