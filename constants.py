@@ -59,6 +59,7 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 wrist_gear_ratio = 10  # placeholder
 
 # intake
+intake_pivot_gear_ratio: float = 1  # placeholder
 intake_gear_ratio: float = 1  # placeholder
 
 #elevator

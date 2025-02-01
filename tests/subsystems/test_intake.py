@@ -41,7 +41,7 @@ def test_roll_in(intake: Intake):
 def test_roll_out(intake: Intake):
     intake.roll_out()
     intake.motor.set_raw_output.assert_called_with(
-        -config.intake_eject_speed * constants.intake_gear_ratio
+        config.intake_eject_speed * constants.intake_gear_ratio
     )
 
 
