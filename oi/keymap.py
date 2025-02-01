@@ -34,12 +34,13 @@ class Keymap:
         X_MODE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
         )
+    class Scoring:
+        # to be filled in later
+        LOW = commands2.button.JoystickButton()
+        MID = commands2.button.JoystickButton()
+        HIGH = commands2.button.JoystickButton()
+    
     class Intake:
-        # to be filled in later
-        INTAKE_IN = commands2.button.JoystickButton()
-        INTAKE_OUT = commands2.button.JoystickButton()
-        INTAKE_PIVOT = commands2.button.JoystickButton()
-    class Wrist:
-        # to be filled in later
-        WRIST_SET_ANGLE = commands2.button.JoystickButton()
+        INTAKE_CORAL = commands2.button.JoystickButton()
+        
         
