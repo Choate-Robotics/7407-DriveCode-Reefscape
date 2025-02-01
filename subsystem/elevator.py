@@ -1,11 +1,11 @@
 import ntcore
+from wpilib import DigitalInput
 
 import config
 import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 from units.SI import meters
-from wpilib import DigitalInput
 
 
 class Elevator(Subsystem):
@@ -31,7 +31,7 @@ class Elevator(Subsystem):
         self.magsensor = DigitalInput(config.magsensor_id)
 
     @staticmethod
-    def limit_height(height: meters):
+    def limit_height(height: meters) -> meters:
         """
         limits the height of the elevator to both a max and min
         """
@@ -41,7 +41,7 @@ class Elevator(Subsystem):
             return 0.0
         return height
 
-    def set_position(self, height):
+    def set_position(self, height) -> None:
         """
         Brings the elevator to given height
 
@@ -51,30 +51,31 @@ class Elevator(Subsystem):
         height = self.limit_height(height)
         self.target_height = height
 
-        self.rotations = (
+        rotations = (
             height * constants.elevator_gear_ratio
         ) / constants.elevator_driver_gear_circumference
-        self.leader_motor.set_target_position(self.rotations)
+        self.leader_motor.set_target_position(rotations)
 
-    def set_elevator_climb_down(self):
+    def set_elevator_climb_down(self) -> None:
         """
         Moves the elevator down
+        Used primarily for zeroing the elevator
         """
-        self.leader_motor.set_raw_output(-.25)
+        self.leader_motor.set_raw_output(-0.25)
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Stops the elevator
         """
         self.leader_motor.set_raw_output(0)
 
-    def set_zero(self):
+    def set_zero(self) -> None:
         """
         Brings the elevator to the zero position
         """
         self.set_position(0)
 
-    def get_position(self) -> float:
+    def get_position(self) -> meters:
         """
         Obtains the current height of the elevator
 
@@ -87,7 +88,7 @@ class Elevator(Subsystem):
             / constants.elevator_gear_ratio
         )
 
-    def zero(self):
+    def zero(self) -> None:
         """
         Tells the elevator that its position is at zero
         """
@@ -104,8 +105,8 @@ class Elevator(Subsystem):
         # Rounding to make sure it's not too precise (will cause err)
         return round(self.get_position(), 2) == round(height, 2)
 
-    def update_network_table(self):
-        table = ntcore.NetworkTableInstance.getDefault().getTable("elevator")
+    def update_table(self) -> None:
+        table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
 
         table.putNumber("height", self.get_position())
         table.putBoolean("zeroed", self.zeroed)
@@ -119,4 +120,4 @@ class Elevator(Subsystem):
 
     def periodic(self):
         if config.NT_ELEVATOR:
-            self.update_network_table()
+            self.update_table()

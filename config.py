@@ -114,7 +114,7 @@ current_time_threshold = 0.3  # seconds PLACEHOLDER
 # ELEVATOR
 elevator_lead_id = 10
 elevator_follower_id = 11
-
+magsensor_id = 0
 
 
 # INTAKE
