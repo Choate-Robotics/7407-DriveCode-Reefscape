@@ -26,6 +26,8 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  #foc for TalonFX requires paid subscription
 
+NT_ELEVATOR: bool = False
+
 #Drivetrain
 gyro_id: int = 13
 
@@ -76,3 +78,8 @@ MOVE_CONFIG = TalonConfig(
     current_limit=40,
     kV=0.12
 )
+
+#elevator
+elevator_lead_id = 10 
+elevator_follower_id = 11
+magsensor_id = 12 #placeholder
