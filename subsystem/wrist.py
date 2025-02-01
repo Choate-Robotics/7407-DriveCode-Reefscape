@@ -33,7 +33,9 @@ class Wrist(Subsystem):
 
         self.wrist_angle: radians = 0
         self.target_angle: radians = 0
-        self.wrist_moving: bool = False
+        self.wrist_angle_moving: bool = False
+        self.wrist_feeding: bool = False
+        self.wrist_ejecting: bool = False
         self.coral_in_feed: bool = False
         self.wrist_zeroed: bool = False
 
@@ -135,7 +137,9 @@ class Wrist(Subsystem):
 
         self.table.putNumber('wrist angle', math.degrees(self.get_wrist_angle()))
         self.table.putNumber('target angle', math.degrees(self.target_angle))
-        self.table.putBoolean('wrist moving', self.wrist_moving)
+        self.table.putBoolean('wrist moving', self.wrist_angle_moving)
+        self.table.putBoolean('wrist feeding', self.wrist_feeding)
+        self.table.putBoolean('wrist ejecting', self.wrist_ejecting)
         self.table.putNumber('feed current', self.feed_motor.get_motor_current())
         self.table.putBoolean('wrist zeroed', self.wrist_zeroed)
 
