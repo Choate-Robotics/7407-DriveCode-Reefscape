@@ -1,6 +1,7 @@
 from units.SI import radians
 from wpilib import AnalogEncoder
-from toolkit.motors.ctre_motors import TalonConfig
+from toolkit.motors.ctre_motors import TalonConfig, CTREEncoder
+from phoenix6.hardware.cancoder import CANcoder
 import math
 
 
@@ -33,29 +34,29 @@ gyro_id: int = 13
 
 front_left_move_id: int = 2
 front_left_turn_id: int = 1
-front_left_encoder_port: AnalogEncoder = AnalogEncoder(0)
 front_left_encoder_zeroed_pos: float = 0.362
+front_left_encoder_port: CTREEncoder = CTREEncoder(0, front_left_encoder_zeroed_pos)
 front_left_turn_inverted = False
 front_left_move_inverted = False
 
 front_right_move_id: int = 4
 front_right_turn_id: int = 3
-front_right_encoder_port: AnalogEncoder = AnalogEncoder(1)
 front_right_encoder_zeroed_pos: float = 0.034
+front_right_encoder_port: CTREEncoder = CTREEncoder(1, front_right_encoder_zeroed_pos)
 front_right_turn_inverted = False
 front_right_move_inverted = False
 
 back_left_move_id: int = 8
 back_left_turn_id: int = 7
-back_left_encoder_port: AnalogEncoder = AnalogEncoder(3)
 back_left_encoder_zeroed_pos: float = 0.735
+back_left_encoder_port: CTREEncoder = CTREEncoder(3, back_left_encoder_zeroed_pos)
 back_left_turn_inverted = False
 back_left_move_inverted = False
 
 back_right_move_id: int = 6
 back_right_turn_id: int = 5
-back_right_encoder_port: AnalogEncoder = AnalogEncoder(2)
 back_right_encoder_zeroed_pos: float = 0.713
+back_right_encoder_port: CTREEncoder = CTREEncoder(2, back_right_encoder_zeroed_pos)
 back_right_turn_inverted = False
 back_right_move_inverted = False
 

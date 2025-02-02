@@ -7,16 +7,17 @@ from toolkit.utils.toolkit_math import rotate_vector, bounded_angle_diff
 from units.SI import meters, meters_per_second, \
     radians_per_second, radians
 from wpilib import TimedRobot
-from toolkit.motors.ctre_motors import TalonFX
+from toolkit.motors.ctre_motors import TalonFX, CTREEncoder
 from wpilib import AnalogEncoder
 import constants
 import ntcore
+from phoenix6.hardware.cancoder import CANcoder
 
 class SwerveNode:
     """
     Swerve node class
     """
-    def __init__(self, move: TalonFX, turn: TalonFX, encoder: AnalogEncoder, absolute_encoder_zeroed_pos: float, name: str):
+    def __init__(self, move: TalonFX, turn: TalonFX, encoder: CTREEncoder, absolute_encoder_zeroed_pos: float, name: str):
         self.m_move = move
         self.m_turn = turn
         self.encoder = encoder
@@ -29,6 +30,7 @@ class SwerveNode:
         self.sim_motor_speed: meters_per_second = 0
         self.sim_motor_angle: radians = 0
         self.nt = ntcore.NetworkTableInstance.getDefault().getTable("Pods")
+
 
     def init(self):
         """
@@ -233,3 +235,12 @@ class SwerveNode:
 
         self.nt.putNumber(f"{self.name} target velocity", self.get_target_velocity())
         self.nt.putNumber(f"{self.name} current velocity", self.get_motor_velocity())
+
+    def getSimulator(
+            self,
+    ):
+        return (
+            self.m_move.getSimCollection,
+            self.m_turn.getSimCollection,
+            self.encoder.getSim,
+        )

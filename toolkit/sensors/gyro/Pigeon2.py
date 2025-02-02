@@ -17,6 +17,7 @@ class Pigeon2(BaseGyro):
         """
         self._gyro = phoenix6.hardware.Pigeon2(port)
 
+
     def init(self, gyro_start_angle=0):
         """
         Initialize gyro

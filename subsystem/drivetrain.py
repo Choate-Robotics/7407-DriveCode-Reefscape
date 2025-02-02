@@ -3,7 +3,8 @@ from __future__ import annotations
 import math
 import config
 import constants
-
+from wpilib import ADIS16470_IMU, Encoder
+from wpilib.simulation import EncoderSim, AnalogGyroSim
 from wpilib import TimedRobot, DriverStation
 from wpimath.geometry import Rotation2d, Pose2d, Translation2d
 from wpimath.kinematics import SwerveDrive4Odometry, SwerveDrive4Kinematics, SwerveModuleState, ChassisSpeeds, \
@@ -244,6 +245,20 @@ class Drivetrain(Subsystem):
 
     def periodic(self):
         pass
+    #
+    # def simulationPeriodic(self):
+    #     """Update simulated odometry based on motor speeds."""
+    #     speeds = [module.getState().speed for module in self.module_sims]
+    #     angles = [module.getState().angle for module in self.module_sims]
+    #
+    #     # Convert module speeds into robot movement
+    #     chassis_speeds = self.kinematics.toChassisSpeeds(*zip(speeds, angles))
+    #
+    #     # Update the simulated odometry
+    #     self.odometry.update(self.gyro_sim.getAngle(), *self.module_sims)
+    #
+    #     # Update field visualization
+    #     self.field.setRobotPose(self.odometry.getPose())
 
     def stop(self):
         """
@@ -349,7 +364,7 @@ class Drivetrain(Subsystem):
     #     return DriverStation.getAlliance() == DriverStation.Alliance.kRed
     
     def update_tables(self):
-        self.nt.putNumberArray("encoder poses", self.get_abs())
+        #self.nt.putNumberArray("encoder poses", self.get_abs())
         n_states = self.node_states
 
         self.nt.putNumberArray('Node States', [
