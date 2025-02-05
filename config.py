@@ -165,7 +165,7 @@ target_positions: dict[str, TargetData] = {
         extake_score_on=False
     ),
 
-    "LOW": TargetData(
+    "L1": TargetData(
         target_pose=None,
         elevator_height=0,
         wrist_angle=0,
@@ -175,7 +175,7 @@ target_positions: dict[str, TargetData] = {
         extake_score_on=True
     ),
 
-    "MID": TargetData(
+    "L2": TargetData(
         target_pose=None,
         elevator_height=0,
         wrist_angle=0,
@@ -185,7 +185,17 @@ target_positions: dict[str, TargetData] = {
         extake_score_on=True
     ),
 
-    "HIGH": TargetData(
+    "L3": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
+    ),
+
+    "L4": TargetData(
         target_pose=None,
         elevator_height=0,
         wrist_angle=0,
