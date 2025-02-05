@@ -37,9 +37,9 @@ class Keymap:
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X)
     class Intake:
         INTAKE_CORAL = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.Trigger_Threshold)
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold)
         EXTAKE_CORAL = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.Trigger_Threshold)
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold)
         INTAKE_ALGAE = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.RB)
         EXTAKE_ALGAE = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.LB)
         REMOVE_ALGAE = commands2.button.Trigger(
@@ -50,7 +50,7 @@ class Keymap:
         SCORE_L2 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.A)
         SCORE_L3 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.X)
         SCORE_L4 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.Y)
-    class climb:
+    class Climb:
         CLIMB_UNLOCK = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.START)
         CLIMB = commands2.button.JoystickButton(Controllers.DRIVER, controllerOPERATOR.START)
     class Elevator:

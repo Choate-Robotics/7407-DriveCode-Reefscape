@@ -85,4 +85,4 @@ elevator_follower_id = 11
 magsensor_id = 12 #placeholder
 
 #keymap
-Trigger_Threshold = 0.4 #placeholder
+trigger_threshold = 0.4 #placeholder
