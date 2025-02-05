@@ -42,7 +42,7 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold
         )
 
-        EXTAKE_CORAL = commands2.button.Trigger(
+        EJECT_CORAL = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold
         )
 
@@ -52,9 +52,6 @@ class Keymap:
 
         EXTAKE_ALGAE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
-        )
-        REMOVE_ALGAE = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getPOV == 0
         )
     class Scoring:
         SCORE_L1 = commands2.button.JoystickButton(
@@ -75,6 +72,14 @@ class Keymap:
         CLIMB = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.START
         )
+
+    class Wrist:
+        REMOVE_ALGAE = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV == 0
+        )
+        EXTAKE_CORAL = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.A
+        ) 
     class Elevator:
         REZERO_ELEVATOR = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
