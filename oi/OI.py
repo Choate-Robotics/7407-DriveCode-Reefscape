@@ -21,6 +21,6 @@ class OI:
             .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Scoring.SCORE_L1.onTrue(
-            commands2.command.target.TargetCommand("L1")
+            command.target.Target(Robot.elevator, Robot.wrist, Robot.intake, Robot.target_positions["L1"])
         )
-        )
+
