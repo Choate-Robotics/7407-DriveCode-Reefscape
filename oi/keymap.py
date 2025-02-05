@@ -1,6 +1,8 @@
 import wpilib
 import commands2.button
 
+import config
+
 from toolkit.oi import (
     XBoxController,
     LogitechController,
@@ -32,15 +34,26 @@ class Keymap:
             lambda: Controllers.DRIVER_CONTROLLER.getPOV() == 180
         )
         X_MODE = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X)
+    class Intake:
+        INTAKE_CORAL = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.Trigger_Threshold)
+        EXTAKE_CORAL = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.Trigger_Threshold)
+        INTAKE_ALGAE = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.RB)
+        EXTAKE_ALGAE = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.LB)
+        REMOVE_ALGAE = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV == 0
         )
     class Scoring:
-        # to be filled in later
-        LOW = commands2.button.JoystickButton()
-        MID = commands2.button.JoystickButton()
-        HIGH = commands2.button.JoystickButton()
-    
-    class Intake:
-        INTAKE_CORAL = commands2.button.JoystickButton()
-        
-        
+        SCORE_L1 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.B)
+        SCORE_L2 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.A)
+        SCORE_L3 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.X)
+        SCORE_L4 = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.Y)
+    class climb:
+        CLIMB_UNLOCK = commands2.button.JoystickButton(Controllers.OPERATOR, controllerOPERATOR.START)
+        CLIMB = commands2.button.JoystickButton(Controllers.DRIVER, controllerOPERATOR.START)
+    class Elevator:
+        REZERO_ELEVATOR = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
+        )

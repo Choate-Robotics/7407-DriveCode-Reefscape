@@ -83,3 +83,6 @@ MOVE_CONFIG = TalonConfig(
 elevator_lead_id = 10 
 elevator_follower_id = 11
 magsensor_id = 12 #placeholder
+
+#keymap
+Trigger_Threshold = 0.4 #placeholder
