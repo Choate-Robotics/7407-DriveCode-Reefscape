@@ -34,25 +34,47 @@ class Keymap:
             lambda: Controllers.DRIVER_CONTROLLER.getPOV() == 180
         )
         X_MODE = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X)
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
+        )
+
     class Intake:
         INTAKE_CORAL = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold)
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold
+        )
+
         EXTAKE_CORAL = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold)
-        INTAKE_ALGAE = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.RB)
-        EXTAKE_ALGAE = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB)
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold
+        )
+
+        INTAKE_ALGAE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.RB
+        )
+
+        EXTAKE_ALGAE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
+        )
         REMOVE_ALGAE = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV == 0
         )
     class Scoring:
-        SCORE_L1 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B)
-        SCORE_L2 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.A)
-        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X)
-        SCORE_L4 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y)
+        SCORE_L1 = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
+        )
+        SCORE_L2 = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.A
+        )
+        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X
+        )
+        SCORE_L4 = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y
+        )
     class Climb:
-        CLIMB_UNLOCK = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START)
-        CLIMB = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.START)
+        CLIMB_UNLOCK = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
+        )
+        CLIMB = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.START
+        )
     class Elevator:
         REZERO_ELEVATOR = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
