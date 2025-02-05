@@ -76,3 +76,8 @@ MOVE_CONFIG = TalonConfig(
     current_limit=40,
     kV=0.12
 )
+
+#Leds
+leds_id = 0 #placeholder
+leds_size = 28 #placeholder
+
