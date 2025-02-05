@@ -5,6 +5,8 @@ import wpilib
 
 class Robot:
     drivetrain = subsystem.Drivetrain()
+    intake = subsystem.Intake()
+    wrist = subsystem.Wrist()
 
 
 class Pneumatics:
