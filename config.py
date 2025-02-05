@@ -1,8 +1,11 @@
-from units.SI import radians
-from wpilib import AnalogEncoder
-from toolkit.motors.ctre_motors import TalonConfig
 import math
+from dataclasses import dataclass
+from wpilib import AnalogEncoder
 
+from toolkit.motors.ctre_motors import TalonConfig
+from units.SI import radians, meters
+
+from wpimath.geometry import Pose2d
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
@@ -24,9 +27,12 @@ LOG_FILE_LEVEL: int = 1
 # anything else will log nothing
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-foc_active = False  #foc for TalonFX requires paid subscription
+foc_active = False  # foc for TalonFX requires paid subscription
 
+# DEBUGGING NETWORK TABLES
+NT_INTAKE = False
 NT_ELEVATOR: bool = False
+
 
 #Drivetrain
 gyro_id: int = 13
@@ -65,24 +71,137 @@ drivetrain_curve: float = 2
 drivetrain_zero: radians = math.radians(180)
 
 TURN_CONFIG = TalonConfig(
-    .9, 0, 0, 0, 0, brake_mode=True,
+    0.9,
+    0,
+    0,
+    0,
+    0,
+    brake_mode=True,
 )
 
 MOVE_CONFIG = TalonConfig(
-    0.11,
-    0,
-    0,
-    0.25,
-    0.01,
-    brake_mode=True,
-    current_limit=40,
-    kV=0.12
+    0.11, 0, 0, 0.25, 0.01, brake_mode=True, current_limit=40, kV=0.12
 )
 
-#elevator
-elevator_lead_id = 10 
-elevator_follower_id = 11
-magsensor_id = 12 #placeholder
 
-#keymap
-trigger_threshold = 0.4 #placeholder
+
+# WRIST
+wrist_feed_id = 10
+wrist_id = 9
+wrist_cancoder_id = 11
+
+WRIST_FEED_CONFIG = TalonConfig(
+    1,
+    0,
+    0,
+    0,
+    0
+)
+
+WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+
+wrist_max_angle = 2 * math.pi
+wrist_min_angle = 0 * math.pi
+
+angle_threshold = math.radians(2)  # radians
+out_current_threshold = 2  # amps PLACEHOLDER
+back_current_threshold = 10  # amps PLACEHOLDER
+current_time_threshold = 0.3  # seconds PLACEHOLDER
+
+
+
+# ELEVATOR
+elevator_lead_id = 10
+elevator_follower_id = 11
+magsensor_id = 0
+
+
+# INTAKE
+intake_id = 9
+intake_pivot_id = 0
+
+INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+INTAKE_PIVOT_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+
+intake_speed = 1  # placeholder
+intake_eject_speed = -1  # placeholder
+
+
+
+# SCORING POSITIONS
+@dataclass
+class TargetData:
+    target_pose: Pose2d | None
+    elevator_height: meters
+    wrist_angle: radians
+
+    intake_enabled: bool
+    intake_on: bool
+
+    extake_feed_on: bool
+    extake_score_on: bool
+
+
+target_positions: dict[str, TargetData] = {
+    # ALL PLACEHOLDERS
+
+    "IDLE": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=True,
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=False
+    ),
+
+    "STATION_INTAKING": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=True,
+        intake_on=True,
+        extake_feed_on=True,
+        extake_score_on=False
+    ),
+
+    "L1": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
+    ),
+
+    "L2": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
+    ),
+
+    "L3": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
+    ),
+
+    "L4": TargetData(
+        target_pose=None,
+        elevator_height=0,
+        wrist_angle=0,
+        intake_enabled=False,
+        intake_on=False,
+        extake_feed_on=False,
+        extake_score_on=True
+    )
+}
