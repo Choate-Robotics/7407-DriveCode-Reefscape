@@ -21,5 +21,11 @@ class OI:
         
         #INTAKE
         Keymap.Intake.INTAKE_CORAL.whileTrue(
-            command.
-        )
+            command.RunIntake(Robot.intake))
+        
+        Keymap.Intake.EJECT_CORAL.whileTrue(
+            command.EjectIntake(Robot.intake))
+        
+        #WRIST
+        Keymap.Wrist.EXTAKE_CORAL.whileTrue(
+            command.FeedOut(Robot.wrist))
