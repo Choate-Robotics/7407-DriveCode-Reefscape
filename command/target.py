@@ -9,18 +9,14 @@ import command
 import commands2
 from commands2 import SequentialCommandGroup, ParallelCommandGroup, InstantCommand
 
-class Target(SubsystemCommand[Elevator]):
+class Target(commands2.Command):
     def __init__(
         self,
         elevator: Elevator,
         wrist: Wrist,
         intake: Intake,
         target: TargetData
-    ):
-        super().__init__(elevator)
-        super().addRequirements(wrist)
-        super().addRequirements(intake)
-        
+    ):  
         self.elevator = elevator
         self.wrist = wrist
         self.intake = intake
