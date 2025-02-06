@@ -56,10 +56,10 @@ class Field:
 
     @staticmethod
     def flip_poses():
-        #print("Flipping Pos")
+        print("Flipping Pos")
         flip_poses()
 
     @staticmethod
-    def update_field_table():
-        #print("Updating Table")
+    def update_field_table(debug=False):
+        print("Updating Table")
         update_table(Field.nt_reporter, False)

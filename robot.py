@@ -1,16 +1,27 @@
 import commands2
 import wpilib.drive
 from toolkit.subsystem import Subsystem
+
 import phoenix6 as ctre
 import ntcore
 import wpilib
 import command
 import math
 import config
-import constants
-from robot_systems import Robot, Pneumatics, Sensors, LEDs, PowerDistribution, Field
-import sensors
-import subsystem
+
+# import constants
+from robot_systems import (  # noqa
+    Robot,
+    Pneumatics,
+    Sensors,
+    LEDs,
+    PowerDistribution,
+    Field,
+)
+from wpilib import DriverStation
+
+# import sensors
+# import subsystem
 import utils
 from oi.OI import OI
 from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
@@ -32,10 +43,13 @@ class _Robot(wpilib.TimedRobot):
     def robotInit(self):
         self.log._robot_log_setup()
         # Initialize Operator Interface
-        if config.DEBUG_MODE == True:
+        if config.DEBUG_MODE:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
         period = config.period
         self.scheduler.setPeriod(period)
+
+        Field.flip_poses()
+        Field.update_field_table("Field")
         self.log.info(f"Scheduler period set to {period} seconds")
 
         # Initialize subsystems
@@ -49,7 +63,8 @@ class _Robot(wpilib.TimedRobot):
             )
 
             # sensors: list = list(
-            #     {k: v for k, v in Sensors.__dict__.items() if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
+            #     {k: v for k, v in Sensors.__dict__.items()
+            #       if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
             # )
 
             for subsystem in subsystems:
@@ -58,7 +73,7 @@ class _Robot(wpilib.TimedRobot):
             # for sensor in sensors:
             #     sensor.init()
 
-        if config.DEBUG_MODE == False:
+        if not config.DEBUG_MODE:
             try:
                 init_subsystems()
             except Exception as e:
@@ -79,6 +94,9 @@ class _Robot(wpilib.TimedRobot):
         ...
 
     def robotPeriodic(self):
+        table = ntcore.NetworkTableInstance.getDefault().getTable("Color")
+        table.putValue("self.color", self.color)
+
         fms_table = ntcore.NetworkTableInstance.getDefault().getTable("FMSInfo")
         is_red = fms_table.getBoolean("IsRedAlliance", True)
         if is_red:
@@ -94,7 +112,7 @@ class _Robot(wpilib.TimedRobot):
         if self.isSimulation():
             wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
-        if config.DEBUG_MODE == False:
+        if not config.DEBUG_MODE:
             try:
                 self.scheduler.run()
             except Exception as e:

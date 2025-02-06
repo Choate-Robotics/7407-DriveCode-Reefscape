@@ -3,11 +3,9 @@ from wpimath.geometry import Transform3d, Translation3d, Rotation3d
 import math
 from units.SI import (
     degrees_per_second__to__radians_per_second,
-    feet_to_meters,
     inches_to_meters,
     meters,
     rotations_per_minute,
-    degrees_to_radians,
     meters_per_second_squared,
 )
 
@@ -34,7 +32,7 @@ reef_scoring_distance = drivetrain_length_with_bumpers / 2 + 2 * inches_to_meter
 
 
 drivetrain_move_motor_free_speed: rotations_per_minute = (
-    6000 #6000 is the free speed RPM of the Kraken without FOC
+    6000  # 6000 is the free speed RPM of the Kraken without FOC
 )
 
 drivetrain_wheel_diameter: meters = (
@@ -43,10 +41,12 @@ drivetrain_wheel_diameter: meters = (
  
 
 drivetrain_max_vel: meters = (
-    ((drivetrain_move_motor_free_speed / 60) / drivetrain_wheel_gear_ratio) * (drivetrain_wheel_diameter * math.pi)
-    )
+    (drivetrain_move_motor_free_speed / 60) / drivetrain_wheel_gear_ratio
+) * (drivetrain_wheel_diameter * math.pi)
 # drivetrain_max_vel = 5.4 m/s, 17.7 ft/s, 12.1 mph
-drivetrain_max_accel: meters_per_second_squared = 0 # setting to 0 will set to default motor accel
+drivetrain_max_accel: meters_per_second_squared = (
+    0  # setting to 0 will set to default motor accel
+)
 drivetrain_max_angular_vel = 720 * degrees_per_second__to__radians_per_second
 drivetrain_max_angular_accel = 720 * degrees_per_second__to__radians_per_second
 
