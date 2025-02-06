@@ -114,9 +114,9 @@ class Wrist(Subsystem):
         returns angle in radians
         """
         return (
-                (self.wrist_motor.get_sensor_position() / constants.wrist_gear_ratio)
-                * pi
-                * 2
+            (self.wrist_motor.get_sensor_position() / constants.wrist_gear_ratio)
+            * pi
+            * 2
         )
         
 

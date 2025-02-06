@@ -26,6 +26,8 @@ class Intake(Subsystem):
             config=config.INTAKE_PIVOT_CONFIG,
         )
         self.intake_running: bool = False
+        self.intake_rolling_in: bool = False
+        self.intake_rolling_out: bool = False
 
         self.pivot_angle = math.radians(90)
         self.intake_pivoting: bool = False
@@ -44,6 +46,8 @@ class Intake(Subsystem):
         """
         self.motor.set_raw_output(config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
+        self.intake_rolling_in = True
+        self.intake_rolling_out = False
 
     def stop(self) -> None:
         """
@@ -51,6 +55,8 @@ class Intake(Subsystem):
         """
         self.motor.set_raw_output(0)
         self.intake_running = False
+        self.intake_rolling_in = False
+        self.intake_rolling_out = False
 
     def roll_out(self) -> None:
         """
@@ -58,6 +64,8 @@ class Intake(Subsystem):
         """
         self.motor.set_raw_output(-config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
+        self.intake_rolling_in = False
+        self.intake_rolling_out = True
 
     def get_current(self) -> float:
         return self.motor.get_motor_current()

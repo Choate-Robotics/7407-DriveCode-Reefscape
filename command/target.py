@@ -38,34 +38,45 @@ class Target(SubsystemCommand[Elevator]):
         # INTAKE
         self.intake_command = ParallelCommandGroup()
 
+        # Enabling
         if self.target.intake_enabled and not self.intake.intake_up:
-            self.intake_command.addCommands(*[command.PivotIntake])
-        if self.target.intake_on and not self.intake.intake_running:
-            self.intake_command.addCommands(*[command.RunIntake])
+            self.intake_command.addCommands(*[command.PivotIntake(self.intake)])
+
+        # Running
+        if self.target.intake_in_run and not self.intake.intake_rolling_in:
+            self.intake_command.addCommands(*[command.RunIntake(self.intake)])
+        elif self.target.intake_out_run and not self.intake.intake_rolling_out:
+            self.intake_command.addCommands(*[command.EjectIntake(self.intake)])
 
         
         # ELEVATOR
+        # TODO: Check if elevator is already at height and if elevator is moving
         self.elevator_command = command.SetElevator(
             self.elevator, 
             elevator_height
         )
 
+
         # WRIST
+        # TODO: Double check logic of wrist to avoid collisions
         self.wrist_command = SequentialCommandGroup()
 
-        # this prolly gonna cause issues, will revisit
+        # Pivot
         if not self.wrist.wrist_angle_moving:
-            self.wrist_command.addCommands(*[command.SetWrist(
-                self.wrist,
-                wrist_angle
-            )])
+            self.wrist_command.addCommands(*[
+                command.SetWrist(
+                    self.wrist,
+                    wrist_angle
+                )
+            ])
 
-        # this prolly also gonna cause issues
-        if self.target.extake_feed_on and not self.wrist.wrist_feeding:
+        # Feed
+        if self.target.wrist_feed_on and not self.wrist.wrist_feeding:
             self.wrist_command.addCommands(*[command.FeedIn(self.wrist)])
-        elif self.target.extake_score_on and not self.wrist.wrist_ejecting:
+        elif self.target.wrist_score_on and not self.wrist.wrist_ejecting:
             self.wrist_command.addCommands(*[command.FeedOut(self.wrist)])
 
+        # this is very subject to change
         commands2.CommandScheduler.getInstance()(
             SequentialCommandGroup(
                 ParallelCommandGroup(
