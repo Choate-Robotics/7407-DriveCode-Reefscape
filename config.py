@@ -214,5 +214,28 @@ target_positions: dict[str, TargetData] = {
         intake_enabled=False,
         intake_in_run=False,
         intake_out_run=False
+    ),
+
+    "INTAKE_ALGAE": TargetData(
+        elevator_height=0,
+        wrist_angle=0,
+        wrist_feed_on=False,
+        wrist_score_on=False,
+        intake_enabled=True,
+        intake_in_run=True,
+        intake_out_run=False,
+        intaking_algae=True
+    ),
+
+    "Extake_Algae": TargetData(
+        elevator_height=0,
+        wrist_angle=0,
+        wrist_feed_on=False,
+        wrist_score_on=False,
+        intake_enabled=True,
+        intake_in_run=False,
+        intake_out_run=True,
+        intaking_algae=False
     )
+
 }
