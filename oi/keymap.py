@@ -34,3 +34,12 @@ class Keymap:
         X_MODE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
         )
+        DRIVE_TO_RIGHT_POSE = commands2.button.Trigger(
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.RT) > 0.4
+        )
+        DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > 0.4
+        )
+        RESET_POSE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B
+        )

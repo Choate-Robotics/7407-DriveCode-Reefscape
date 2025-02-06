@@ -14,12 +14,13 @@ class SetElevator(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: Elevator, height: meters):
         super().__init__(subsystem)
         self.height: meters = height
+        self.subsystem = subsystem
 
     def initialize(self):
         
         self.height = self.subsystem.limit_height(self.height)
 
-        self.subsystem.set_position(self.height,0)
+        self.subsystem.set_position(self.height, 0)
         self.subsystem.elevator_moving = True
 
     def execute(self):
@@ -37,6 +38,7 @@ class SetElevator(SubsystemCommand[Elevator]):
 class ZeroElevator(SubsystemCommand[Elevator]):
     def __init__(self, subsystem: Elevator):
         super().__init__(subsystem)
+        self.subsystem = subsystem
 
     def initialize(self):
         self.subsystem.set_elevator_climb_down()

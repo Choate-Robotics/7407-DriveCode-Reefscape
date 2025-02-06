@@ -23,6 +23,7 @@ class Elevator(Subsystem):
 
         self.zeroed: bool = False
         self.target_height: meters = 0.0
+        self.elevator_moving = False
 
     def init(self):
         self.leader_motor.init()

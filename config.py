@@ -1,7 +1,11 @@
-from units.SI import radians
+from units.SI import (
+    radians,
+    meters
+)
 from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
+from pathplannerlib.config import PIDConstants
 
 
 DEBUG_MODE: bool = True
@@ -27,6 +31,10 @@ LOG_FILE_LEVEL: int = 1
 foc_active = False  #foc for TalonFX requires paid subscription
 
 NT_ELEVATOR: bool = False
+
+# Cameras
+left_cam_name = "left_cam"
+right_cam_name = "right_cam"
 
 #Drivetrain
 gyro_id: int = 13
@@ -61,25 +69,34 @@ back_right_move_inverted = False
 
 driver_centric: bool = True
 drivetrain_deadzone: float = 0.1
-drivetrain_curve: float = 2
+drivetrain_curve: float = 2.00000
 drivetrain_zero: radians = math.radians(180)
 
+# odometry
+odometry_tag_distance_threshold: meters = 2.5
+
 TURN_CONFIG = TalonConfig(
-    .9, 0, 0, 0, 0, brake_mode=True,
+    8, 0, 0.025, 0, 0, brake_mode=True
 )
 
 MOVE_CONFIG = TalonConfig(
     0.11,
     0,
     0,
-    0.25,
-    0.01,
+    kF=0.25,
+    kA=0.15,
+    kV=0.12,
     brake_mode=True,
-    current_limit=40,
-    kV=0.12
+    current_limit=50,
 )
 
 #elevator
 elevator_lead_id = 10 
 elevator_follower_id = 11
 magsensor_id = 12 #placeholder
+
+auto_translation_pid = PIDConstants(6, 0.0, 0.1)
+auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
+
+# TO CHANGE
+period = 0.03
