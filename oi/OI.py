@@ -3,6 +3,7 @@ from utils import LocalLogger
 from oi.keymap import Keymap
 import command
 from robot_systems import Robot
+import config
 
 log = LocalLogger("OI")
 
@@ -21,6 +22,15 @@ class OI:
             .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Scoring.SCORE_L1.onTrue(
-            command.target.Target(Robot.elevator, Robot.wrist, Robot.intake, Robot.target_positions["L1"])
+            command.target.Target(config.target_positions["L1"])
+        )
+        Keymap.Scoring.SCORE_L2.onTrue(
+            command.target.Target(config.target_positions["L2"])
+        )
+        Keymap.Scoring.SCORE_L3.onTrue(
+            command.target.Target(config.target_positions["L4"])
+        )
+        Keymap.Scoring.SCORE_L4.onTrue(
+            command.target.Target(config.target_positions["L4"])
         )
 
