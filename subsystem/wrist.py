@@ -54,9 +54,10 @@ class Wrist(Subsystem):
         self.wrist_motor.set_sensor_position(
             self.encoder.get_absolute_position()/constants.wrist_gear_ratio
         )
-        self.wrist_angle = (self.encoder.get_absolute_position()/constants.wrist_gear_ratio
-        * pi
-        * 2
+        self.wrist_angle = (
+            self.encoder.get_absolute_position()/constants.wrist_gear_ratio
+            * pi
+            * 2
         )
         self.wrist_zeroed = True
         
@@ -80,10 +81,6 @@ class Wrist(Subsystem):
         stop the feed motors
         """
         self.feed_motor.set_raw_output(0)
-
-
-
-# wrist
 
     def limit_angle(self, angle: radians) -> radians:
         """
