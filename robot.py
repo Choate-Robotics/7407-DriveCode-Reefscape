@@ -67,7 +67,6 @@ class _Robot(wpilib.TimedRobot):
                 raise e
 
         self.log.complete("Robot initialized")
-        ...
 
     def robotPeriodic(self):
         if self.isSimulation():
@@ -89,7 +88,6 @@ class _Robot(wpilib.TimedRobot):
             
 
         Robot.drivetrain.update_tables()
-        ...
 
     # Initialize subsystems
 

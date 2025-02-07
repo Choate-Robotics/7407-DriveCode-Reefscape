@@ -32,7 +32,7 @@ foc_active = False  # foc for TalonFX requires paid subscription
 # DEBUGGING NETWORK TABLES
 NT_INTAKE: bool = False
 NT_ELEVATOR: bool = False
-NT_WRISt: bool = False
+NT_WRIST: bool = False
 NT_DRIVETRAIN: bool = False
 
 
@@ -125,6 +125,9 @@ wrist_l3_angle: radians = 0
 wrist_l4_angle: radians = 0
 
 wrist_angle_threshold: radians = math.radians(2)
+
+wrist_feed_in_speed = 1
+wrist_feed_out_speed = -1
 
 # TODO: Change to actual thresholds
 out_current_threshold = 2
