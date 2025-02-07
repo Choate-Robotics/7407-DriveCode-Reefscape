@@ -171,6 +171,9 @@ INTAKE_PIVOT_CONFIG = TalonConfig(
 intake_speed = 1
 intake_eject_speed = -1
 
+intake_max_angle = 0
+intake_min_angle = 0
+intake_angle_threshold = 0
 
 # TARGET POSITIONS
 @dataclass

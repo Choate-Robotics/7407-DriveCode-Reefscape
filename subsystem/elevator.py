@@ -41,12 +41,12 @@ class Elevator(Subsystem):
             return 0.0
         return height
 
-    def set_position(self, height) -> None:
+    def set_position(self, height: meters) -> None:
         """
         Brings the elevator to given height
 
         Args:
-            height (float): intended elevator height in meters
+            height (meters): intended elevator height in meters
         """
         height = self.limit_height(height)
         self.target_height = height

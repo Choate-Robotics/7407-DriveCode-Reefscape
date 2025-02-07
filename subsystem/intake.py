@@ -6,7 +6,7 @@ import ntcore
 
 import math
 from math import pi
-
+from units.SI import radians
 from wpilib import Timer
 
 
@@ -29,10 +29,10 @@ class Intake(Subsystem):
         self.intake_rolling_in: bool = False
         self.intake_rolling_out: bool = False
 
-        self.pivot_angle = math.radians(90)
+        self.pivot_angle: radians = math.radians(90)
         self.intake_pivoting: bool = False
-        self.intake_up: bool = True # True is up, False is down
-        self.target_intake_position: bool = True # True is up, False is down
+        self.intake_up: bool = True
+        self.target_intake_position: bool = True
 
         self.timer = Timer()
 
@@ -42,58 +42,75 @@ class Intake(Subsystem):
 
     def roll_in(self) -> None:
         """
-        spin the motors inwards to collect the corral
+        Spins intake motors inwards.
+
         """
+
         self.motor.set_raw_output(config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
         self.intake_rolling_in = True
         self.intake_rolling_out = False
 
-    def stop(self) -> None:
-        """
-        stop the motors
-        """
-        self.motor.set_raw_output(0)
-        self.intake_running = False
-        self.intake_rolling_in = False
-        self.intake_rolling_out = False
-
     def roll_out(self) -> None:
         """
-        eject coral in the intake
+        Spins intake motors outwards
+        
         """
+
         self.motor.set_raw_output(-config.intake_speed * constants.intake_gear_ratio)
         self.intake_running = True
         self.intake_rolling_in = False
         self.intake_rolling_out = True
 
+    def stop(self) -> None:
+        self.motor.set_raw_output(0)
+        self.intake_running = False
+        self.intake_rolling_in = False
+        self.intake_rolling_out = False
+
     def get_current(self) -> float:
+        """
+        Returns: 
+            float: intake roller current.
+
+        """
+
         return self.motor.get_motor_current()
     
     def is_pivot_up(self) -> bool:
-        "returns the angle in radians of the pivot"
+        """
+        Returns:
+            bool: if the intake is pivoted up
+
+        """
+        
         self.pivot_angle = (
             self.pivot_motor.get_sensor_position() / constants.intake_pivot_gear_ratio
             * pi
             * 2
-            )
-        self.intake_up = not self.pivot_angle < config.intake_max_angle - config.intake_angle_threshold
+        )
+
+        self.intake_up = not (self.pivot_angle < config.intake_max_angle - config.intake_angle_threshold)
 
         return self.intake_up
     
     def pivot_up(self) -> None:
         """
-        pivot the intake up
+        Pivots the intake up into coral station intaking position.
+
         """
+
         self.pivot_motor.set_target_position(
-            (config.intake_max_angle / 2*math.pi ) * constants.intake_pivot_gear_ratio
+            (config.intake_max_angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
         )
         self.intake_up = True
 
     def pivot_down(self) -> None:
         """
-        pivot the intake down
+        Pivots the intake down.
+        
         """
+
         self.pivot_motor.set_target_position(
             (config.intake_min_angle / 2*math.pi ) * constants.intake_pivot_gear_ratio
         )
@@ -102,17 +119,7 @@ class Intake(Subsystem):
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable('intake')
 
-        table.putBoolean('intake running', self.intake_running)
-        table.putNumber('outer current', self.get_current())
-        table.putNumber('pivot angle', self.pivot_angle)
-        table.putBoolean('pivot moving', self.intake_pivoting)
-    
-    def periodic(self) -> None:
-        if config.NT_INTAKE:
-            table = ntcore.NetworkTableInstance.getDefault().getTable('intake')
-
-            table.putBoolean('coral in intake', self.coral_in_intake)
-            table.putBoolean('coral detected', self.detect_coral())
-            table.putBoolean('intake running', self.intake_running)
-            table.putNumber('outer current', self.get_current())
-            table.putNumber('intake applied output', self.motor.getAppliedOutput())
+        table.putBoolean('Intake Running', self.intake_running)
+        table.putNumber('Outer Current', self.get_current())
+        table.putNumber('Pivot Angle', self.pivot_angle)
+        table.putBoolean('Pivot Moving', self.intake_pivoting)
