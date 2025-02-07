@@ -151,7 +151,7 @@ class TargetData:
     intake_in_run: bool
     intake_out_run: bool
 
-    intaking_algae: bool = False
+    algae: bool = False
 
 
 target_positions: dict[str, TargetData] = {
@@ -224,10 +224,10 @@ target_positions: dict[str, TargetData] = {
         intake_enabled=True,
         intake_in_run=True,
         intake_out_run=False,
-        intaking_algae=True
+        algae=True
     ),
 
-    "Extake_Algae": TargetData(
+    "EXTAKE_ALGAE": TargetData(
         elevator_height=0,
         wrist_angle=0,
         wrist_feed_on=False,
@@ -235,7 +235,7 @@ target_positions: dict[str, TargetData] = {
         intake_enabled=True,
         intake_in_run=False,
         intake_out_run=True,
-        intaking_algae=False
+        algae=True
     )
 
 }
