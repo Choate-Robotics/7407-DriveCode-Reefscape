@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from wpilib import AnalogEncoder
 
 from toolkit.motors.ctre_motors import TalonConfig
-from units.SI import radians, meters
+from units.SI import radians, meters, seconds
 
 from wpimath.geometry import Pose2d
 
@@ -30,11 +30,13 @@ LOG_FILE_LEVEL: int = 1
 foc_active = False  # foc for TalonFX requires paid subscription
 
 # DEBUGGING NETWORK TABLES
-NT_INTAKE = False
+NT_INTAKE: bool = False
 NT_ELEVATOR: bool = False
+NT_WRISt: bool = False
+NT_DRIVETRAIN: bool = False
 
 
-# Drivetrain
+# DRIVETRAIN
 gyro_id: int = 13
 
 front_left_move_id: int = 2
@@ -80,7 +82,14 @@ TURN_CONFIG = TalonConfig(
 )
 
 MOVE_CONFIG = TalonConfig(
-    0.11, 0, 0, 0.25, 0.01, brake_mode=True, current_limit=40, kV=0.12
+    0.11, 
+    0, 
+    0, 
+    0.25, 
+    0.01, 
+    brake_mode=True, 
+    current_limit=40, 
+    kV=0.12
 )
 
 
@@ -97,10 +106,16 @@ WRIST_FEED_CONFIG = TalonConfig(
     0
 )
 
-WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+WRIST_CONFIG = TalonConfig(
+    1, 
+    0, 
+    0, 
+    0, 
+    0
+)
 
-wrist_max_angle = 2 * math.pi
-wrist_min_angle = 0 * math.pi
+wrist_max_angle: radians = 2 * math.pi
+wrist_min_angle: radians = 0 * math.pi
 
 # TODO: Change to actual angles
 wrist_intake_angle: radians = 0
@@ -109,10 +124,12 @@ wrist_l2_angle: radians = 0
 wrist_l3_angle: radians = 0
 wrist_l4_angle: radians = 0
 
-angle_threshold = math.radians(2)  # radians
-out_current_threshold = 2  # amps PLACEHOLDER
-back_current_threshold = 10  # amps PLACEHOLDER
-current_time_threshold = 0.3  # seconds PLACEHOLDER
+wrist_angle_threshold: radians = math.radians(2)
+
+# TODO: Change to actual thresholds
+out_current_threshold = 2
+back_current_threshold = 10
+current_time_threshold: seconds = 0.3
 
 
 # ELEVATOR
@@ -131,14 +148,28 @@ elevator_l4_height: meters = 0
 intake_id = 9
 intake_pivot_id = 0
 
-INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
-INTAKE_PIVOT_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+INTAKE_CONFIG = TalonConfig(
+    1, 
+    0, 
+    0, 
+    0, 
+    0
+)
 
-intake_speed = 1  # placeholder
-intake_eject_speed = -1  # placeholder
+INTAKE_PIVOT_CONFIG = TalonConfig(
+    1, 
+    0, 
+    0, 
+    0, 
+    0
+)
+
+# TODO: Change to actual speeds
+intake_speed = 1
+intake_eject_speed = -1
 
 
-# SCORING POSITIONS
+# TARGET POSITIONS
 @dataclass
 class TargetData:
     elevator_height: meters
