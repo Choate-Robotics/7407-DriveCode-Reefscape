@@ -1,15 +1,24 @@
 import commands2
-import phoenix6 as ctre
 import ntcore
+import phoenix6 as ctre
 import wpilib
+
 import command
 import config
 import constants
-from robot_systems import Robot, Pneumatics, Sensors, LEDs, PowerDistribution, Field, init_subsystems
 import sensors
 import subsystem
 import utils
 from oi.OI import OI
+from robot_systems import (
+    Field,
+    LEDs,
+    Pneumatics,
+    PowerDistribution,
+    Robot,
+    Sensors,
+    init_subsystems,
+)
 
 
 class _Robot(wpilib.TimedRobot):
@@ -31,9 +40,6 @@ class _Robot(wpilib.TimedRobot):
         self.scheduler.setPeriod(constants.robot_period)
         self.log.info(f"Scheduler period set to {constants.robot_period} seconds")
 
-
-
-
         try:
             init_subsystems(Robot)
         except Exception as e:
@@ -42,11 +48,9 @@ class _Robot(wpilib.TimedRobot):
 
         self.log.complete("Robot initialized")
 
-
     def robotPeriodic(self):
         if self.isSimulation():
             wpilib.DriverStation.silenceJoystickConnectionWarning(True)
-
 
         try:
             self.scheduler.run()
@@ -57,15 +61,14 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.drivetrain.update_tables()
 
-
-
-
     def teleopInit(self):
         self.log.info("Teleop initialized")
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain),
-            command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+        self.scheduler.schedule(
+            commands2.SequentialCommandGroup(
+                command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain),
+            )
+        )
 
     def teleopPeriodic(self):
         pass

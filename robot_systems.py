@@ -1,8 +1,8 @@
-from toolkit.subsystem import Subsystem
-
-import subsystem
-import sensors
 import wpilib
+
+import sensors
+import subsystem
+from toolkit.subsystem import Subsystem
 
 
 class Robot:

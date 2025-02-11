@@ -1,9 +1,12 @@
-from wpilib import DataLogManager, Timer, DriverStation, TimedRobot
+import os
+from enum import IntEnum
+
+from wpilib import DataLogManager, DriverStation, TimedRobot, Timer
 from wpilib.deployinfo import getDeployData
 from wpiutil.log import StringLogEntry
+
 import config
-from enum import IntEnum
-import os
+
 
 class BColors:
     """
@@ -86,9 +89,7 @@ class LocalLogger:
                 self.dlm.start("logs/")  # Default internal storage
                 self.dlm.log("USB not found, logging to internal storage.")
 
-
-
-            #self.dlm.start("logs/")
+            # self.dlm.start("logs/")
             self.log_data = self.dlm.getLog()
             self.custom_entry = StringLogEntry(self.log_data, f"messages/{self.name}")
 
@@ -102,8 +103,8 @@ class LocalLogger:
         """
         self.get_log_levels()
         self.get_deploy_info()
-        #deploy_msg = f"Deploy Info\n Branch: {branch}\n Deployment Date: {date}\n Deployed By: {by}"
-        #self.setup(deploy_msg)
+        # deploy_msg = f"Deploy Info\n Branch: {branch}\n Deployment Date: {date}\n Deployed By: {by}"
+        # self.setup(deploy_msg)
         self.log_driverstation(True)
         self.setup("Robot logging initialized")
 
