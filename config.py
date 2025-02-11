@@ -29,6 +29,9 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
+# TODO: Set deadzone
+trigger_threshold = 0
+
 # DEBUGGING NETWORK TABLES
 NT_INTAKE: bool = False
 NT_ELEVATOR: bool = False
