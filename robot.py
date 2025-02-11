@@ -65,9 +65,8 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("subsystem init", str(e))
                 raise e
-
+        Robot.led.set_Solid(255,215,0)
         self.log.complete("Robot initialized")
-        ...
 
     def robotPeriodic(self):
         if self.isSimulation():
