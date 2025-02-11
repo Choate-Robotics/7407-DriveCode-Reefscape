@@ -1,3 +1,5 @@
+from toolkit.subsystem import Subsystem
+
 import subsystem
 import sensors
 import wpilib
@@ -25,3 +27,24 @@ class PowerDistribution:
 
 class Field:
     pass
+
+
+# Initialize subsystems
+def init_subsystems(myRobot):
+    subsystems: list[Subsystem] = list(
+        {
+            k: v
+            for k, v in myRobot.__dict__.items()
+            if isinstance(v, Subsystem) and hasattr(v, "init")
+        }.values()
+    )
+
+    # sensors: list = list(
+    #     {k: v for k, v in Sensors.__dict__.items() if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
+    # )
+
+    for subsystem in subsystems:
+        subsystem.init()
+
+    # for sensor in sensors:
+    #     sensor.init()

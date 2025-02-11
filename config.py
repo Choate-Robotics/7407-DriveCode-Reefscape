@@ -21,6 +21,7 @@ LOG_FILE_LEVEL: int = 1
 # 2 = WARNING
 # 3 = ERROR
 # 4 = SETUP
+# 5 = MATCH
 # anything else will log nothing
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -8,6 +8,9 @@ from units.SI import (
     degrees_to_radians,
     meters_per_second_squared,
 )
+# Robot
+robot_period = 0.02
+
 
 #drivetrain
 drivetrain_turn_gear_ratio: float = 150 / 7
