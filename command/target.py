@@ -28,63 +28,30 @@ class Target(commands2.Command):
         self.finished = True
 
     def initialize(self):
-        elevator_height = self.target.elevator_height
-        wrist_angle = self.target.wrist_angle
+        target_elevator_height = self.target.elevator_height
+        target_wrist_angle = self.target.wrist_angle
 
-        # INTAKE
-        self.intake_command = ParallelCommandGroup()
+        self.giraffe = SequentialCommandGroup()
 
-        # Enabling
-        if self.target.intake_enabled and not self.intake.intake_up:
-            self.intake_command.addCommands(*[command.PivotIntake(self.intake)])
+        # Adjust wrist if necessary before setting the elevator
+        if self.wrist.get_wrist_angle() != 0:
+            self.giraffe.addCommands(command.SetWrist(self.wrist, 0))
 
-        # Running
-        if self.target.intake_in_run and not self.intake.intake_rolling_in:
-            self.intake_command.addCommands(*[command.RunIntake(self.intake)])
-        elif self.target.intake_out_run and not self.intake.intake_rolling_out:
-            self.intake_command.addCommands(*[command.EjectIntake(self.intake)])
-
+        # Set elevator and wrist
+        if self.elevator.get_position() != target_elevator_height:
+            self.giraffe.addCommands(command.SetElevator(self.elevator, target_elevator_height))
         
-        # ELEVATOR
-        # TODO: Check if elevator is already at height and if elevator is moving
-        self.elevator_command = command.SetElevator(
-            self.elevator, 
-            elevator_height
-        )
+        self.giraffe.addCommands(command.SetWrist(self.wrist, target_wrist_angle))
 
+        # Intake commands
+        self.intake_command = SequentialCommandGroup()
+        self.intake_command.addCommands(command.PivotIntake(self.intake, self.target.intake_idle))
 
-        # WRIST
-        # TODO: Double check logic of wrist to avoid collisions
-        self.wrist_command = SequentialCommandGroup()
+        if self.target.intake_in_run:
+            self.intake_command.addCommands(command.RunIntake(self.intake))
+        elif self.target.intake_out_run:
+            self.intake_command.addCommands(command.EjectIntake(self.intake))
 
-        # Pivot
-        if not self.wrist.wrist_angle_moving:
-            self.wrist_command.addCommands(*[
-                command.SetWrist(
-                    self.wrist,
-                    wrist_angle
-                )
-            ])
-
-        # Feed
-        if self.target.wrist_feed_on and not self.wrist.wrist_feeding:
-            self.wrist_command.addCommands(*[command.FeedIn(self.wrist)])
-        elif self.target.wrist_score_on and not self.wrist.wrist_ejecting:
-            self.wrist_command.addCommands(*[command.FeedOut(self.wrist)])
-
-        # this is very subject to change
-        commands2.CommandScheduler.getInstance()(
-            SequentialCommandGroup(
-                ParallelCommandGroup(
-                    self.intake_command, 
-                    SequentialCommandGroup(
-                        self.elevator_command,
-                        self.wrist_command
-                    )
-                ),
-                InstantCommand(lambda: self.finish()),
-            )
-        )
     
     def execute(self) -> None:
         pass
