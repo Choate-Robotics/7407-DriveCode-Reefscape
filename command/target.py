@@ -47,10 +47,10 @@ class Target(commands2.Command):
         self.intake_command = SequentialCommandGroup()
         self.intake_command.addCommands(command.PivotIntake(self.intake, self.target.intake_idle))
 
-        if self.target.intake_in_run:
-            self.intake_command.addCommands(command.RunIntake(self.intake))
-        elif self.target.intake_out_run:
-            self.intake_command.addCommands(command.EjectIntake(self.intake))
+        # if self.target.intake_in_run:
+        #     self.intake_command.addCommands(command.RunIntake(self.intake))
+        # elif self.target.intake_out_run:
+        #     self.intake_command.addCommands(command.EjectIntake(self.intake))
 
         commands2.CommandScheduler.getInstance()(
             ParallelCommandGroup(

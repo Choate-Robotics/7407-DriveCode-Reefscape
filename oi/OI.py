@@ -86,6 +86,10 @@ class OI:
             )
         )
 
+        Keymap.Wrist.EXTAKE_CORAL.onTrue(
+            command.FeedOut(Robot.wrist)
+        )
+        
         # INTAKING
         Keymap.Intake.INTAKE_CORAL.onTrue(
             command.Target(
