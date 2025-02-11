@@ -117,6 +117,9 @@ class LocalLogger:
             for key, value in data.items():
                 self.setup(f"Deploying {str(key)}: {str(value)}")
 
+        else:
+            self.warn("Deploy data is not available")
+
     def get_log_levels(self):
         """
         Returns the current log levels.
