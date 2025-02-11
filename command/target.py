@@ -33,7 +33,7 @@ class Target(commands2.Command):
 
         self.giraffe = SequentialCommandGroup()
 
-        # Adjust wrist if necessary before setting the elevator
+        # Set wrist idle if necessary before setting the elevator
         if self.wrist.get_wrist_angle() != 0:
             self.giraffe.addCommands(command.SetWrist(self.wrist, 0))
 
@@ -52,6 +52,13 @@ class Target(commands2.Command):
         elif self.target.intake_out_run:
             self.intake_command.addCommands(command.EjectIntake(self.intake))
 
+        commands2.CommandScheduler.getInstance()(
+            ParallelCommandGroup(
+                self.intake_command, 
+                self.giraffe
+            ),
+            InstantCommand(lambda: self.finish()),
+        )
     
     def execute(self) -> None:
         pass
