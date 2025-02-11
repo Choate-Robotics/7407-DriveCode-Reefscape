@@ -123,6 +123,10 @@ wrist_l1_angle: radians = 0
 wrist_l2_angle: radians = 0
 wrist_l3_angle: radians = 0
 wrist_l4_angle: radians = 0
+wrist_dhigh_angle: radians = 0
+wrist_dlow_angle: radians = 0
+wrist_barge_angle: radians = 0
+wrist_processor_score_angle: radians = 0
 
 wrist_angle_threshold: radians = math.radians(2)
 
@@ -145,7 +149,9 @@ elevator_l1_height: meters = 0
 elevator_l2_height: meters = 0
 elevator_l3_height: meters = 0
 elevator_l4_height: meters = 0
-
+elevator_dhigh_height: meters = 0
+elevator_dlow_height: meters = 0
+elevator_barge_height: meters = 0
 
 # INTAKE
 intake_id = 9
@@ -178,101 +184,178 @@ intake_angle_threshold = 0
 # TARGET POSITIONS
 @dataclass
 class TargetData:
+    elevator_idle: bool
+    wrist_idle: bool
+    intake_idle: bool
+
     elevator_height: meters
 
     wrist_angle: radians
     wrist_feed_on: bool
     wrist_score_on: bool
-
-    intake_enabled: bool
+    
     intake_in_run: bool
     intake_out_run: bool
 
-    algae: bool = False
+    intake_climb: bool = False
 
 
 target_positions: dict[str, TargetData] = {
 
     "IDLE": TargetData(
+        elevator_idle=True,
+        wrist_idle=True,
+        intake_idle=True,
         elevator_height=0,
         wrist_angle=0,
         wrist_feed_on=False,
         wrist_score_on=False,
-        intake_enabled=True,
         intake_in_run=False,
         intake_out_run=False
     ),
 
     "STATION_INTAKING": TargetData(
+        elevator_idle=True,
+        wrist_idle=False,
+        intake_idle=True,
         elevator_height=0,
         wrist_angle=wrist_intake_angle,
         wrist_feed_on=True,
         wrist_score_on=False,
-        intake_enabled=True,
         intake_in_run=True,
         intake_out_run=False
     ),
 
     "L1": TargetData(
+        elevator_idle=True,
+        wrist_idle=False,
+        intake_idle=True,
         elevator_height=elevator_l1_height,
         wrist_angle=wrist_l1_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
-        intake_enabled=False,
         intake_in_run=False,
         intake_out_run=False
     ),
 
     "L2": TargetData(
+        elevator_idle=False,
+        wrist_idle=False,
+        intake_idle=True,
         elevator_height=elevator_l2_height,
         wrist_angle=wrist_l2_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
-        intake_enabled=False,
         intake_in_run=False,
         intake_out_run=False
     ),
 
     "L3": TargetData(
+        elevator_idle=False,
+        wrist_idle=False,
+        intake_idle=True,
         elevator_height=elevator_l3_height,
         wrist_angle=wrist_l3_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
-        intake_enabled=False,
         intake_in_run=False,
         intake_out_run=False
     ),
 
     "L4": TargetData(
+        elevator_idle=False,
+        wrist_idle=False,
+        intake_idle=True,
         elevator_height=elevator_l4_height,
         wrist_angle=wrist_l4_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
-        intake_enabled=False,
+        intake_in_run=False,
+        intake_out_run=False
+    ),
+
+    "DEALGAE_HIGH": TargetData(
+        elevator_idle=False,
+        wrist_idle=False,
+        intake_idle=True,
+        elevator_height=elevator_dhigh_height,
+        wrist_angle=wrist_dhigh_angle,
+        wrist_feed_on=False,
+        wrist_score_on=False,
+        intake_in_run=False,
+        intake_out_run=False
+    ),
+
+    "DEALGAE_LOW": TargetData(
+        elevator_idle=False,
+        wrist_idle=False,
+        intake_idle=True,
+        elevator_height=elevator_dlow_height,
+        wrist_angle=wrist_dlow_angle,
+        wrist_feed_on=False,
+        wrist_score_on=False,
+        intake_in_run=False,
+        intake_out_run=False
+    ),
+
+    "SCORE_BARGE": TargetData(
+        elevator_idle=False,
+        wrist_idle=False,
+        intake_idle=True,
+        elevator_height=elevator_barge_height,
+        wrist_angle=wrist_barge_angle,
+        wrist_feed_on=False,
+        wrist_score_on=True,
+        intake_in_run=False,
+        intake_out_run=False
+    ),
+
+    "SCORE_PROCESSOR_INTAKE": TargetData(
+        elevator_idle=True,
+        wrist_idle=True,
+        intake_idle=True, # Might also be ground intake, tbd
+        elevator_height=0,
+        wrist_angle=0,
+        wrist_feed_on=False,
+        wrist_score_on=False,
+        intake_in_run=False,
+        intake_out_run=True
+    ),
+
+    "SCORE_PROCESSOR_WRIST": TargetData(
+        elevator_idle=True,
+        wrist_idle=False,
+        intake_idle=True,
+        elevator_height=0,
+        wrist_angle=wrist_processor_score_angle,
+        wrist_feed_on=False,
+        wrist_score_on=True,
         intake_in_run=False,
         intake_out_run=False
     ),
 
     "INTAKE_ALGAE": TargetData(
+        elevator_idle=True,
+        wrist_idle=True,
+        intake_idle=False,
         elevator_height=0,
         wrist_angle=0,
         wrist_feed_on=False,
         wrist_score_on=False,
-        intake_enabled=True,
         intake_in_run=True,
-        intake_out_run=False,
-        algae=True
+        intake_out_run=False
     ),
 
-    "EXTAKE_ALGAE": TargetData(
+    "CLIMB": TargetData(
+        elevator_idle=True,
+        wrist_idle=True,
+        intake_idle=False,
         elevator_height=0,
         wrist_angle=0,
         wrist_feed_on=False,
         wrist_score_on=False,
-        intake_enabled=True,
-        intake_in_run=False,
-        intake_out_run=True,
-        algae=True
+        intake_in_run=True,
+        intake_out_run=False,
+        intake_climb=True,
     )
-
 }
