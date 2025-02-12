@@ -313,17 +313,17 @@ target_positions: dict[str, TargetData] = {
         intake_out_run=False
     ),
 
-    "SCORE_PROCESSOR_INTAKE": TargetData(
-        elevator_idle=True,
-        wrist_idle=True,
-        intake_idle=True, # Might also be ground intake, tbd
-        elevator_height=0,
-        wrist_angle=0,
-        wrist_feed_on=False,
-        wrist_score_on=False,
-        intake_in_run=False,
-        intake_out_run=True
-    ),
+    # "SCORE_PROCESSOR_INTAKE": TargetData(
+    #     elevator_idle=True,
+    #     wrist_idle=True,
+    #     intake_idle=True, # Might also be ground intake, tbd
+    #     elevator_height=0,
+    #     wrist_angle=0,
+    #     wrist_feed_on=False,
+    #     wrist_score_on=False,
+    #     intake_in_run=False,
+    #     intake_out_run=True
+    # ),
 
     "SCORE_PROCESSOR_WRIST": TargetData(
         elevator_idle=True,
