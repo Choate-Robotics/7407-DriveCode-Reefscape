@@ -4,6 +4,7 @@ from oi.keymap import Keymap
 import command
 from robot_systems import Robot
 import config
+import commands2
 
 log = LocalLogger("OI")
 
@@ -87,7 +88,7 @@ class OI:
         )
         Keymap.Wrist.EXTAKE_CORAL.onTrue(
             command.FeedOut(Robot.wrist)
-        )
+        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.feed_stop()))
         
         # INTAKING
         Keymap.Intake.INTAKE_CORAL.onTrue(
