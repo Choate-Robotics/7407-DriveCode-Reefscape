@@ -1,3 +1,4 @@
+from units.SI import radians, inches_to_meters
 import math
 from dataclasses import dataclass
 from wpilib import AnalogEncoder
@@ -145,7 +146,17 @@ current_time_threshold: seconds = 0.3
 # ELEVATOR
 elevator_lead_id = 10
 elevator_follower_id = 11
-magsensor_id = 0
+elevator_height_threshold = .1*inches_to_meters #placeholder
+
+ELEVATOR_CONFIG = TalonConfig(
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    brake_mode=True
+)
 
 # TODO: Change to actual heights
 elevator_l1_height: meters = 0
