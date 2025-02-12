@@ -4,7 +4,6 @@ from toolkit.motors.ctre_motors import TalonFX
 
 import ntcore
 import math
-from math import pi
 from units.SI import radians
 from toolkit.utils.toolkit_math import bounded_angle_diff
 from phoenix6.hardware import CANcoder
@@ -53,18 +52,18 @@ class Wrist(Subsystem):
         """
         zero the wrist encoder
         """
-
-        self.wrist_motor.set_sensor_position(
-            self.encoder.get_absolute_position().value
-            * constants.encoder_gear_ratio
-            / constants.wrist_gear_ratio
-        )
         self.wrist_angle = (
             self.encoder.get_absolute_position().value
-            * constants.encoder_gear_ratio
+            / constants.wrist_encoder_gear_ratio
             * 2
-            * pi
+            * math.pi
         )
+
+        self.wrist_motor.set_sensor_position(
+            self.wrist_angle
+            * constants.wrist_gear_ratio / 2 / math.pi
+        )
+        
         self.wrist_zeroed = True
 
     # feed
@@ -111,7 +110,7 @@ class Wrist(Subsystem):
         self.target_angle = angle
 
         self.wrist_motor.set_target_position(
-            (angle / 2 * math.pi) * constants.wrist_gear_ratio
+            (angle / 2 / math.pi) * constants.wrist_gear_ratio
         )
 
     def get_wrist_angle(self) -> radians:
@@ -123,10 +122,9 @@ class Wrist(Subsystem):
         return (
             (
                 self.wrist_motor.get_sensor_position()
-                * constants.wrist_gear_ratio
-                / constants.encoder_gear_ratio
+                / constants.wrist_gear_ratio
             )
-            * pi
+            * math.pi
             * 2
         )
 
