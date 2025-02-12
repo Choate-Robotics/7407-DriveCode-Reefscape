@@ -146,7 +146,6 @@ current_time_threshold: seconds = 0.3
 # ELEVATOR
 elevator_lead_id = 10
 elevator_follower_id = 11
-
 elevator_height_threshold = .1*inches_to_meters #placeholder
 
 ELEVATOR_CONFIG = TalonConfig(
@@ -158,7 +157,6 @@ ELEVATOR_CONFIG = TalonConfig(
     0,
     brake_mode=True
 )
-magsensor_id = 0
 
 # TODO: Change to actual heights
 elevator_l1_height: meters = 0
