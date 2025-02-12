@@ -20,7 +20,6 @@ class Wrist(Subsystem):
             config.wrist_feed_id,
             config.foc_active,
             inverted=False,
-            config=config.WRIST_FEED_CONFIG
         )
         self.wrist_motor: TalonFX = TalonFX(
             config.wrist_id,
