@@ -38,7 +38,8 @@ class Intake(Subsystem):
         self.intake_up: bool = True  # True is up, False is down
         self.target_intake_position: bool = True  # True is up, False is down
 
-        self.timer = Timer()
+        self.encoder: CANcoder = CANcoder(config.intake_cancoder_id)
+
 
     def init(self):
         self.horizontal_motor.init()

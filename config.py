@@ -101,6 +101,7 @@ vertical_id = 13
 #     0
 # )
 
+intake_cancoder_id = 14
 intake_pivot_id = 10
 INTAKE_PIVOT_CONFIG = TalonConfig(
     1,
