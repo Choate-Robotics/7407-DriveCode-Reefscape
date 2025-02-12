@@ -101,8 +101,9 @@ vertical_id = 13
 #     0
 # )
 
-intake_cancoder_id = 14
+intake_cancoder_id = 400
 intake_pivot_id = 10
+intake_encoder_zero = 0 #placeholder
 INTAKE_PIVOT_CONFIG = TalonConfig(
     1,
     0,

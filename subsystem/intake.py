@@ -2,10 +2,12 @@ import config
 import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
+from phoenix6.hardware import CANcoder
 import ntcore
 
 import math
 from math import pi
+from math import radians
 
 from wpilib import Timer
 
@@ -35,8 +37,8 @@ class Intake(Subsystem):
 
         self.pivot_angle = math.radians(90)
         self.intake_pivoting: bool = False
-        self.intake_up: bool = True  # True is up, False is down
-        self.target_intake_position: bool = True  # True is up, False is down
+        self.target_angle: radians = 0
+        self.pivot_zeroed: bool = False
 
         self.encoder: CANcoder = CANcoder(config.intake_cancoder_id)
 
@@ -86,6 +88,21 @@ class Intake(Subsystem):
 
     def get_pivot_motor_current(self) -> float:
         return self.pivot_motor.get_motor_current()
+
+    def zero_pivot(self) -> None:
+        """
+        zero the pivot encoder
+        """
+
+        self.pivot_angle = (
+            (self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi
+        )
+
+        self.pivot_motor.set_sensor_position(
+            self.pivot_angle * constants.intake_pivot_gear_ratio / 2 / math.pi
+        )
+
+        self.pivot_zeroed = True
 
     def get_pivot_angle(self):
         "returns current angle of pivot"
