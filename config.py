@@ -85,13 +85,13 @@ MOVE_CONFIG = TalonConfig(
 
 #intake
 intake_id = 9
-INTAKE_CONFIG = TalonConfig(
-    1,
-    0,
-    0,
-    0,
-    0
-)
+# INTAKE_CONFIG = TalonConfig(
+#     1,
+#     0,
+#     0,
+#     0,
+#     0
+# )
 
 intake_pivot_id = 10
 INTAKE_PIVOT_CONFIG = TalonConfig(

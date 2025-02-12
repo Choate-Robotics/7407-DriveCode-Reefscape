@@ -17,7 +17,7 @@ class Intake(Subsystem):
             config.intake_id,
             config.foc_active,
             inverted=False,
-            config=config.INTAKE_CONFIG,
+            # config=config.INTAKE_CONFIG,
         )
         self.pivot_motor: TalonFX = TalonFX(
             config.intake_pivot_id,
