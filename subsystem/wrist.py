@@ -55,11 +55,15 @@ class Wrist(Subsystem):
         """
 
         self.wrist_motor.set_sensor_position(
-            self.encoder.get_absolute_position()/constants.encoder_gear_ratio
+            self.encoder.get_absolute_position().value
+            * constants.encoder_gear_ratio
+            / constants.wrist_gear_ratio
         )
-        self.wrist_angle = (self.encoder.get_absolute_position()/constants.wrist_gear_ratio
-            * pi
+        self.wrist_angle = (
+            self.encoder.get_absolute_position().value
+            * constants.encoder_gear_ratio
             * 2
+            * pi
         )
         self.wrist_zeroed = True
 
@@ -148,4 +152,3 @@ class Wrist(Subsystem):
     def periodic(self) -> None:
         if config.NT_WRIST:
             self.update_table()
-
