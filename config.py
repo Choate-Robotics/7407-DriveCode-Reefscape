@@ -85,6 +85,7 @@ INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 
 # Wrist
 wrist_feed_id = 10
+WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_id = 9
 WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_cancoder_id = 11
