@@ -1,11 +1,14 @@
 from toolkit.command import SubsystemCommand
 import config
 from subsystem import Intake
+from utils import LocalLogger
+
+log = LocalLogger("Intake command")
 
 
 class RunIntake(SubsystemCommand[Intake]):
     """
-    Runs until coral is detected
+    Runs intake
     """
 
     def __init__(self, subsystem: Intake):
@@ -52,6 +55,7 @@ class EjectIntake(SubsystemCommand[Intake]):
 class PivotIntake(SubsystemCommand[Intake]):
     """
     Pivots the intake to opposite position
+    Note: True means pivot is up and vice versa
     """
 
     def __init__(self, subsystem: Intake, target_intake_position: bool):
@@ -71,10 +75,15 @@ class PivotIntake(SubsystemCommand[Intake]):
         pass
 
     def isFinished(self) -> bool:
-        # TODO: fix comparing bool to float
-        if self.subsystem.is_pivot_up() == self.subsystem.target_intake_position:
-            return True
+        if self.subsystem.target_intake_position:
+            # trying to go up
+            return self.subsystem.is_pivot_up()
+        else:
+            # trying to go down
+            return self.subsystem.is_pivot_down()
 
     def end(self, interrupted) -> None:
-        self.subsystem.intake_pivoting = False
-
+        if not interrupted:
+            self.subsystem.intake_pivoting = False
+        else:
+            log.warn("Intake pivot interrupted")
