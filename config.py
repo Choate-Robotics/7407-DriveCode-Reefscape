@@ -89,6 +89,7 @@ WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_id = 9
 WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_cancoder_id = 11
+wrist_encoder
 
 
 wrist_max_angle = 2 * math.pi
