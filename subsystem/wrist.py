@@ -126,7 +126,7 @@ class Wrist(Subsystem):
             * 2
         )
 
-    def is_at_angle(self, angle: radians) -> radians:
+    def is_at_angle(self, angle: radians) -> bool:
         """
         check if the wrist angle is at the given angle
         """
