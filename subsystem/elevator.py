@@ -90,8 +90,7 @@ class Elevator(Subsystem):
         Args:
             height (meters): height to be checked
         """
-        # Rounding to make sure it's not too precise (will cause err)
-        return round(self.get_position(), 2) == round(height, 2)
+        return abs(self.get_position() - height) < config.elevator_height_threshold
 
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")

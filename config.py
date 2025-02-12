@@ -1,4 +1,4 @@
-from units.SI import radians
+from units.SI import radians, inches_to_meters
 from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
@@ -82,6 +82,8 @@ MOVE_CONFIG = TalonConfig(
 #elevator
 elevator_lead_id = 10 
 elevator_follower_id = 11
+
+elevator_height_threshold = .1*inches_to_meters #placeholder
 
 ELEVATOR_CONFIG = TalonConfig(
     0,
