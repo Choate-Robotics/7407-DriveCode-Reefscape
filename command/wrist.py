@@ -4,6 +4,9 @@ from subsystem import Wrist
 
 from math import radians
 from wpilib import Timer
+from utils import LocalLogger
+
+log = LocalLogger("wrist_command_log")
 
 
 class SetWrist(SubsystemCommand[Wrist]):
@@ -27,7 +30,10 @@ class SetWrist(SubsystemCommand[Wrist]):
         return self.subsystem.is_at_angle(self.angle)
 
     def end(self, interrupted) -> None:
-        self.subsystem.wrist_angle_moving = False
+        if not interrupted:
+            self.subsystem.wrist_angle_moving = False
+        else:
+            log.error("Wrist command interrupted")
 
 
 class ZeroWrist(SubsystemCommand[Wrist]):
@@ -49,7 +55,8 @@ class ZeroWrist(SubsystemCommand[Wrist]):
         return self.subsystem.wrist_zeroed
 
     def end(self, interrupted) -> None:
-        pass
+        if interrupted:
+            log.error("Wrist zeroing command interrupted")
 
 
 class FeedIn(SubsystemCommand[Wrist]):
