@@ -13,11 +13,17 @@ from wpilib import Timer
 class Intake(Subsystem):
     def __init__(self):
         super().__init__()
-        self.motor: TalonFX = TalonFX(
-            config.intake_id,
+        self.horizontal_motor: TalonFX = TalonFX(
+            config.horizontal_id,
             config.foc_active,
             inverted=False,
-            # config=config.INTAKE_CONFIG,
+            # config=config.HORIZONTAL_CONFIG,
+        )
+        self.vertical_motor: TalonFX = TalonFX(
+            config.vertical_id,
+            config.foc_active,
+            inverted=False,
+            # config=config.VERTICAL_CONFIG,
         )
         self.pivot_motor: TalonFX = TalonFX(
             config.intake_pivot_id,
@@ -35,32 +41,37 @@ class Intake(Subsystem):
         self.timer = Timer()
 
     def init(self):
-        self.motor.init()
+        self.horizontal_motor.init()
+        self.vertical_motor.init()
         self.pivot_motor.init()
 
     def roll_in(self) -> None:
         """
         spin the motors inwards to collect the corral
         """
-        self.motor.set_raw_output(config.intake_speed * constants.intake_gear_ratio)
+        self.horizontal_motor.set_raw_output(config.intake_speed * constants.horizontal_gear_ratio)
+        self.vertical_motor.set_raw_output(config.intake_speed * constants.vertical_gear_ratio)
         self.intake_running = True
 
     def stop(self) -> None:
         """
         stop the motors
         """
-        self.motor.set_raw_output(0)
+        self.vertical_motor.set_raw_output(0)
+        self.horizontal_motor.set_raw_output(0)
         self.intake_running = False
 
     def roll_out(self) -> None:
         """
         eject coral in the intake
         """
-        self.motor.set_raw_output(-config.intake_speed * constants.intake_gear_ratio)
+        self.horizontal_motor.set_raw_output(-config.intake_speed * constants.horizontal_gear_ratio)
+        self.vertical_motor.set_raw_output(-config.intake_speed * constants.vertical_gear_ratio)
         self.intake_running = True
 
+    # SOMEONE TAKE A LOOK WE HAVE MORE MOTORS NOW AND I AM CONFUSED
     def get_current(self) -> float:
-        return self.motor.get_motor_current()
+        return self.vertical_motor.get_motor_current()
     
     def is_pivot_up(self) -> bool:
         "returns the angle in radians of the pivot"

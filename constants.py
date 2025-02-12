@@ -44,8 +44,9 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 
 
 # intake
-intake_pivot_gear_ratio: float = 1  # placeholder
-intake_gear_ratio: float = 1  # placeholder
+intake_pivot_gear_ratio: float = 175
+horizontal_gear_ratio: float = 2
+vertical_gear_ratio: float = 2.5
 
 #elevator
 elevator_gear_ratio = 1 #placeholder

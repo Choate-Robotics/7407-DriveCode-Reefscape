@@ -84,8 +84,16 @@ MOVE_CONFIG = TalonConfig(
 
 
 #intake
-intake_id = 9
-# INTAKE_CONFIG = TalonConfig(
+horizontal_id = 9
+# HORIZONTAL_CONFIG = TalonConfig(
+#     1,
+#     0,
+#     0,
+#     0,
+#     0
+# )
+vertical_id = 13
+# VERTICAL_CONFIG = TalonConfig(
 #     1,
 #     0,
 #     0,
