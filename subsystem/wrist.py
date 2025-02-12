@@ -52,11 +52,11 @@ class Wrist(Subsystem):
         zero the wrist encoder
         """
         self.wrist_motor.set_sensor_position(
-            self.encoder.get_absolute_position()/constants.wrist_gear_ratio
+            self.encoder.get_absolute_position()/constants.encoder_gear_ratio
         )
         self.wrist_angle = (self.encoder.get_absolute_position()/constants.wrist_gear_ratio
-        * pi
-        * 2
+            * pi
+            * 2
         )
         self.wrist_zeroed = True
         

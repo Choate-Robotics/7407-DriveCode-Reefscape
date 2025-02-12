@@ -44,6 +44,7 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 
 # wrist
 wrist_gear_ratio = 45
-feed_gear_ratio = 1.5
+encoder_gear_ratio = 1.5
+
 # intake
 intake_gear_ratio = 10  # placeholder
