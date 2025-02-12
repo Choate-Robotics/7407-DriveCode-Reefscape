@@ -18,6 +18,7 @@ def test_elevator_init(elevator: Elevator):
     elevator.init()
     elevator.leader_motor.init.assert_called()
     elevator.follower_motor.init.assert_called()
+    elevator.leader_motor.set_sensor_position.assert_called()
 
 @pytest.mark.parametrize(
     "test_input, test_output",
@@ -66,8 +67,3 @@ def test_get_position(test_input, test_output, elevator: Elevator, monkeypatch: 
         elevator.leader_motor, "get_sensor_position", lambda: test_input
     )
     assert(elevator.get_position() == test_output)
-
-def test_zero(elevator: Elevator):
-    elevator.zero()
-    elevator.leader_motor.set_sensor_position.assert_called_with(0)
-    assert elevator.zeroed is True
