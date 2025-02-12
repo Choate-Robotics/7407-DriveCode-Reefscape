@@ -121,7 +121,11 @@ class Wrist(Subsystem):
         returns angle in radians
         """
         return (
-            (self.wrist_motor.get_sensor_position() / constants.wrist_gear_ratio)
+            (
+                self.wrist_motor.get_sensor_position()
+                * constants.wrist_gear_ratio
+                / constants.encoder_gear_ratio
+            )
             * pi
             * 2
         )
@@ -139,7 +143,6 @@ class Wrist(Subsystem):
         """
         update the network table with the wrist data
         """
-        table = ntcore.NetworkTableInstance.getDefault().getTable("wrist")
 
         self.table.putNumber("wrist angle", math.degrees(self.get_wrist_angle()))
         self.table.putNumber("target angle", math.degrees(self.target_angle))
