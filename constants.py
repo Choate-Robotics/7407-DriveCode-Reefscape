@@ -53,6 +53,6 @@ intake_pivot_gear_ratio: float = 1
 intake_gear_ratio: float = 1
 
 # ELEVATOR
-elevator_gear_ratio: float = 1
-elevator_driver_gear_circumference = 1
-elevator_max_height: meters = 2.5
+elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio
+elevator_driver_gear_circumference = 1.751*inches_to_meters*math.pi
+elevator_max_height: meters = 27.5*inches_to_meters #true max=28 inches
