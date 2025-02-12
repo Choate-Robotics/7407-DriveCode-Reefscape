@@ -35,8 +35,8 @@ class Intake(Subsystem):
 
         self.pivot_angle = math.radians(90)
         self.intake_pivoting: bool = False
-        self.intake_up: bool = True # True is up, False is down
-        self.target_intake_position: bool = True # True is up, False is down
+        self.intake_up: bool = True  # True is up, False is down
+        self.target_intake_position: bool = True  # True is up, False is down
 
         self.timer = Timer()
 
@@ -47,10 +47,14 @@ class Intake(Subsystem):
 
     def roll_in(self) -> None:
         """
-        spin the motors inwards to collect the corral
+        spin the motors inwards to collect the coral
         """
-        self.horizontal_motor.set_raw_output(config.intake_speed * constants.horizontal_gear_ratio)
-        self.vertical_motor.set_raw_output(config.intake_speed * constants.vertical_gear_ratio)
+        self.horizontal_motor.set_raw_output(
+            config.intake_speed * constants.horizontal_gear_ratio
+        )
+        self.vertical_motor.set_raw_output(
+            config.intake_speed * constants.vertical_gear_ratio
+        )
         self.intake_running = True
 
     def stop(self) -> None:
@@ -65,51 +69,78 @@ class Intake(Subsystem):
         """
         eject coral in the intake
         """
-        self.horizontal_motor.set_raw_output(-config.intake_speed * constants.horizontal_gear_ratio)
-        self.vertical_motor.set_raw_output(-config.intake_speed * constants.vertical_gear_ratio)
+        self.horizontal_motor.set_raw_output(
+            -config.intake_speed * constants.horizontal_gear_ratio
+        )
+        self.vertical_motor.set_raw_output(
+            -config.intake_speed * constants.vertical_gear_ratio
+        )
         self.intake_running = True
 
-    # SOMEONE TAKE A LOOK WE HAVE MORE MOTORS NOW AND I AM CONFUSED
-    def get_current(self) -> float:
+    def get_vertical_motor_current(self) -> float:
         return self.vertical_motor.get_motor_current()
-    
-    def is_pivot_up(self) -> bool:
-        "returns the angle in radians of the pivot"
+
+    def get_horizontal_motor_current(self) -> float:
+        return self.horizontal_motor.get_motor_current()
+
+    def get_pivot_motor_current(self) -> float:
+        return self.pivot_motor.get_motor_current()
+
+    def get_pivot_angle(self):
+        "returns current angle of pivot"
         self.pivot_angle = (
-            self.pivot_motor.get_sensor_position() / constants.intake_pivot_gear_ratio
+            self.pivot_motor.get_sensor_position()
+            / constants.intake_pivot_gear_ratio
             * pi
             * 2
-            )
-        self.intake_up = not self.pivot_angle < config.intake_max_angle - config.intake_angle_threshold
+        )
+        return self.pivot_angle
+
+    def is_pivot_up(self) -> bool:
+        "returns a bool for if the pivot is in up position"
+        self.pivot_angle = self.get_pivot_angle()
+        self.intake_up = (
+            self.pivot_angle >= config.intake_max_angle - config.intake_angle_threshold
+        )
 
         return self.intake_up
-    
+
+    def is_pivot_down(self) -> bool:
+        "returns a bool for if the pivot is in down position"
+        self.pivot_angle = self.get_pivot_angle()
+        self.intake_down = (
+            self.pivot_angle < config.intake_min_angle + config.intake_angle_threshold
+        )
+
+        return self.intake_down
+
     def pivot_up(self) -> None:
         """
         pivot the intake up
         """
         self.pivot_motor.set_target_position(
-            (config.intake_max_angle / 2*math.pi ) * constants.intake_pivot_gear_ratio
+            (config.intake_max_angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
         )
-        self.intake_up = True
 
     def pivot_down(self) -> None:
         """
         pivot the intake down
         """
         self.pivot_motor.set_target_position(
-            (config.intake_min_angle / 2*math.pi ) * constants.intake_pivot_gear_ratio
+            (config.intake_min_angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
         )
-        self.intake_up = False
 
     def update_table(self) -> None:
-        table = ntcore.NetworkTableInstance.getDefault().getTable('intake')
+        table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
 
-        table.putBoolean('intake running', self.intake_running)
-        table.putNumber('outer current', self.get_current())
-        table.putNumber('pivot angle', self.pivot_angle)
-        table.putBoolean('pivot moving', self.intake_pivoting)
-    
+        table.putBoolean("intake running", self.intake_running)
+        table.putNumber("horizontal current", self.get_horizontal_motor_current())
+        table.putNumber("vertical current", self.get_vertical_motor_current())
+        table.putNumber("pivot current", self.get_vertical_motor_current())
+        table.putNumber("pivot angle", self.get_pivot_angle())
+        table.putBoolean("pivot moving", self.intake_pivoting)
+
     def periodic(self) -> None:
         if config.NT_INTAKE:
             self.update_table()
+
