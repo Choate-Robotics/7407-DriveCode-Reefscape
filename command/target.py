@@ -34,7 +34,7 @@ class Target(commands2.Command):
         self.giraffe = SequentialCommandGroup()
 
         # Set wrist idle if necessary before setting the elevator
-        if self.wrist.get_wrist_angle() != 0:
+        if not self.wrist.is_at_angle(0):
             self.giraffe.addCommands(command.SetWrist(self.wrist, 0))
 
         # Set elevator and wrist

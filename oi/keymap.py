@@ -81,6 +81,4 @@ class Keymap:
             Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.A
         )
     class Elevator:
-        REZERO_ELEVATOR = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
-        )
+        pass
