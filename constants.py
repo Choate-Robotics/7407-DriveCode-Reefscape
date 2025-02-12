@@ -42,6 +42,6 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 ) * drivetrain_wheel_gear_ratio
 
 #elevator
-elevator_gear_ratio = 1 #placeholder
-elevator_driver_gear_circumference = 1 #placeholder
-elevator_max_height: meters = 2.5 #placeholder
+elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio
+elevator_driver_gear_circumference = 1.751*inches_to_meters*math.pi
+elevator_max_height: meters = 27.5*inches_to_meters #true max=28 inches
