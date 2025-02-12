@@ -65,6 +65,10 @@ class Keymap:
         SCORE_L4 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y
         )
+        SCORE_BARGE = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
+        )
+
     class Climb:
         CLIMB_UNLOCK = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
@@ -75,7 +79,7 @@ class Keymap:
 
     class Wrist:
         REMOVE_ALGAE = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getPOV == 0
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
         )
         EXTAKE_CORAL = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.A

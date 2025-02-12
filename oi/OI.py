@@ -85,6 +85,23 @@ class OI:
                 config.target_positions["IDLE"]
             )
         )
+
+        Keymap.Scoring.SCORE_BARGE.onTrue(
+            command.Target(
+                Robot.elevator,
+                Robot.wrist,
+                Robot.intake,
+                config.target_positions["SCORE_BARGE"]
+            )
+        ).onFalse(
+            command.Target(
+                Robot.elevator,
+                Robot.wrist,
+                Robot.intake,
+                config.target_positions["IDLE"]
+            )
+        )
+
         Keymap.Wrist.EXTAKE_CORAL.onTrue(
             command.FeedOut(Robot.wrist)
         )
@@ -108,7 +125,6 @@ class OI:
 
 
         # Algae
-        # discuss whether dealgae should be a tap or a hold
         Keymap.Wrist.REMOVE_ALGAE.onTrue(
             command.Target(
                 Robot.elevator,
@@ -124,6 +140,7 @@ class OI:
                 config.target_positions["IDLE"]
             )
         )
+        
         Keymap.Intake.INTAKE_ALGAE.onTrue(
             command.Target(
                 Robot.elevator,
