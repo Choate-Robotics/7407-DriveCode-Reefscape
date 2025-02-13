@@ -44,13 +44,11 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio
 
-
-# WRIST
-wrist_gear_ratio = 10
-
 # INTAKE
-intake_pivot_gear_ratio: float = 1
-intake_gear_ratio: float = 1
+intake_pivot_gear_ratio: float = 175
+horizontal_gear_ratio: float = 2
+vertical_gear_ratio: float = 2.5
+intake_encoder_gear_ratio: float = 3
 
 # ELEVATOR
 elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio

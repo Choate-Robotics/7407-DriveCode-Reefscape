@@ -168,8 +168,11 @@ elevator_dlow_height: meters = 0
 elevator_barge_height: meters = 0
 
 # INTAKE
-intake_id = 9
 intake_pivot_id = 0
+horizontal_id = 9
+vertical_id = 13
+intake_cancoder_id = 400
+intake_encoder_zero_pos = 0
 
 INTAKE_CONFIG = TalonConfig(
     1, 
