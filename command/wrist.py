@@ -4,11 +4,16 @@ from subsystem import Wrist
 
 from math import radians
 from wpilib import Timer
+from utils import LocalLogger
+
+log = LocalLogger("wrist_command_log")
+
 
 class SetWrist(SubsystemCommand[Wrist]):
     """
     Set the wrist to a specific angle.
     """
+
     def __init__(self, subsystem: Wrist, angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
@@ -17,7 +22,7 @@ class SetWrist(SubsystemCommand[Wrist]):
     def initialize(self) -> None:
         self.subsystem.set_wrist_angle(self.angle)
         self.subsystem.wrist_angle_moving = True
-    
+
     def execute(self) -> None:
         pass
 
@@ -25,20 +30,24 @@ class SetWrist(SubsystemCommand[Wrist]):
         return self.subsystem.is_at_angle(self.angle)
 
     def end(self, interrupted) -> None:
-        self.subsystem.wrist_angle_moving = False
+        if not interrupted:
+            self.subsystem.wrist_angle_moving = False
+        else:
+            log.error("Wrist command interrupted")
 
 
 class ZeroWrist(SubsystemCommand[Wrist]):
     """
     Zero the wrist encoder
     """
+
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
 
     def initialize(self) -> None:
         self.subsystem.initial_zero()
-    
+
     def execute(self) -> None:
         pass
 
@@ -46,7 +55,8 @@ class ZeroWrist(SubsystemCommand[Wrist]):
         return self.subsystem.wrist_zeroed
 
     def end(self, interrupted) -> None:
-        pass
+        if interrupted:
+            log.error("Wrist zeroing command interrupted")
 
 
 class FeedIn(SubsystemCommand[Wrist]):
@@ -54,6 +64,7 @@ class FeedIn(SubsystemCommand[Wrist]):
     run the feed intake in until there is coral detected in the feed
     checks if the current is over the threshold for a period of time
     """
+
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
@@ -67,13 +78,17 @@ class FeedIn(SubsystemCommand[Wrist]):
         pass
 
     def isFinished(self) -> bool:
-        if self.subsystem.feed_motor.get_motor_current() > config.back_current_threshold:
-            
+        if (
+            self.subsystem.feed_motor.get_motor_current()
+            > config.back_current_threshold
+        ):
             if not self.subsystem.in_timer.isRunning():
                 self.subsystem.in_timer.start()
-            
-            self.subsystem.coral_in_feed = self.subsystem.in_timer.hasElapsed(config.current_time_threshold)
-            
+
+            self.subsystem.coral_in_feed = self.subsystem.in_timer.hasElapsed(
+                config.current_time_threshold
+            )
+
         else:
             self.subsystem.in_timer.stop()
             self.subsystem.in_timer.reset()
@@ -90,6 +105,7 @@ class FeedOut(SubsystemCommand[Wrist]):
     """
     run the feed out until coral is no longer detected in the feed
     """
+
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
@@ -98,26 +114,26 @@ class FeedOut(SubsystemCommand[Wrist]):
         self.subsystem.feed_out()
         self.subsystem.out_timer = Timer()
         self.subsystem.wrist_ejecting = True
-    
+
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
         if self.subsystem.feed_motor.get_motor_current() < config.out_current_threshold:
-            
             if not self.subsystem.out_timer.isRunning():
                 self.subsystem.out_timer.start()
-            
-            self.subsystem.coral_in_feed = not self.subsystem.out_timer.hasElapsed(config.current_time_threshold)
-            
+
+            self.subsystem.coral_in_feed = not self.subsystem.out_timer.hasElapsed(
+                config.current_time_threshold
+            )
+
         else:
             self.subsystem.out_timer.stop()
             self.subsystem.out_timer.reset()
             self.subsystem.coral_in_feed = True
 
         return self.subsystem.coral_in_feed
-    
+
     def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
         self.subsystem.wrist_ejecting = False
-

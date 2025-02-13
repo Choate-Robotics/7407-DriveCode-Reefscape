@@ -50,6 +50,10 @@ horizontal_gear_ratio: float = 2
 vertical_gear_ratio: float = 2.5
 intake_encoder_gear_ratio: float = 3
 
+# WRIST
+wrist_gear_ratio = 45
+wrist_encoder_gear_ratio = 1.5
+
 # ELEVATOR
 elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio
 elevator_driver_gear_circumference = 1.751*inches_to_meters*math.pi

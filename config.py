@@ -118,6 +118,8 @@ WRIST_CONFIG = TalonConfig(
     0
 )
 
+wrist_encoder_zero = 0  # placeholder
+
 wrist_max_angle: radians = 2 * math.pi
 wrist_min_angle: radians = 0 * math.pi
 
