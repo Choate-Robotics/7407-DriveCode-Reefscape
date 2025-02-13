@@ -74,7 +74,7 @@ class LocalLogger:
         self.name = name
         self.dlm = DataLogManager
         if config.LOGGING:
-            self.dlm.start("logs/")
+            self.dlm.start("home/lvuser/py/logs/")
             self.log_data = self.dlm.getLog()
             self.custom_entry = StringLogEntry(self.log_data, f"messages/{self.name}")
 
@@ -104,18 +104,15 @@ class LocalLogger:
             self.setup("Deploy info not found")
             return
 
-        branch = data["git"]["branch"]
+        host = data["deploy-host"]
 
-        date = data["deploy"]["date"]
+        date = data["deploy-date"]
 
-        by = data["deply"]["user"]
+        by = data["deploy-user"]
 
-        string = f"Deploy Info\n Branch: {branch}\n Deployment Date: {date}\n Deployed By: {by}"
+        string = f"Deploy Info\n Host: {host}\n Deployment Date: {date}\n Deployed By: {by}"
 
-        if branch != "master" and branch != "main":
-            self.setup(string)
-        else:
-            self.setup(string)
+        self.setup(string)
 
     def get_log_levels(self):
         """

@@ -62,8 +62,6 @@ class TalonConfig:
         current_limits_config.stator_current_limit_enable = (
             True if self.current_limit > 0 else False
         )
-        current_limits_config.supply_time_threshold = 1
-        # current_limits_config.
 
         # brake mode
         brake_mode_config = talon_config.motor_output
@@ -84,7 +82,7 @@ class TalonConfig:
         magic.motion_magic_jerk = 6000
         magic.motion_magic_cruise_velocity = 20
 
-        res = motor.configurator.apply(talon_config)
+        res = motor.configurator.apply(talon_config, 1)
         if res != StatusCode.OK:
             print(res)
             print('error! config not applying')
@@ -116,9 +114,9 @@ class TalonFX(PIDMotor):
 
     _duty_cycle_out: controls.DutyCycleOut
 
-    _position_duty_cycle: controls.PositionDutyCycle
+    _position_voltage: controls.PositionVoltage
 
-    _velocity_duty_cycle: controls.VelocityDutyCycle
+    _velocity_voltage: controls.VelocityVoltage
 
     _foc: bool
     
@@ -144,7 +142,6 @@ class TalonFX(PIDMotor):
         self._initialized = False
         self._optimized = optimize
         self.target = 0
-        self.target_velocity = 0
 
     def init(self):
         
@@ -170,13 +167,14 @@ class TalonFX(PIDMotor):
                 
         self._initialized = True
         self._logger.complete('initialized')
+        pass
 
     def __setup_controls(self):
         self._motion_magic_velocity_voltage = controls.MotionMagicVelocityVoltage(0)
         self._motion_magic_voltage = controls.MotionMagicVoltage(0)
         self._duty_cycle_out = controls.DutyCycleOut(0)
-        self._position_duty_cycle = controls.PositionDutyCycle(0)
-        self._velocity_duty_cycle = controls.VelocityDutyCycle(0)
+        self._position_voltage = controls.PositionVoltage(0)
+        self._velocity_voltage = controls.VelocityVoltage(0)
         
     def error_check(self, status: StatusCode, message: str = ''):
         if TimedRobot.isSimulation():
@@ -199,15 +197,13 @@ class TalonFX(PIDMotor):
 
     def set_target_velocity(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
         self.error_check(self._motor.set_control(self._motion_magic_velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
-        self.target_velocity = vel
 
-    def set_position_duty_cycle(self, pos: rotations):
-        self.error_check(self._motor.set_control(self._position_duty_cycle.with_position(pos)), f'target position: {pos}')
+    def set_target_position_voltage(self, pos: rotations):
+        self.error_check(self._motor.set_control(self._position_voltage.with_position(pos)), f'target position: {pos}')
         self.target = pos
 
-    def set_velocity_duty_cycle(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
-        self.error_check(self._motor.set_control(self._velocity_duty_cycle.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
-        self.target_velocity = vel
+    def set_target_velocity_voltage(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
+        self.error_check(self._motor.set_control(self._velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
 
     def set_raw_output(self, x: float):
         self.error_check(self._motor.set_control(self._duty_cycle_out.with_output(x)), f'raw output: {x}')
@@ -232,9 +228,6 @@ class TalonFX(PIDMotor):
     
     def get_target(self) -> rotations:
         return self.target
-    
-    def get_target_velocity(self) -> rotations_per_second:
-        return self.target_velocity
 
     def optimize_normal_operation(self, ms: int = 25) -> StatusCode.OK:
         """removes every status signal except for motor position, current, and velocty to optimize bus utilization
@@ -249,4 +242,3 @@ class TalonFX(PIDMotor):
         self._motor_vel.set_update_frequency(ms)
         self._motor_accel.set_update_frequency(ms)
         self._motor_current.set_update_frequency(ms)
-        return self._motor.optimize_bus_utilization()

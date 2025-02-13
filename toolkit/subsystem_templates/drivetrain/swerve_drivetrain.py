@@ -34,10 +34,10 @@ class SwerveNode:
         """
         Initialize the swerve node.
         """
-        print(f"Initializing {self.name}", self.counter)
-        self.sim_travel_distance = 0
-        self.sim_motor_speed = 0
-        self.sim_motor_angle = 0
+        # print(f"Initializing {self.name}", self.counter)
+        # self.sim_travel_distance = 0
+        # self.sim_motor_speed = 0
+        # self.sim_motor_angle = 0
 
         self.m_move.init()
         self.m_turn.init()
@@ -66,8 +66,7 @@ class SwerveNode:
 
         self.m_turn.set_sensor_position(motor_change)
 
-        self.m_turn.set_position_duty_cycle(0)
-
+        self.m_turn.set_target_position_voltage(0)
 
     def set(self, vel: meters_per_second, angle_radians: radians_per_second):
         """
@@ -85,6 +84,7 @@ class SwerveNode:
             self.sim_travel_distance += vel * .03
             self.sim_motor_angle = angle_radians
 
+    # OVERRIDDEN FUNCTIONS
     def set_motor_angle(self, pos: radians):
         """
         Set the angle of the swerve node.
@@ -92,13 +92,13 @@ class SwerveNode:
         Args:
             pos (radians): angle of the swerve node in radians
         """
-        self.m_turn.set_position_duty_cycle(
+        self.m_turn.set_target_position_voltage(
             (pos / (2 * math.pi)) * constants.drivetrain_turn_gear_ratio
         )
 
     def get_turn_motor_angle(self) -> radians:
         """
-        Get the current angle of the swerve node.
+        Get the current angle of the swerve node. return: radians
         """
         return (
                 (self.m_turn.get_sensor_position() / constants.drivetrain_turn_gear_ratio)
@@ -108,13 +108,13 @@ class SwerveNode:
 
     def get_abs(self):
         '''
-        Gets the absolute encoder value. Must be overridden.
+        Gets the absolute encoder value.
         '''
         return self.encoder.get()
 
     def set_motor_velocity(self, vel: meters_per_second):
         """
-        Set the velocity of the swerve node. Must be overridden.
+        Set the velocity of the swerve node.
         Args:
             vel (meters_per_second): velocity of the swerve node in meters per second
         """
@@ -128,12 +128,12 @@ class SwerveNode:
             constants.drivetrain_move_gear_ratio_as_rotations_per_meter
         ) if constants.drivetrain_max_accel > 0 else 0
 
-        self.m_move.set_target_velocity(rotations_per_second, rotations_per_second_squared)
+        self.m_move.set_target_velocity_voltage(rotations_per_second, rotations_per_second_squared)
         
 
     def get_motor_velocity(self) -> meters_per_second:
         """
-        Get the velocity of the swerve node. Must be overridden. Must return meters per second.
+        Get the velocity of the swerve node. Returns m/s
         """
         return (
                 self.m_move.get_sensor_velocity()
@@ -142,7 +142,7 @@ class SwerveNode:
 
     def get_drive_motor_traveled_distance(self) -> meters:
         """
-        Get the distance traveled by the drive motor. Must be overridden. Must return meters.
+        Get the distance traveled by the drive motor. Returns meters
         """
         sensor_position = self.m_move.get_sensor_position()
         return (
@@ -189,12 +189,6 @@ class SwerveNode:
                 * 2
                 * math.pi
         )
-    
-    def get_target_velocity(self) -> meters_per_second:
-        return (
-                self.m_move.get_target_velocity()
-                / constants.drivetrain_move_gear_ratio_as_rotations_per_meter
-        )
 
     # 0 degrees is facing right | "ethan is our FRC lord and saviour" - sid
     def _set_angle(self, target_angle: radians, initial_angle: radians):
@@ -230,6 +224,6 @@ class SwerveNode:
     def update_tables(self):
         self.nt.putNumber(f"{self.name} target angle", bounded_angle_diff(self.get_target_angle(), 0))
         self.nt.putNumber(f"{self.name} current angle", bounded_angle_diff(self.get_turn_motor_angle(), 0))
+        self.nt.putNumber(f"{self.name} current speed", self.get_motor_velocity())
+        self.nt.putNumber(f"{self.name} target speed", self.m_move._motor.get_closed_loop_reference().value/constants.drivetrain_move_gear_ratio_as_rotations_per_meter)
 
-        self.nt.putNumber(f"{self.name} target velocity", self.get_target_velocity())
-        self.nt.putNumber(f"{self.name} current velocity", self.get_motor_velocity())

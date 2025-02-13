@@ -37,3 +37,21 @@ class SetElevator(SubsystemCommand[Elevator]):
             self.subsystem.stop()
         
         self.subsystem.elevator_moving = False
+
+class ZeroElevator(SubsystemCommand[Elevator]):
+    def __init__(self, subsystem: Elevator):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self):
+        self.subsystem.set_elevator_climb_down()
+
+    def execute(self):
+        pass
+
+    def isFinished(self) -> bool:
+        return self.subsystem.magsensor.get()
+    
+    def end(self, interrupted: bool):
+        self.subsystem.stop()
+        self.subsystem.zero()
