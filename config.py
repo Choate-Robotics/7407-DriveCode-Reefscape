@@ -200,6 +200,10 @@ intake_max_angle = 0
 intake_min_angle = 0
 intake_angle_threshold = 0
 
+# TODO: Change to actual angle
+intake_algae_ground_angle = 0
+intake_climb_angle = 0
+
 # TARGET POSITIONS
 @dataclass
 class TargetData:
@@ -213,6 +217,7 @@ class TargetData:
     wrist_feed_on: bool
     wrist_score_on: bool
     
+    intake_angle: radians
     intake_in_run: bool
     intake_out_run: bool
 
@@ -229,6 +234,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=0,
         wrist_feed_on=False,
         wrist_score_on=False,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -241,6 +247,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_intake_angle,
         wrist_feed_on=True,
         wrist_score_on=False,
+        intake_angle=0,
         intake_in_run=True,
         intake_out_run=False
     ),
@@ -253,6 +260,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_l1_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -265,6 +273,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_l2_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -277,6 +286,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_l3_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -289,6 +299,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_l4_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -301,6 +312,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_dhigh_angle,
         wrist_feed_on=False,
         wrist_score_on=False,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -313,6 +325,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_dlow_angle,
         wrist_feed_on=False,
         wrist_score_on=False,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -325,6 +338,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_barge_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -349,6 +363,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_processor_score_angle,
         wrist_feed_on=False,
         wrist_score_on=True,
+        intake_angle=0,
         intake_in_run=False,
         intake_out_run=False
     ),
@@ -361,6 +376,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=0,
         wrist_feed_on=False,
         wrist_score_on=False,
+        intake_angle=intake_algae_ground_angle,
         intake_in_run=True,
         intake_out_run=False
     ),
@@ -373,6 +389,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=0,
         wrist_feed_on=False,
         wrist_score_on=False,
+        intake_angle=intake_climb_angle,
         intake_in_run=True,
         intake_out_run=False,
         intake_climb=True,
