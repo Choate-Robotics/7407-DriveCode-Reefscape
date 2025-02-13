@@ -33,7 +33,6 @@ class Target(commands2.Command):
 
         self.giraffe = SequentialCommandGroup()
 
-
         # Set elevator and wrist
         if not self.elevator.is_at_position(target_elevator_height):
             # Set wrist idle if necessary before setting the elevator
@@ -44,19 +43,27 @@ class Target(commands2.Command):
         self.giraffe.addCommands(command.SetWrist(self.wrist, target_wrist_angle))
 
         # Intake commands
-        self.intake_command = SequentialCommandGroup()
-        self.intake_command.addCommands(command.PivotIntake(self.intake, self.target.intake_idle))
+        # TODO: When intake command is done to take in an angle, change self.target.intake_idle to self.target.intake_angle
+        self.intake_pivot_command = command.PivotIntake(self.intake, self.target.intake_idle)
 
+        self.final_command = SequentialCommandGroup()
+
+        # Add in intake pivot and giraffe in parallel
+        self.final_command.addCommands(
+            ParallelCommandGroup(
+                self.intake_pivot_command, 
+                self.giraffe
+            )
+        )
+
+        # If the intake needs to run
         if self.target.intake_in_run:
-            self.intake_command.addCommands(command.RunIntake(self.intake))
+            self.final_command.addCommands(command.RunIntake(self.intake))
         elif self.target.intake_out_run:
-            self.intake_command.addCommands(command.EjectIntake(self.intake))
+            self.final_command.addCommands(command.EjectIntake(self.intake))
 
         commands2.CommandScheduler.getInstance()(
-            ParallelCommandGroup(
-                self.intake_command, 
-                self.giraffe
-            ),
+            self.final_command,
             InstantCommand(lambda: self.finish()),
         )
     
