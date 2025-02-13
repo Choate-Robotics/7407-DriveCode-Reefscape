@@ -52,38 +52,52 @@ class EjectIntake(SubsystemCommand[Intake]):
         self.subsystem.stop()
 
 
-class PivotIntake(SubsystemCommand[Intake]):
+class SetPivot(SubsystemCommand[Intake]):
     """
-    Pivots the intake to opposite position
-    Note: True means pivot is up and vice versa
+    sets the intake pivot to a target position
     """
 
-    def __init__(self, subsystem: Intake, target_intake_position: bool):
+    def __init__(self, subsystem: Intake, target_angle: float):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        self.subsystem.target_intake_position = target_intake_position
+        self.subsystem.target_angle = target_angle
 
     def initialize(self) -> None:
         self.subsystem.intake_pivoting = True
-
-        if self.subsystem.target_intake_position:
-            self.subsystem.pivot_down()
-        else:
-            self.subsystem.pivot_up()
+        self.subsystem.set_pivot_angle(self.subsystem.target_angle)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        if self.subsystem.target_intake_position:
-            # trying to go up
-            return self.subsystem.is_pivot_up()
-        else:
-            # trying to go down
-            return self.subsystem.is_pivot_down()
+        return self.subsystem.get_pivot_angle() == self.subsystem.target_angle
 
     def end(self, interrupted) -> None:
         if not interrupted:
             self.subsystem.intake_pivoting = False
         else:
             log.warn("Intake pivot interrupted")
+
+class ZeroPivot(SubsystemCommand[Intake]):
+    """
+    Zero the intake pivot
+    """
+
+    def __init__(self, subsystem: Intake):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self) -> None:
+        self.subsystem.zero_pivot()
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return self.subsystem.pivot_zeroed
+
+    def end(self, interrupted) -> None:
+        if not interrupted:
+            log.info("Intake pivot zeroed")
+        else:
+            log.warn("Intake pivot zeroing interrupted")
