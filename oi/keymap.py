@@ -42,7 +42,7 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold
         )
 
-        EJECT_CORAL = commands2.button.Trigger(
+        INTAKE_EJECT = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold
         )
 
@@ -50,9 +50,6 @@ class Keymap:
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.RB
         )
 
-        EXTAKE_ALGAE = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
-        )
     class Scoring:
         SCORE_L1 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
@@ -83,6 +80,9 @@ class Keymap:
         )
         EXTAKE_CORAL = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.A
+        )
+        EXTAKE_ALGAE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
         )
     class Elevator:
         pass

@@ -105,7 +105,9 @@ class OI:
 
         Keymap.Wrist.EXTAKE_CORAL.onTrue(
             command.FeedOut(Robot.wrist)
-        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.feed_stop()))
+        ).onFalse(
+            commands2.InstantCommand(lambda: Robot.wrist.feed_stop())
+        )
         
         # INTAKING
         Keymap.Intake.INTAKE_CORAL.onTrue(
@@ -124,6 +126,22 @@ class OI:
             )
         )
 
+        # Pivots intake down and runs intake out. Equivalent to scoring algae in processor from intake.
+        Keymap.Intake.INTAKE_EJECT.onTrue(
+            command.PivotIntake(
+                Robot.intake,
+                False # Ground intake, will need to change to angle at some point
+            ).andThen(
+                command.EjectIntake(Robot.intake)
+            )
+        ).onFalse(
+            command.Target(
+                Robot.elevator,
+                Robot.wrist,
+                Robot.intake,
+                config.target_positions["IDLE"]
+            )
+        )
 
         # Algae
         Keymap.Wrist.REMOVE_ALGAE.onTrue(
@@ -148,6 +166,22 @@ class OI:
                 Robot.wrist,
                 Robot.intake,
                 config.target_positions["INTAKE_ALGAE"]
+            )
+        ).onFalse(
+            command.Target(
+                Robot.elevator,
+                Robot.wrist,
+                Robot.intake,
+                config.target_positions["IDLE"]
+            )
+        )
+
+        Keymap.Wrist.EXTAKE_ALGAE.onTrue(
+            command.Target(
+                Robot.elevator,
+                Robot.wrist,
+                Robot.intake,
+                config.target_positions["SCORE_PROCESSOR_WRIST"]
             )
         ).onFalse(
             command.Target(
