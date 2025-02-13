@@ -133,9 +133,13 @@ class Intake(Subsystem):
         """
         setting the angle of the pivot
         """
+        self.target_angle = angle
         self.pivot_motor.set_target_position(
             (angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
         )
+
+    def stop_pivot(self) -> None:
+        self.pivot_motor.set_raw_output(0)  
 
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
