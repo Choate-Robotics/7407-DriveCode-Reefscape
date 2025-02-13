@@ -132,10 +132,7 @@ class Wrist(Subsystem):
         """
         check if the wrist angle is at the given angle
         """
-        return (
-            abs(bounded_angle_diff(self.get_wrist_angle(), angle))
-            < config.angle_threshold
-        )
+        return abs(self.get_wrist_angle() - angle) < config.angle_threshold
 
     def update_table(self) -> None:
         """
