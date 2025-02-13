@@ -1,7 +1,7 @@
-from wpilib import AddressableLED, PowerDistribution, SmartDashboard
-import math, config
+from wpilib import AddressableLED, SmartDashboard, Color, LEDPattern
+import math
 from toolkit.subsystem import Subsystem
-
+import ntcore
 
 class AddressableLEDStrip(Subsystem):
 
@@ -27,6 +27,7 @@ class AddressableLEDStrip(Subsystem):
         #self.rightlimit = rightlimit 
         #self.leftlimit = leftlimit
         self.pattern = None
+        self.mode = "None"
         
     def init(self):
         """
@@ -34,8 +35,8 @@ class AddressableLEDStrip(Subsystem):
         """
         self.led = AddressableLED(self.id)
        
-        self.ledBuffer = [self.led.LEDData() for i in self.size]
-
+        self.ledBuffer = [self.led.LEDData() for i in range(self.size)]
+        self.led.enable()
         SmartDashboard.putBoolean("LEDs Initialized", True)
 
     def enable(self):
@@ -56,25 +57,40 @@ class AddressableLEDStrip(Subsystem):
     def get_led_data(self):
         return [self.led.LEDData() for i in range(self.size)].copy()
     
-    # def get_current_type(self):
-    #     return self.mode
+    def get_current_type(self):
+        #return self.pattern/mode
+        pass
 
     def set_Solid(self, r: int, g: int, b: int):
 
-        self.pattern = self.LEDPattern.solid(r,g,b)
+        self.pattern = LEDPattern.solid(Color(r,g,b))
+        self.mode = f"Solid r:{r} g:{g} b:{b}"
+
+    def set_Alternate(self, r1: int, g1: int, b1: int, r2:int, g2:int, b2: int):
+
+        self.alternate = []
+        for i in range(self.size):
+            if i % 2 == 0:
+                self.alternate.append((i/self.size, Color(r1, g1, b1)))
+            elif i % 2 == 1:
+                self.alternate.append((i/self.size, Color(r2, g2, b2)))
+
+        self.pattern = LEDPattern.steps(self.alternate)
 
     def set_Rainbow_Ladder(self):
         """
         creates a scrolling rainbow on LEDs
         """
-        self.rainbow = self.LEDPattern.rainbow(self.saturation, self.brightness)
+        self.rainbow = LEDPattern.rainbow(self.saturation, self.brightness)
 
         self.pattern = self.rainbow.scrollAtAbsoluteSpeed(self.speed, self.LEDSpacing)
-    
+        self.mode = "Rainbow Ladder"
+
     def set_Blink(self, r: int, g: int, b: int):
 
-        self.base = self.LEDPattern.discontinousGradient(r,g,b)
-        self.pattern = self.base.blink(self.blink_frequency)  
+        self.base = LEDPattern.discontinousGradient(r,g,b)
+        self.pattern = self.base.blink(self.blink_frequency)
+        self.mode = f"Blink r:{r} g:{g} b:{b}"  
     
     def field_position(self, r1, g1, b1, r2, b2, g2):
         """ 
@@ -95,9 +111,17 @@ class AddressableLEDStrip(Subsystem):
             self.mode = "robot positioning on starting line is too far left"
         
         else:
-            self.set_solid(0, 100, 0) # robot is where it needs to be
+            self.set_Solid(0, 100, 0) # robot is where it needs to be
 
     def periodic(self):
 
-        self.pattern.applyTo(self.ledBuffer)
+        self.update_tables()
+        def set_pattern_writer(i: int, my_color: Color) -> None:
+            self.ledBuffer[i].setLED(my_color)
+        ledreader= LEDPattern.LEDReader(self.ledBuffer.__getitem__, self.size)
+        self.pattern.applyTo(ledreader, set_pattern_writer)
         self.led.setData(self.ledBuffer)
+
+    def update_tables(self):
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("LEDS")
+        self.table.putString("mode", self.mode)

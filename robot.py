@@ -6,7 +6,7 @@ import wpilib
 import command
 import config
 import constants
-from robot_systems import Robot, Pneumatics, Sensors, LEDs, PowerDistribution, Field
+from robot_systems import Robot, Pneumatics, Sensors, PowerDistribution, Field
 import sensors
 import subsystem
 import utils
@@ -65,7 +65,7 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("subsystem init", str(e))
                 raise e
-        Robot.led.set_Solid(255,215,0)
+        Robot.led.set_Solid(255,215,0) #gold
         self.log.complete("Robot initialized")
 
     def robotPeriodic(self):

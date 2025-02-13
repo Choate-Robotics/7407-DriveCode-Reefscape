@@ -78,8 +78,8 @@ MOVE_CONFIG = TalonConfig(
 )
 
 #Leds
-leds_id = 0 #placeholder
-leds_size = 0 #placeholder
+leds_id = 8 #placeholder
+leds_size = 27 #placeholder
 leds_spacing = 1/120.0 # placeholder, density of __ per meter
 leds_speed = 5
 leds_brightness = 128
