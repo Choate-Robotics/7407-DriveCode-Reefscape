@@ -1,10 +1,14 @@
-from units.SI import radians, inches_to_meters
 import math
 from dataclasses import dataclass
 from wpilib import AnalogEncoder
-
+from units.SI import (
+    radians,
+    meters,
+    inches_to_meters,
+    seconds
+)
 from toolkit.motors.ctre_motors import TalonConfig
-from units.SI import radians, meters, seconds
+from pathplannerlib.config import PIDConstants
 
 from wpimath.geometry import Pose2d
 
@@ -39,8 +43,11 @@ NT_ELEVATOR: bool = False
 NT_WRIST: bool = False
 NT_DRIVETRAIN: bool = False
 
+# Cameras
+left_cam_name = "left_cam"
+right_cam_name = "right_cam"
 
-# DRIVETRAIN
+#Drivetrain
 gyro_id: int = 13
 
 front_left_move_id: int = 2
@@ -73,27 +80,28 @@ back_right_move_inverted = False
 
 driver_centric: bool = True
 drivetrain_deadzone: float = 0.1
-drivetrain_curve: float = 2
+drivetrain_curve: float = 2.00000
 drivetrain_zero: radians = math.radians(180)
 
+auto_translation_pid = PIDConstants(6, 0.0, 0.1)
+auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
+
+# odometry
+odometry_tag_distance_threshold: meters = 2.5
+
 TURN_CONFIG = TalonConfig(
-    0.9,
-    0,
-    0,
-    0,
-    0,
-    brake_mode=True,
+    8, 0, 0.025, 0, 0, brake_mode=True
 )
 
 MOVE_CONFIG = TalonConfig(
-    0.11, 
-    0, 
-    0, 
-    0.25, 
-    0.01, 
-    brake_mode=True, 
-    current_limit=40, 
-    kV=0.12
+    0.11,
+    0,
+    0,
+    kF=0.25,
+    kA=0.15,
+    kV=0.12,
+    brake_mode=True,
+    current_limit=50,
 )
 
 
@@ -395,3 +403,7 @@ target_positions: dict[str, TargetData] = {
         intake_climb=True,
     )
 }
+
+
+# TO CHANGE
+period = 0.03
