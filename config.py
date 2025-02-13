@@ -84,16 +84,26 @@ MOVE_CONFIG = TalonConfig(
 
 
 #intake
-intake_id = 9
-INTAKE_CONFIG = TalonConfig(
-    1,
-    0,
-    0,
-    0,
-    0
-)
+horizontal_id = 9
+# HORIZONTAL_CONFIG = TalonConfig(
+#     1,
+#     0,
+#     0,
+#     0,
+#     0
+# )
+vertical_id = 13
+# VERTICAL_CONFIG = TalonConfig(
+#     1,
+#     0,
+#     0,
+#     0,
+#     0
+# )
 
+intake_cancoder_id = 400
 intake_pivot_id = 10
+intake_encoder_zero = 0 #placeholder
 INTAKE_PIVOT_CONFIG = TalonConfig(
     1,
     0,
