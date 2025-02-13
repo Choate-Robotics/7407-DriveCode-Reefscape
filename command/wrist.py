@@ -2,8 +2,8 @@ from toolkit.command import SubsystemCommand
 import config
 from subsystem import Wrist
 
-from math import radians
-from wpilib import Timer
+from units.SI import radians
+from wpimath.filter import Debouncer
 from utils import LocalLogger
 
 log = LocalLogger("wrist_command_log")
@@ -71,30 +71,18 @@ class FeedIn(SubsystemCommand[Wrist]):
 
     def initialize(self) -> None:
         self.subsystem.feed_in()
-        self.subsystem.in_timer = Timer()
         self.subsystem.wrist_feeding = True
+
+        self.debouncer = Debouncer(config.current_time_threshold, Debouncer.DebounceType.kRising)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        if (
-            self.subsystem.feed_motor.get_motor_current()
-            > config.back_current_threshold
-        ):
-            if not self.subsystem.in_timer.isRunning():
-                self.subsystem.in_timer.start()
-
-            self.subsystem.coral_in_feed = self.subsystem.in_timer.hasElapsed(
-                config.current_time_threshold
-            )
-
-        else:
-            self.subsystem.in_timer.stop()
-            self.subsystem.in_timer.reset()
-            self.subsystem.coral_in_feed = False
-
-        return self.subsystem.coral_in_feed
+        return self.debouncer.calculate(
+            self.subsystem.feed_motor.get_motor_current() 
+            < config.back_current_threshold
+        )
 
     def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
@@ -109,30 +97,23 @@ class FeedOut(SubsystemCommand[Wrist]):
     def __init__(self, subsystem: Wrist, angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
+        
 
     def initialize(self) -> None:
         self.subsystem.feed_out()
-        self.subsystem.out_timer = Timer()
         self.subsystem.wrist_ejecting = True
+
+        self.debouncer = Debouncer(
+            config.current_time_threshold, Debouncer.DebounceType.kRising)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        if self.subsystem.feed_motor.get_motor_current() < config.out_current_threshold:
-            if not self.subsystem.out_timer.isRunning():
-                self.subsystem.out_timer.start()
-
-            self.subsystem.coral_in_feed = not self.subsystem.out_timer.hasElapsed(
-                config.current_time_threshold
+        return self.debouncer.calculate(
+            self.subsystem.feed_motor.get_motor_current() 
+            < config.out_current_threshold
             )
-
-        else:
-            self.subsystem.out_timer.stop()
-            self.subsystem.out_timer.reset()
-            self.subsystem.coral_in_feed = True
-
-        return self.subsystem.coral_in_feed
 
     def end(self, interrupted) -> None:
         self.subsystem.feed_stop()

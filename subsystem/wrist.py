@@ -40,9 +40,6 @@ class Wrist(Subsystem):
         self.coral_in_feed: bool = False
         self.wrist_zeroed: bool = False
 
-        self.in_timer = Timer()
-        self.out_timer = Timer()
-
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
