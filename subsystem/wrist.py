@@ -110,8 +110,11 @@ class Wrist(Subsystem):
         angle = self.limit_angle(angle)
         self.target_angle = angle
 
+        ff = config.wrist_max_ff * math.cos(angle - config.wrist_ff_offset)
+
         self.wrist_motor.set_target_position(
-            (angle / 2 * math.pi) * constants.wrist_gear_ratio
+            (angle / 2 * math.pi) * constants.wrist_gear_ratio,
+            ff
         )
 
     def get_wrist_angle(self) -> radians:

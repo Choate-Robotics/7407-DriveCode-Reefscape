@@ -98,5 +98,8 @@ out_current_threshold = 2  # amps PLACEHOLDER
 back_current_threshold = 10  # amps PLACEHOLDER
 current_time_threshold = 0.3  # seconds PLACEHOLDER
 
+wrist_max_ff = 0 #placeholder
+wrist_ff_offset = 0 #placeholder
+
 intake_speed = 1  # placeholder
 intake_eject_speed = -1  # placeholder
