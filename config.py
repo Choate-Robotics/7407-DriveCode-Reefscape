@@ -128,8 +128,8 @@ WRIST_CONFIG = TalonConfig(
 
 wrist_encoder_zero = 0  # placeholder
 
-wrist_max_angle: radians = 2 * math.pi
-wrist_min_angle: radians = 0 * math.pi
+wrist_max_angle: radians = math.radians(45)
+wrist_min_angle: radians = math.radians(-117)
 
 # TODO: Change to actual angles
 wrist_intake_angle: radians = 0
@@ -148,10 +148,13 @@ wrist_feed_in_speed = 1
 wrist_feed_out_speed = -1
 
 # TODO: Change to actual thresholds
-out_current_threshold = 2
-back_current_threshold = 10
+out_current_threshold: float = 2
+back_current_threshold: float = 10
 current_time_threshold: seconds = 0.3
+wrist_algae_time_threshold: seconds = 3
 
+wrist_max_ff = 0 #placeholder
+wrist_ff_offset = 0 #placeholder
 
 # ELEVATOR
 elevator_lead_id = 10
