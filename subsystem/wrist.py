@@ -40,6 +40,10 @@ class Wrist(Subsystem):
         self.coral_in_feed: bool = False
         self.wrist_zeroed: bool = False
 
+        self.algae_in_wrist: bool = False
+        self.algae_running_in: bool = False
+        self.algae_running_out: bool = False
+
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
