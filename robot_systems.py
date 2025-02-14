@@ -28,9 +28,10 @@ class Pneumatics:
 
 
 class Sensors:
-    right_cam = sensors.PhotonCamCustom(config.right_cam_name, constants.robot_to_right_cam)
-    left_cam = sensors.PhotonCamCustom(config.left_cam_name, constants.robot_to_left_cam)
-    cam_controller = sensors.PhotonController([left_cam, right_cam])
+    # right_cam = sensors.PhotonCamCustom(config.right_cam_name, constants.robot_to_right_cam)
+    # left_cam = sensors.PhotonCamCustom(config.left_cam_name, constants.robot_to_left_cam)
+    # cam_controller = sensors.PhotonController([left_cam, right_cam])
+    cam_controller = None
 
 
 class LEDs:
@@ -42,7 +43,7 @@ class PowerDistribution:
 
 
 class Field:
-    odometry = sensors.FieldOdometry(Robot.drivetrain, Sensors.cam_controller, constants.field_width, constants.field_length)
+    odometry = sensors.FieldOdometry(Robot.drivetrain, Sensors.cam_controller)
     field_constants = FieldConstants()
     reef_face = ReefFace
     branch = Branch

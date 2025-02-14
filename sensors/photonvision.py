@@ -61,7 +61,7 @@ class PhotonCamCustom:
 
 
 class PhotonController:
-    def __init__(self, cams: list[PhotonCamCustom]):
+    def __init__(self, cams: list[PhotonCamCustom | None]):
         self.cams = cams
 
     def init(self):

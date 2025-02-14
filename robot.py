@@ -136,7 +136,7 @@ class _Robot(wpilib.TimedRobot):
         ])
 
         Robot.drivetrain.update_tables()
-        Sensors.cam_controller.update_tables()
+        # Sensors.cam_controller.update_tables()
         ...
 
     # Initialize subsystems
