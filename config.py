@@ -111,13 +111,14 @@ INTAKE_PIVOT_CONFIG = TalonConfig(
     0,
     0
 )
-
+# placehodler
 intake_max_angle = math.radians(90)
 intake_min_angle = math.radians(60)
-intake_angle_threshold = math.radians(5)
+intake_angle_threshold = math.radians(2)
 
-intake_speed = 1 #placeholder
-intake_eject_speed = 1 #placeholder
+horizontal_intake_speed: float = 1 #placeholder
+vertical_intake_speed: float = 1 # placeholder
+
 
 #elevator
 elevator_lead_id = 10 

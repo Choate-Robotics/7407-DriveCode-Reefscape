@@ -6,10 +6,8 @@ from phoenix6.hardware import CANcoder
 import ntcore
 
 import math
-from math import pi
-from math import radians
+from units.SI import radians
 
-from wpilib import Timer
 
 
 class Intake(Subsystem):
@@ -53,10 +51,10 @@ class Intake(Subsystem):
         spin the motors inwards to collect the coral
         """
         self.horizontal_motor.set_raw_output(
-            config.intake_speed * constants.horizontal_gear_ratio
+            config.horizontal_intake_speed
         )
         self.vertical_motor.set_raw_output(
-            config.intake_speed * constants.vertical_gear_ratio
+            config.vertical_intake_speed
         )
         self.intake_running = True
 
@@ -73,10 +71,10 @@ class Intake(Subsystem):
         eject coral in the intake
         """
         self.horizontal_motor.set_raw_output(
-            -config.intake_speed * constants.horizontal_gear_ratio
+            -config.horizontal_intake_speed
         )
         self.vertical_motor.set_raw_output(
-            -config.intake_speed * constants.vertical_gear_ratio
+            -config.vertical_intake_speed
         )
         self.intake_running = True
 
@@ -88,6 +86,20 @@ class Intake(Subsystem):
 
     def get_pivot_motor_current(self) -> float:
         return self.pivot_motor.get_motor_current()
+    
+    def limit_angle(self, angle: radians) -> radians:
+        """
+        limits if the given angle in radians is within the range of the wrist
+        if it is out of range, it returns the min or max angle in radians
+        otherwise it returns the given angle
+
+        takes in angle in radians
+        """
+        if angle <= config.intake_min_angle:
+            return config.intake_min_angle
+        elif angle >= config.intake_max_angle:
+            return config.intake_max_angle
+        return angle
 
     def zero_pivot(self) -> None:
         """
@@ -109,44 +121,25 @@ class Intake(Subsystem):
         self.pivot_angle = (
             self.pivot_motor.get_sensor_position()
             / constants.intake_pivot_gear_ratio
-            * pi
+            * math.pi
             * 2
         )
         return self.pivot_angle
+    
+    def is_at_angle(self, angle: radians) -> bool:
+        return abs( self.get_pivot_angle() - angle) < config.intake_angle_threshold
 
-    def is_pivot_up(self) -> bool:
-        "returns a bool for if the pivot is in up position"
-        self.pivot_angle = self.get_pivot_angle()
-        self.intake_up = (
-            self.pivot_angle >= config.intake_max_angle - config.intake_angle_threshold
-        )
-
-        return self.intake_up
-
-    def is_pivot_down(self) -> bool:
-        "returns a bool for if the pivot is in down position"
-        self.pivot_angle = self.get_pivot_angle()
-        self.intake_down = (
-            self.pivot_angle < config.intake_min_angle + config.intake_angle_threshold
-        )
-
-        return self.intake_down
-
-    def pivot_up(self) -> None:
+    def set_pivot_angle(self, angle: radians) -> None:
         """
-        pivot the intake up
+        setting the angle of the pivot
         """
+        self.target_angle = angle
         self.pivot_motor.set_target_position(
-            (config.intake_max_angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
+            (angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
         )
 
-    def pivot_down(self) -> None:
-        """
-        pivot the intake down
-        """
-        self.pivot_motor.set_target_position(
-            (config.intake_min_angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
-        )
+    def stop_pivot(self) -> None:
+        self.pivot_motor.set_raw_output(0)  
 
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
