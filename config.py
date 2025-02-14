@@ -94,10 +94,14 @@ wrist_encoder_zero = 0  #place holder
 
 wrist_max_angle: radians = math.radians(45)
 wrist_min_angle: radians = math.radians(-117)
-angle_threshold = math.radians(2)  # radians
-out_current_threshold = 2  # amps PLACEHOLDER
-back_current_threshold = 10  # amps PLACEHOLDER
-current_time_threshold = 0.3  # seconds PLACEHOLDER
+angle_threshold: radians = math.radians(2)  # radians
+out_current_threshold: float = 2  # amps PLACEHOLDER
+back_current_threshold: float = 10  # amps PLACEHOLDER
+current_time_threshold: float = 0.3  # seconds PLACEHOLDER
+wrist_algae_time_threshold: float = 3 # seconds PLACEHOLDER
+
+wrist_max_ff = 0 #placeholder
+wrist_ff_offset = 0 #placeholder
 
 intake_speed = 1  # placeholder
 intake_eject_speed = -1  # placeholder

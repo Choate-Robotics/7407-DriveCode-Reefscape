@@ -40,8 +40,9 @@ class Wrist(Subsystem):
         self.coral_in_feed: bool = False
         self.wrist_zeroed: bool = False
 
-        self.in_timer = Timer()
-        self.out_timer = Timer()
+        self.algae_in_wrist: bool = False
+        self.algae_running_in: bool = False
+        self.algae_running_out: bool = False
 
     def init(self):
         self.feed_motor.init()
@@ -109,8 +110,11 @@ class Wrist(Subsystem):
         angle = self.limit_angle(angle)
         self.target_angle = angle
 
+        ff = config.wrist_max_ff * math.cos(angle - config.wrist_ff_offset)
+
         self.wrist_motor.set_target_position(
-            (angle / 2 / math.pi) * constants.wrist_gear_ratio
+            (angle / 2 * math.pi) * constants.wrist_gear_ratio,
+            ff
         )
 
     def get_wrist_angle(self) -> radians:
@@ -132,10 +136,7 @@ class Wrist(Subsystem):
         """
         check if the wrist angle is at the given angle
         """
-        return (
-            abs(bounded_angle_diff(self.get_wrist_angle(), angle))
-            < config.angle_threshold
-        )
+        return abs(self.get_wrist_angle() - angle) < config.angle_threshold
 
     def update_table(self) -> None:
         """
