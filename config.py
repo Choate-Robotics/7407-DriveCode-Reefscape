@@ -1,11 +1,9 @@
-from units.SI import (
-    radians,
-    meters
-)
+from phoenix6 import degree
 from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
 from pathplannerlib.config import PIDConstants
+from units.SI import degrees_to_radians, degrees, radians, meters
 
 
 DEBUG_MODE: bool = True
@@ -28,7 +26,8 @@ LOG_FILE_LEVEL: int = 1
 # anything else will log nothing
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-foc_active = False  #foc for TalonFX requires paid subscription
+
+foc_active = False  # foc for TalonFX requires paid subscription
 
 NT_ELEVATOR: bool = False
 
@@ -36,7 +35,7 @@ NT_ELEVATOR: bool = False
 left_cam_name = "left_cam"
 right_cam_name = "right_cam"
 
-#Drivetrain
+# Drivetrain
 gyro_id: int = 13
 
 front_left_move_id: int = 2
@@ -69,15 +68,29 @@ back_right_move_inverted = False
 
 driver_centric: bool = True
 drivetrain_deadzone: float = 0.1
-drivetrain_curve: float = 2.00000
+drivetrain_curve: float = 2.0000
 drivetrain_zero: radians = math.radians(180)
+drivetrain_reversed: bool = False
+
+drivetrain_rotation_kp: float = 5.5
+drivetrain_rotation_ki: float = 0.0
+drivetrain_rotation_kd: float = 0.0
+drivetrain_rotation_tolerance: degrees = 1  # degrees
+
+drivetrain_x_kp: float = 4.0
+drivetrain_x_ki: float = 0.0
+drivetrain_x_kd: float = 0.0
+drivetrain_x_tolerance: float = 0.05
+
+drivetrain_y_kp: float = 4.0
+drivetrain_y_ki: float = 0.0
+drivetrain_y_kd: float = 0.0
+drivetrain_y_tolerance: float = 0.05
 
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 
-TURN_CONFIG = TalonConfig(
-    8, 0, 0.025, 0, 0, brake_mode=True
-)
+TURN_CONFIG = TalonConfig(8, 0, 0.025, 0, 0, brake_mode=True)
 
 MOVE_CONFIG = TalonConfig(
     0.11,
@@ -90,13 +103,13 @@ MOVE_CONFIG = TalonConfig(
     current_limit=50,
 )
 
-#elevator
-elevator_lead_id = 10 
+# elevator
+elevator_lead_id = 10
 elevator_follower_id = 11
-magsensor_id = 12 #placeholder
+magsensor_id = 12  # placeholder
 
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 
 # TO CHANGE
-period = 0.03
+period: float = 0.03
