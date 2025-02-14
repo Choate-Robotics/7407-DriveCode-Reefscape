@@ -161,3 +161,7 @@ cython_debug/
 .idea/
 
 simgui*
+
+tests/ctre_sim/*.dat
+
+ctre_sim/*.dat

@@ -3,21 +3,27 @@ from unittest.mock import MagicMock
 import pytest
 
 import config
-import constants
+
 from subsystem import Intake
 
 
 @pytest.fixture
 def intake() -> Intake:
     intake = Intake()
-    intake.motor = MagicMock()
+
+    intake.horizontal_motor = MagicMock()
+    intake.vertical_motor = MagicMock()
+    intake.pivot_motor = MagicMock()
+
     return intake
 
 
 def test_intake_init(intake: Intake):
     intake.init()
 
-    intake.motor.init.assert_called()
+    intake.horizontal_motor.init.assert_called()
+    intake.vertical_motor.init.assert_called()
+    intake.pivot_motor.init.assert_called()
 
 
 # @pytest.mark.parametrize(
@@ -33,21 +39,31 @@ def test_intake_init(intake: Intake):
 
 def test_roll_in(intake: Intake):
     intake.roll_in()
-    intake.motor.set_raw_output.assert_called_with(
-        config.intake_speed * constants.intake_gear_ratio
+    intake.horizontal_motor.set_raw_output.assert_called_with(
+        config.horizontal_intake_speed
     )
+    intake.vertical_motor.set_raw_output.assert_called_with(
+        config.vertical_intake_speed
+    )
+    assert intake.intake_running is True
 
 
 def test_roll_out(intake: Intake):
     intake.roll_out()
-    intake.motor.set_raw_output.assert_called_with(
-        -config.intake_eject_speed * constants.intake_gear_ratio
+    intake.horizontal_motor.set_raw_output.assert_called_with(
+        -config.horizontal_intake_speed
     )
+    intake.vertical_motor.set_raw_output.assert_called_with(
+        -config.vertical_intake_speed
+    )
+    assert intake.intake_running is True
 
 
 def test_stop(intake: Intake):
     intake.stop()
-    intake.motor.set_raw_output.assert_called_with(0)
+    intake.vertical_motor.set_raw_output.assert_called_with(0)
+    intake.horizontal_motor.set_raw_output.assert_called_with(0)
+    assert intake.intake_running is False
 
 
 def detect_coral(intake: Intake):

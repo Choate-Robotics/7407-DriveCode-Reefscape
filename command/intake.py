@@ -4,6 +4,8 @@ from subsystem import Intake
 from utils import LocalLogger
 from wpimath.filter import Debouncer
 
+from units.SI import radians
+
 log = LocalLogger("Intake command")
 
 
@@ -58,26 +60,27 @@ class SetPivot(SubsystemCommand[Intake]):
     sets the intake pivot to a target position
     """
 
-    def __init__(self, subsystem: Intake, target_angle: float):
+    def __init__(self, subsystem: Intake, target_angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        self.subsystem.target_angle = target_angle
+        self.target_angle = target_angle
 
     def initialize(self) -> None:
         self.subsystem.intake_pivoting = True
-        self.subsystem.set_pivot_angle(self.subsystem.target_angle)
+        self.subsystem.set_pivot_angle(self.target_angle)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        return self.subsystem.get_pivot_angle() == self.subsystem.target_angle
+        return self.subsystem.is_at_angle(self.target_angle)
 
     def end(self, interrupted) -> None:
-        if not interrupted:
-            self.subsystem.intake_pivoting = False
+        if interrupted:
+            self.subsystem.stop_pivot()
         else:
             log.warn("Intake pivot interrupted")
+        self.subsystem.intake_pivoting = False
 
 class ZeroPivot(SubsystemCommand[Intake]):
     """
