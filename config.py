@@ -263,7 +263,7 @@ target_positions: dict[str, TargetData] = {
         wrist_angle=wrist_intake_angle,
         wrist_feed_on=True,
         wrist_score_on=False,
-        intake_angle=0,
+        intake_angle=intake_coral_station_angle,
         intake_in_run=True,
         intake_out_run=False
     ),

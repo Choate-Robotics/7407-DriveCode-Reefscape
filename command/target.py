@@ -61,7 +61,7 @@ class IntakeCoral(commands2.ParallelRaceGroup):
             command.FeedIn(wrist)
         )
 
-class EjectCoral(commands2.ParallelRaceGroup):
+class EjectCoral(commands2.ParallelCommandGroup):
     def __init__(self, intake: Intake, wrist: Wrist):
         super().__init__(
             command.EjectIntake(intake),

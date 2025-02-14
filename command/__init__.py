@@ -2,4 +2,4 @@ from command.drivetrain import DrivetrainZero, DriveSwerveCustom, DrivetrainXMod
 from command.intake import RunIntake, EjectIntake, SetPivot
 from command.elevator import SetElevator
 from command.wrist import SetWrist, FeedIn, FeedOut
-from command.target import Target, IntakeCoral
+from command.target import Target, IntakeCoral, EjectCoral

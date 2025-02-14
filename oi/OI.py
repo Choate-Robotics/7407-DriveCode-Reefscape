@@ -1,3 +1,4 @@
+import commands2.instantcommand
 import command.target
 from utils import LocalLogger
 from oi.keymap import Keymap
@@ -35,10 +36,10 @@ class OI:
             command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
-        # SCORING
+        # Scoring on reef
         Keymap.Scoring.SCORE_L1.onTrue(
             command.Target(
-                Robot.elevator, 
+                Robot.elevator,
                 Robot.wrist,
                 config.target_positions["L1"]
             )
@@ -92,6 +93,7 @@ class OI:
             )
         )
 
+        # Score algae in barge
         Keymap.Scoring.SCORE_BARGE.onTrue(
             command.Target(
                 Robot.elevator,
@@ -106,14 +108,38 @@ class OI:
             )
         )
 
+        # Scoring coral
         Keymap.Wrist.EXTAKE_CORAL.onTrue(
             command.FeedOut(Robot.wrist)
         ).onFalse(
             commands2.InstantCommand(lambda: Robot.wrist.feed_stop())
         )
         
-        # INTAKING
-        Keymap.Intake.INTAKE_CORAL.onTrue(
+        # Intake coral from station
+        Keymap.Intake.INTAKE_CORAL.whileTrue(
+            commands2.ParallelCommandGroup(
+                command.Target(
+                    Robot.elevator,
+                    Robot.wrist,
+                    config.target_positions["STATION_INTAKING"]
+                ),
+                command.SetPivot(
+                    Robot.intake,
+                    config.target_positions["STATION_INTAKING"].intake_angle
+                )
+            ).andThen(
+                command.IntakeCoral(Robot.intake, Robot.wrist)
+            )
+        ).onFalse(
+            command.Target(
+                Robot.elevator,
+                Robot.wrist,
+                config.target_positions["IDLE"]
+            )
+        )
+
+        # Eject coral from wrist and intake
+        Keymap.Intake.EJECT_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
                 command.Target(
                     Robot.elevator,
@@ -125,47 +151,27 @@ class OI:
                     config.intake_coral_station_angle
                 )
             ).andThen(
-                command.IntakeCoral(Robot.intake, Robot.wrist)
+                command.EjectCoral(Robot.intake, Robot.wrist)
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
 
-        
-        Keymap.Intake.INTAKE_EJECT.onTrue(
-            command.PivotIntake(
-                Robot.intake,
-                False # Ground intake, will need to change to angle at some point
-            ).andThen(
-                command.EjectIntake(Robot.intake)
-            )
-        ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
-                Robot.intake,
-                config.target_positions["IDLE"]
-            )
-        )
-
-        # Algae
+        # De-algae
         Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).onTrue(
             commands2.ConditionalCommand(
                 command.Target(
                     Robot.elevator,
                     Robot.wrist,
-                    Robot.intake,
                     config.target_positions["DEALGAE_HIGH"]
                 ),
                 command.Target(
                     Robot.elevator,
                     Robot.wrist,
-                    Robot.intake,
                     config.target_positions["DEALGAE_LOW"]
                 ),
                 lambda: (Field.odometry.getPose().nearest(Field.reef_face.get_faces()) in Field.reef_face.get_high_algae())
@@ -174,39 +180,48 @@ class OI:
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
         
-        Keymap.Intake.INTAKE_ALGAE.and_(lambda: not Robot.intake.intake_running).onTrue(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
-                Robot.intake,
-                config.target_positions["INTAKE_ALGAE"]
+        # Intaking algae with ground intake
+        Keymap.Intake.INTAKE_ALGAE.onTrue(
+            commands2.ParallelCommandGroup(
+                command.Target(
+                    Robot.elevator,
+                    Robot.wrist,
+                    config.target_positions["INTAKE_ALGAE"]
+                ),
+                command.SetPivot(
+                    Robot.intake,
+                    config.target_positions["INTAKE_ALGAE"].intake_angle
+                )
+            ).andThen(
+                command.RunIntake(Robot.intake).onlyIf(lambda: not Robot.intake.intake_running)
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
+            ).andThen(
+                commands2.InstantCommand(lambda: Robot.intake.stop())
             )
         )
 
+        # Score algae in processor
         Keymap.Wrist.EXTAKE_ALGAE.onTrue(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["SCORE_PROCESSOR_WRIST"]
+            ).andThen(
+                command.FeedOut(Robot.wrist)
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
