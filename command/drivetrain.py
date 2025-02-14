@@ -104,15 +104,11 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
     def __init__(
         self,
         subsystem: Drivetrain,
-        target_angle: radians,
-        limit_spd: bool = True,
-        auto: bool = False,
+        target_angle: radians
     ):
         super().__init__(subsystem)
         self.subsystem = subsystem
         self.angle = target_angle
-        self.limit_spd = limit_spd
-        self.auto = auto
         self.theta_pid_controller = PIDController(
             config.drivetrain_rotation_kp,
             config.drivetrain_rotation_ki,
@@ -127,8 +123,8 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
 
     def execute(self) -> None:
         dx, dy = (
-            self.subsystem.axis_dx.value * (1 if config.drivetrain_reversed else -1),
-            self.subsystem.axis_dy.value * (1 if config.drivetrain_reversed else -1),
+            self.subsystem.axis_dx.value * -1,
+            self.subsystem.axis_dy.value * 1
         )
 
         current = self.subsystem.get_heading().radians()
@@ -136,8 +132,8 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
 
         dx = curve(dx)
         dy = curve(dy)
-        dx *= constants.drivetrain_max_vel
-        dy *= constants.drivetrain_max_vel
+        dx *= self.subsystem.max_vel
+        dy *= self.subsystem.max_vel
 
         if config.driver_centric:
             self.subsystem.set_driver_centric((dy, dx), d_theta)
@@ -145,18 +141,10 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
             self.subsystem.set_robot_centric((dy, -dx, d_theta))
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.ready_to_shoot = False
-        self.subsystem.n_front_left.set_motor_velocity(0)
-        self.subsystem.n_front_right.set_motor_velocity(0)
-        self.subsystem.n_back_left.set_motor_velocity(0)
-        self.subsystem.n_back_right.set_motor_velocity(0)
+        pass
 
     def isFinished(self) -> bool:
-        return self.theta_pid_controller.atSetpoint()
-
-    def runsWhenDisabled(self) -> bool:
         return False
-
 
 class DrivetrainZero(SubsystemCommand[Drivetrain]):
     """

@@ -81,7 +81,6 @@ class Drivetrain(Subsystem):
     start_angle: degrees = 0
     gyro_start_angle: radians = 0
     gyro_offset: radians = math.radians(0)
-    ready_to_shoot: bool = False
 
     def __init__(self):
         super().__init__()

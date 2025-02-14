@@ -70,7 +70,6 @@ driver_centric: bool = True
 drivetrain_deadzone: float = 0.1
 drivetrain_curve: float = 2.0000
 drivetrain_zero: radians = math.radians(180)
-drivetrain_reversed: bool = False
 
 drivetrain_rotation_kp: float = 5.5
 drivetrain_rotation_ki: float = 0.0
