@@ -63,7 +63,7 @@ class AddressableLEDStrip(Subsystem):
 
     def set_Solid(self, r: int, g: int, b: int):
 
-        self.pattern = LEDPattern.solid(Color(r,g,b))
+        self.pattern = LEDPattern.solid(Color(r/255, g/255, b/255))
         self.mode = f"Solid r:{r} g:{g} b:{b}"
 
     def set_Alternate(self, r1: int, g1: int, b1: int, r2:int, g2:int, b2: int):
@@ -71,11 +71,12 @@ class AddressableLEDStrip(Subsystem):
         self.alternate = []
         for i in range(self.size):
             if i % 2 == 0:
-                self.alternate.append((i/self.size, Color(r1, g1, b1)))
+                self.alternate.append((i/self.size, Color(r1/255, g1/255, b1/255)))
             elif i % 2 == 1:
-                self.alternate.append((i/self.size, Color(r2, g2, b2)))
+                self.alternate.append((i/self.size, Color(r2/255, g2/255, b2/255)))
 
         self.pattern = LEDPattern.steps(self.alternate)
+        self.mode = f"Alternate"
 
     def set_Rainbow_Ladder(self):
         """
@@ -88,7 +89,7 @@ class AddressableLEDStrip(Subsystem):
 
     def set_Blink(self, r: int, g: int, b: int):
 
-        self.base = LEDPattern.discontinousGradient(r,g,b)
+        self.base = LEDPattern.discontinousGradient(r/255, g/255, b/255)
         self.pattern = self.base.blink(self.blink_frequency)
         self.mode = f"Blink r:{r} g:{g} b:{b}"  
     
