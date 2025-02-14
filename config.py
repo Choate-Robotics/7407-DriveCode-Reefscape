@@ -115,6 +115,11 @@ INTAKE_PIVOT_CONFIG = TalonConfig(
 intake_max_angle = math.radians(90)
 intake_min_angle = math.radians(60)
 intake_angle_threshold = math.radians(5)
+intake_current_threshold = 80 #placeholder
+intake_current_time_threshold = 2 #placeholder
+
+intake_max_ff = 0 #placeholder
+intake_ff_offset = 0 #placeholder
 
 intake_speed = 1 #placeholder
 intake_eject_speed = 1 #placeholder

@@ -13,6 +13,7 @@ from wpilib import Timer
 
 
 class Intake(Subsystem):
+
     def __init__(self):
         super().__init__()
         self.horizontal_motor: TalonFX = TalonFX(
@@ -42,6 +43,8 @@ class Intake(Subsystem):
         self.target_angle: radians = 0
         self.pivot_zeroed: bool = False
 
+        self.algae_in_intake = False
+
         self.encoder: CANcoder = CANcoder(config.intake_cancoder_id)
 
 
@@ -59,6 +62,13 @@ class Intake(Subsystem):
         )
         self.vertical_motor.set_raw_output(
             config.intake_speed * constants.vertical_gear_ratio
+        )
+        self.intake_running = True
+    
+    def intake_algae(self) -> None:
+
+        self.horizontal_motor.set_raw_output(
+            -config.intake_speed * constants.horizontal_gear_ratio
         )
         self.intake_running = True
 
@@ -80,6 +90,14 @@ class Intake(Subsystem):
         self.vertical_motor.set_raw_output(
             -config.intake_speed * constants.vertical_gear_ratio
         )
+        self.intake_running = True
+
+    def extake_algae(self) -> None:
+
+        self.horizontal_motor.set_raw_output(
+            config.intake_speed * constants.horizontal_gear_ratio
+        )
+
         self.intake_running = True
 
     def get_vertical_motor_current(self) -> float:
@@ -153,8 +171,12 @@ class Intake(Subsystem):
         """
         setting the angle of the pivot
         """
+
+        ff = config.intake_max_ff * math.cos(angle - config.intake_ff_offset)
+
         self.pivot_motor.set_target_position(
-            (angle / 2 * math.pi) * constants.intake_pivot_gear_ratio
+            (angle / 2 * math.pi) * constants.intake_pivot_gear_ratio, 
+            ff
         )
 
     def update_table(self) -> None:
