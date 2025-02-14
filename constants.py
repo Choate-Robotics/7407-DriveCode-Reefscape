@@ -20,15 +20,15 @@ robot_to_right_cam = Transform3d(
 )
 
 #drivetrain
-drivetrain_turn_gear_ratio: float = 150 / 7
-drivetrain_wheel_gear_ratio: float = 5.9
-track_width: meters = 19.75 * inches_to_meters #distance between the center of the wheels (front side)
-track_length: meters = 18.25 * inches_to_meters #(left/right side)
-drivetrain_length: meters = 20 * inches_to_meters #length of one side of the robot, placeholder
+drivetrain_turn_gear_ratio: float = 18.75
+drivetrain_wheel_gear_ratio: float = 7.13
+track_width: meters = 23.75 * inches_to_meters # distance between the center of the wheels (front side)
+track_length: meters = track_width # (left/right side)
+drivetrain_length: meters = 29 * inches_to_meters
 bumper_thickness: meters = 3.5 * inches_to_meters
-drivetrain_length_with_bumpers = drivetrain_length + (2 * bumper_thickness)
-drivetrain_radius: float = math.sqrt(math.pow(track_length/2, 2) + math.pow(track_width/2, 2))
-reef_scoring_distance = drivetrain_length_with_bumpers / 2 + 2 * inches_to_meters
+drivetrain_length_with_bumpers: meters = drivetrain_length + (2 * bumper_thickness)
+drivetrain_radius: meters = math.sqrt(math.pow(track_length/2, 2) + math.pow(track_width/2, 2))
+reef_scoring_distance: meters = drivetrain_length_with_bumpers / 2 + 2 * inches_to_meters
 
 
 drivetrain_move_motor_free_speed: rotations_per_minute = (
