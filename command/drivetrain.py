@@ -95,7 +95,7 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
 
 class DriveSwerveAim(SubsystemCommand[Drivetrain]):
     """
-    aim drivetrain at a given angle
+    aim drivetrain at a given angle (radians)
     """
 
     driver_centric = False
@@ -115,6 +115,7 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
             config.drivetrain_rotation_kd,
             config.period,
         )
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("Aim Drivetrain")
 
     def initialize(self) -> None:
         self.theta_pid_controller.enableContinuousInput(radians(-180), radians(180))
@@ -122,6 +123,7 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
         self.theta_pid_controller.setSetpoint(self.angle)
 
     def execute(self) -> None:
+        self.table.putNumber("target angle", math.degrees(self.angle))
         dx, dy = (
             self.subsystem.axis_dx.value * -1,
             self.subsystem.axis_dy.value * 1
@@ -139,6 +141,8 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
             self.subsystem.set_driver_centric((dy, dx), d_theta)
         else:
             self.subsystem.set_robot_centric((dy, -dx, d_theta))
+
+        self.table.putNumber("current angle", math.degrees(current))
 
     def end(self, interrupted: bool) -> None:
         pass
