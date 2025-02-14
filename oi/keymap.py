@@ -85,7 +85,7 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
         )
         EXTAKE_CORAL = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.A
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.A
         )
         EXTAKE_ALGAE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB

@@ -75,3 +75,10 @@ class Target(commands2.Command):
     
     def end(self) -> None:
         pass
+
+class IntakeCoral(commands2.ParallelRaceGroup):
+    def __init__(self, intake: Intake, wrist: Wrist):
+        super().__init__(
+            command.RunIntake(intake),
+            command.FeedIn(wrist)
+        )
