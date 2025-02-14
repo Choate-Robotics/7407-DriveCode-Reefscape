@@ -39,15 +39,13 @@ class OI:
         Keymap.Scoring.SCORE_L1.onTrue(
             command.Target(
                 Robot.elevator, 
-                Robot.wrist, 
-                Robot.intake, 
+                Robot.wrist,
                 config.target_positions["L1"]
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
@@ -55,15 +53,13 @@ class OI:
         Keymap.Scoring.SCORE_L2.onTrue(
             command.Target(
                 Robot.elevator, 
-                Robot.wrist, 
-                Robot.intake, 
+                Robot.wrist,
                 config.target_positions["L2"]
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
@@ -71,15 +67,13 @@ class OI:
         Keymap.Scoring.SCORE_L3.onTrue(
             command.Target(
                 Robot.elevator, 
-                Robot.wrist, 
-                Robot.intake, 
+                Robot.wrist,
                 config.target_positions["L3"]
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
@@ -87,15 +81,13 @@ class OI:
         Keymap.Scoring.SCORE_L4.onTrue(
             command.Target(
                 Robot.elevator, 
-                Robot.wrist, 
-                Robot.intake, 
+                Robot.wrist,
                 config.target_positions["L4"]
             )
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
@@ -104,14 +96,12 @@ class OI:
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["SCORE_BARGE"]
             ).andThen(command.FeedOut(Robot.wrist))
         ).onFalse(
             command.Target(
                 Robot.elevator,
                 Robot.wrist,
-                Robot.intake,
                 config.target_positions["IDLE"]
             )
         )
@@ -124,11 +114,16 @@ class OI:
         
         # INTAKING
         Keymap.Intake.INTAKE_CORAL.onTrue(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
-                Robot.intake,
-                config.target_positions["STATION_INTAKING"]
+            commands2.ParallelCommandGroup(
+                command.Target(
+                    Robot.elevator,
+                    Robot.wrist,
+                    config.target_positions["STATION_INTAKING"]
+                ),
+                command.SetPivot(
+                    Robot.intake,
+                    config.intake_coral_station_angle
+                )
             ).andThen(
                 command.IntakeCoral(Robot.intake, Robot.wrist)
             )
@@ -141,7 +136,7 @@ class OI:
             )
         )
 
-        # Pivots intake down and runs intake out. Equivalent to scoring algae in processor from intake.
+        
         Keymap.Intake.INTAKE_EJECT.onTrue(
             command.PivotIntake(
                 Robot.intake,

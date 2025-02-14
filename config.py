@@ -204,9 +204,14 @@ INTAKE_PIVOT_CONFIG = TalonConfig(
 intake_speed = 1
 intake_eject_speed = -1
 
-intake_max_angle = 0
-intake_min_angle = 0
-intake_angle_threshold = 0
+horizontal_intake_speed = 0
+vertical_intake_speed = 0
+
+intake_max_angle: radians = math.radians(90)
+intake_min_angle: radians = math.radians(60)
+intake_coral_station_angle: radians = 0
+
+intake_angle_threshold = math.radians(2)
 
 # TODO: Change to actual angle
 intake_algae_ground_angle = 0

@@ -3,6 +3,8 @@ import config
 from subsystem import Intake
 from utils import LocalLogger
 
+from units.SI import radians
+
 log = LocalLogger("Intake command")
 
 
@@ -52,38 +54,53 @@ class EjectIntake(SubsystemCommand[Intake]):
         self.subsystem.stop()
 
 
-class PivotIntake(SubsystemCommand[Intake]):
+class SetPivot(SubsystemCommand[Intake]):
     """
-    Pivots the intake to opposite position
-    Note: True means pivot is up and vice versa
+    sets the intake pivot to a target position
     """
 
-    def __init__(self, subsystem: Intake, target_intake_position: bool):
+    def __init__(self, subsystem: Intake, target_angle: radians):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        self.subsystem.target_intake_position = target_intake_position
+        self.target_angle = target_angle
 
     def initialize(self) -> None:
         self.subsystem.intake_pivoting = True
-
-        if self.subsystem.target_intake_position:
-            self.subsystem.pivot_down()
-        else:
-            self.subsystem.pivot_up()
+        self.subsystem.set_pivot_angle(self.target_angle)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        if self.subsystem.target_intake_position:
-            # trying to go up
-            return self.subsystem.is_pivot_up()
+        return self.subsystem.is_at_angle(self.target_angle)
+
+    def end(self, interrupted) -> None:
+        if interrupted:
+            self.subsystem.stop_pivot()
         else:
-            # trying to go down
-            return self.subsystem.is_pivot_down()
+            log.warn("Intake pivot interrupted")
+        self.subsystem.intake_pivoting = False
+
+class ZeroPivot(SubsystemCommand[Intake]):
+    """
+    Zero the intake pivot
+    """
+
+    def __init__(self, subsystem: Intake):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self) -> None:
+        self.subsystem.zero_pivot()
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return self.subsystem.pivot_zeroed
 
     def end(self, interrupted) -> None:
         if not interrupted:
-            self.subsystem.intake_pivoting = False
+            log.info("Intake pivot zeroed")
         else:
-            log.warn("Intake pivot interrupted")
+            log.warn("Intake pivot zeroing interrupted")

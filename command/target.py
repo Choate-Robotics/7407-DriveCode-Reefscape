@@ -14,12 +14,10 @@ class Target(commands2.Command):
         self,
         elevator: Elevator,
         wrist: Wrist,
-        intake: Intake,
         target: TargetData
     ):  
         self.elevator = elevator
         self.wrist = wrist
-        self.intake = intake
         
         self.target = target
         self.finished = False
@@ -42,28 +40,8 @@ class Target(commands2.Command):
         
         self.giraffe.addCommands(command.SetWrist(self.wrist, target_wrist_angle))
 
-        # Intake commands
-        # TODO: When intake command is done to take in an angle, change self.target.intake_idle to self.target.intake_angle
-        self.intake_pivot_command = command.PivotIntake(self.intake, self.target.intake_idle)
-
-        self.final_command = SequentialCommandGroup()
-
-        # Add in intake pivot and giraffe in parallel
-        self.final_command.addCommands(
-            ParallelCommandGroup(
-                self.intake_pivot_command, 
-                self.giraffe
-            )
-        )
-
-        # If the intake needs to run
-        if self.target.intake_in_run:
-            self.final_command.addCommands(command.RunIntake(self.intake))
-        elif self.target.intake_out_run:
-            self.final_command.addCommands(command.EjectIntake(self.intake))
-
         commands2.CommandScheduler.getInstance()(
-            self.final_command,
+            self.giraffe,
             InstantCommand(lambda: self.finish()),
         )
     
@@ -81,4 +59,11 @@ class IntakeCoral(commands2.ParallelRaceGroup):
         super().__init__(
             command.RunIntake(intake),
             command.FeedIn(wrist)
+        )
+
+class EjectCoral(commands2.ParallelRaceGroup):
+    def __init__(self, intake: Intake, wrist: Wrist):
+        super().__init__(
+            command.EjectIntake(intake),
+            command.FeedOut(wrist)
         )
