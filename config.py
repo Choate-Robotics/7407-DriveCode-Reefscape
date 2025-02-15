@@ -1,8 +1,9 @@
-from units.SI import radians, inches_to_meters
-from wpilib import AnalogEncoder
-from toolkit.motors.ctre_motors import TalonConfig
 import math
 
+from wpilib import AnalogEncoder
+
+from toolkit.motors.ctre_motors import TalonConfig
+from units.SI import inches_to_meters, radians
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
@@ -24,11 +25,11 @@ LOG_FILE_LEVEL: int = 1
 # anything else will log nothing
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-foc_active = False  #foc for TalonFX requires paid subscription
+foc_active = False  # foc for TalonFX requires paid subscription
 
 NT_ELEVATOR: bool = False
 
-#Drivetrain
+# Drivetrain
 gyro_id: int = 13
 
 front_left_move_id: int = 2
@@ -65,32 +66,22 @@ drivetrain_curve: float = 2
 drivetrain_zero: radians = math.radians(180)
 
 TURN_CONFIG = TalonConfig(
-    .9, 0, 0, 0, 0, brake_mode=True,
+    0.9,
+    0,
+    0,
+    0,
+    0,
+    brake_mode=True,
 )
 
 MOVE_CONFIG = TalonConfig(
-    0.11,
-    0,
-    0,
-    0.25,
-    0.01,
-    brake_mode=True,
-    current_limit=40,
-    kV=0.12
+    0.11, 0, 0, 0.25, 0.01, brake_mode=True, current_limit=40, kV=0.12
 )
 
-#elevator
-elevator_lead_id = 9  #confirmed
-elevator_follower_id = 10 #confirmed
+# elevator
+elevator_lead_id = 9  # confirmed
+elevator_follower_id = 10  # confirmed
 
-elevator_height_threshold = .1*inches_to_meters #placeholder
+elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
-ELEVATOR_CONFIG = TalonConfig(
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    brake_mode=True
-)
+ELEVATOR_CONFIG = TalonConfig(0, 0, 0, 0, 0, 0, brake_mode=True)

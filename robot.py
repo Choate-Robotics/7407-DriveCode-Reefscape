@@ -1,16 +1,17 @@
 import commands2
-from toolkit.subsystem import Subsystem
-import phoenix6 as ctre
 import ntcore
+import phoenix6 as ctre
 import wpilib
+
 import command
 import config
 import constants
-from robot_systems import Robot, Pneumatics, Sensors, LEDs, PowerDistribution, Field
 import sensors
 import subsystem
 import utils
 from oi.OI import OI
+from robot_systems import Field, LEDs, Pneumatics, PowerDistribution, Robot, Sensors
+from toolkit.subsystem import Subsystem
 
 
 class _Robot(wpilib.TimedRobot):
@@ -27,7 +28,7 @@ class _Robot(wpilib.TimedRobot):
         if config.DEBUG_MODE == True:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
         OI.init()
-        #OI.map_controls()
+        # OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
         self.log.info(f"Scheduler period set to {period} seconds")
@@ -86,9 +87,8 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("command scheduler", str(e))
                 raise e
-            
 
-        #Robot.drivetrain.update_tables()
+        # Robot.drivetrain.update_tables()
         ...
 
     # Initialize subsystems
