@@ -27,7 +27,7 @@ class _Robot(wpilib.TimedRobot):
         if config.DEBUG_MODE == True:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
         OI.init()
-        OI.map_controls()
+        #OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
         self.log.info(f"Scheduler period set to {period} seconds")
@@ -88,7 +88,7 @@ class _Robot(wpilib.TimedRobot):
                 raise e
             
 
-        Robot.drivetrain.update_tables()
+        #Robot.drivetrain.update_tables()
         ...
 
     # Initialize subsystems
@@ -97,10 +97,10 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self):
         self.log.info("Teleop initialized")
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain),
-            command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+        # self.scheduler.schedule(commands2.SequentialCommandGroup(
+        #     command.DrivetrainZero(Robot.drivetrain),
+        #     command.DriveSwerveCustom(Robot.drivetrain)
+        #     ))
 
     def teleopPeriodic(self):
         pass

@@ -80,8 +80,8 @@ MOVE_CONFIG = TalonConfig(
 )
 
 #elevator
-elevator_lead_id = 10 
-elevator_follower_id = 11
+elevator_lead_id = 9  #confirmed
+elevator_follower_id = 10 #confirmed
 
 elevator_height_threshold = .1*inches_to_meters #placeholder
 
