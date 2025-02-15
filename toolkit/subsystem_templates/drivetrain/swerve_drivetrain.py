@@ -226,4 +226,5 @@ class SwerveNode:
         self.nt.putNumber(f"{self.name} current angle", bounded_angle_diff(self.get_turn_motor_angle(), 0))
         self.nt.putNumber(f"{self.name} current speed", self.get_motor_velocity())
         self.nt.putNumber(f"{self.name} target speed", self.m_move._motor.get_closed_loop_reference().value/constants.drivetrain_move_gear_ratio_as_rotations_per_meter)
+        self.nt.putNumber(f"{self.name} absolute pos", self.get_abs())
 

@@ -36,40 +36,40 @@ left_cam_name = "left_cam"
 right_cam_name = "right_cam"
 
 # Drivetrain
-gyro_id: int = 13
+gyro_id: int = 20
 
-front_left_move_id: int = 2
-front_left_turn_id: int = 1
-front_left_encoder_port: AnalogEncoder = AnalogEncoder(0)
-front_left_encoder_zeroed_pos: float = 0.362
+front_left_move_id: int = 1
+front_left_turn_id: int = 2
+front_left_encoder_port: AnalogEncoder = AnalogEncoder(2)
+front_left_encoder_zeroed_pos: float = 0.945
 front_left_turn_inverted = False
 front_left_move_inverted = False
 
-front_right_move_id: int = 4
-front_right_turn_id: int = 3
-front_right_encoder_port: AnalogEncoder = AnalogEncoder(1)
-front_right_encoder_zeroed_pos: float = 0.034
+front_right_move_id: int = 3
+front_right_turn_id: int = 4
+front_right_encoder_port: AnalogEncoder = AnalogEncoder(3)
+front_right_encoder_zeroed_pos: float = 0.074
 front_right_turn_inverted = False
 front_right_move_inverted = False
 
-back_left_move_id: int = 8
-back_left_turn_id: int = 7
-back_left_encoder_port: AnalogEncoder = AnalogEncoder(3)
-back_left_encoder_zeroed_pos: float = 0.735
+back_left_move_id: int = 7
+back_left_turn_id: int = 8
+back_left_encoder_port: AnalogEncoder = AnalogEncoder(1)
+back_left_encoder_zeroed_pos: float = 0.227
 back_left_turn_inverted = False
 back_left_move_inverted = False
 
-back_right_move_id: int = 6
-back_right_turn_id: int = 5
-back_right_encoder_port: AnalogEncoder = AnalogEncoder(2)
-back_right_encoder_zeroed_pos: float = 0.713
+back_right_move_id: int = 5
+back_right_turn_id: int = 6
+back_right_encoder_port: AnalogEncoder = AnalogEncoder(0)
+back_right_encoder_zeroed_pos: float = 0.597
 back_right_turn_inverted = False
 back_right_move_inverted = False
 
 driver_centric: bool = True
 drivetrain_deadzone: float = 0.1
 drivetrain_curve: float = 2.0000
-drivetrain_zero: radians = math.radians(180)
+drivetrain_zero: radians = math.radians(0)
 
 drivetrain_rotation_kp: float = 5.5
 drivetrain_rotation_ki: float = 0.0
@@ -89,7 +89,7 @@ drivetrain_y_tolerance: float = 0.05
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 
-TURN_CONFIG = TalonConfig(8, 0, 0.025, 0, 0, brake_mode=True)
+TURN_CONFIG = TalonConfig(7, 0, 0.02, 0, 0, brake_mode=True)
 
 MOVE_CONFIG = TalonConfig(
     0.11,
