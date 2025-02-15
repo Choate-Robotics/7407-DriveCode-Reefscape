@@ -1,5 +1,5 @@
 from toolkit.command import SubsystemCommand
-import config
+
 from subsystem import Intake
 from utils import LocalLogger
 
@@ -77,9 +77,9 @@ class SetPivot(SubsystemCommand[Intake]):
     def end(self, interrupted) -> None:
         if interrupted:
             self.subsystem.stop_pivot()
-        else:
             log.warn("Intake pivot interrupted")
         self.subsystem.intake_pivoting = False
+
 
 class ZeroPivot(SubsystemCommand[Intake]):
     """

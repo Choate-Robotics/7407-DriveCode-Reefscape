@@ -1,27 +1,19 @@
-from subsystem import (
-    Elevator,
-    Intake,
-    Wrist
-)
-from toolkit.command import SubsystemCommand
+from subsystem import Elevator, Intake, Wrist
 from config import TargetData
 import command
 import commands2
-from commands2 import SequentialCommandGroup, ParallelCommandGroup, InstantCommand
+from commands2 import SequentialCommandGroup, InstantCommand
+
 
 class Target(commands2.Command):
-    def __init__(
-        self,
-        elevator: Elevator,
-        wrist: Wrist,
-        target: TargetData
-    ):  
+    def __init__(self, elevator: Elevator, wrist: Wrist, target: TargetData):
+        super().__init__()
         self.elevator = elevator
         self.wrist = wrist
-        
+
         self.target = target
         self.finished = False
-    
+
     def finish(self):
         self.finished = True
 
@@ -36,34 +28,32 @@ class Target(commands2.Command):
             # Set wrist idle if necessary before setting the elevator
             if not self.wrist.is_at_angle(0):
                 self.giraffe.addCommands(command.SetWrist(self.wrist, 0))
-            self.giraffe.addCommands(command.SetElevator(self.elevator, target_elevator_height))
-        
+            self.giraffe.addCommands(
+                command.SetElevator(self.elevator, target_elevator_height)
+            )
+
         self.giraffe.addCommands(command.SetWrist(self.wrist, target_wrist_angle))
 
         commands2.CommandScheduler.getInstance()(
             self.giraffe,
             InstantCommand(lambda: self.finish()),
         )
-    
+
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
         return self.finished
-    
+
     def end(self) -> None:
         pass
 
+
 class IntakeCoral(commands2.ParallelRaceGroup):
     def __init__(self, intake: Intake, wrist: Wrist):
-        super().__init__(
-            command.RunIntake(intake),
-            command.FeedIn(wrist)
-        )
+        super().__init__(command.RunIntake(intake), command.FeedIn(wrist))
+
 
 class EjectCoral(commands2.ParallelCommandGroup):
     def __init__(self, intake: Intake, wrist: Wrist):
-        super().__init__(
-            command.EjectIntake(intake),
-            command.FeedOut(wrist)
-        )
+        super().__init__(command.EjectIntake(intake), command.FeedOut(wrist))
