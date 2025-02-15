@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from phoenix6 import StatusCode, StatusSignal, configs, controls, hardware, signals
+from phoenix6 import StatusCode, StatusSignal, configs, controls, hardware, signals 
 import config
 from toolkit.motor import PIDMotor
 from units.SI import rotations, rotations_per_second
@@ -29,9 +29,12 @@ class TalonConfig:
         kF: float,
         kA: float,
         kV: float = 0,
+        kG: float = 0,
         current_limit: int = 80,
         brake_mode: bool = True,
         output_range: tuple[float, float] = (-1, 1),
+        motion_magic_cruise_velocity = 20,
+        motion_magic_acceleration = 600
     ):
         self.kP = kP
         self.kI = kI
@@ -39,9 +42,13 @@ class TalonConfig:
         self.kF = kF
         self.kA = kA
         self.kV = kV
+        self.kG = kG
         self.current_limit = current_limit
         self.brake_mode = brake_mode
         self.output_range = output_range
+        self.motion_magic_cruise_velocity = motion_magic_cruise_velocity
+        self.motion_magic_acceleration = motion_magic_acceleration
+        
 
     def _apply_settings(self, motor: hardware.TalonFX, inverted: bool = False):
         print("applying settings to Talon")
@@ -55,6 +62,8 @@ class TalonConfig:
         pid.k_s = self.kF
         pid.k_a = self.kA
         pid.k_v = self.kV
+        pid.k_g = self.kG
+        pid.gravity_type = signals.spn_enums.GravityTypeValue.ELEVATOR_STATIC
 
         # current limits
         current_limits_config = talon_config.current_limits
@@ -80,9 +89,9 @@ class TalonConfig:
 
         # motion magic
         magic = talon_config.motion_magic
-        magic.motion_magic_acceleration = 600
+        magic.motion_magic_acceleration = self.motion_magic_acceleration
         magic.motion_magic_jerk = 6000
-        magic.motion_magic_cruise_velocity = 20
+        magic.motion_magic_cruise_velocity = self.motion_magic_cruise_velocity
 
         res = motor.configurator.apply(talon_config)
         if res != StatusCode.OK:

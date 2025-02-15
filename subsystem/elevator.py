@@ -5,7 +5,7 @@ import config
 import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
-from units.SI import meters
+from units.SI import meters, meters_to_inches
 
 
 class Elevator(Subsystem):
@@ -20,6 +20,7 @@ class Elevator(Subsystem):
         self.follower_motor: TalonFX = TalonFX(
             config.elevator_follower_id,
             config.foc_active,
+            inverted=False,
             config=config.ELEVATOR_CONFIG
         )
 
@@ -95,10 +96,13 @@ class Elevator(Subsystem):
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
 
-        table.putNumber("height", self.get_position())
-        table.putNumber("target height", self.target_height)
+        table.putNumber("height", self.get_position() * meters_to_inches)
+        table.putNumber("target height", self.target_height * meters_to_inches)
         table.putNumber(
             "motor lead applied output", self.leader_motor.get_applied_output()
+        )
+        table.putNumber(
+            "motor lead current", self.leader_motor.get_motor_current()
         )
         table.putNumber(
             "motor follow applied output", self.follower_motor.get_applied_output()

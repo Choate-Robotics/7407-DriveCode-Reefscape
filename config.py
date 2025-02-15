@@ -27,7 +27,7 @@ LOG_FILE_LEVEL: int = 1
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
-NT_ELEVATOR: bool = False
+NT_ELEVATOR: bool = True
 
 # Drivetrain
 gyro_id: int = 13
@@ -79,9 +79,9 @@ MOVE_CONFIG = TalonConfig(
 )
 
 # elevator
-elevator_lead_id = 9  # confirmed
-elevator_follower_id = 10  # confirmed
+elevator_lead_id = 9
+elevator_follower_id = 10
 
 elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
-ELEVATOR_CONFIG = TalonConfig(0, 0, 0, 0, 0, 0, brake_mode=True)
+ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, motion_magic_cruise_velocity=94, motion_magic_acceleration=300)
