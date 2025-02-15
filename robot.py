@@ -27,7 +27,7 @@ class _Robot(wpilib.TimedRobot):
         if config.DEBUG_MODE == True:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
         OI.init()
-        #OI.map_controls()
+        # OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
         self.log.info(f"Scheduler period set to {period} seconds")
