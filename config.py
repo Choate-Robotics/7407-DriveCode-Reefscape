@@ -84,24 +84,26 @@ intake_id = 9
 INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 
 # Wrist
-wrist_feed_id = 15  # confirmed
+wrist_feed_id = 15
 WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
-wrist_id = 14  # confirmed
-WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
-wrist_cancoder_id = 22  # confirmed
-wrist_encoder_zero = 0  # place holder
+wrist_id = 14
+WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75)
+wrist_cancoder_id = 22
+wrist_encoder_zero = 0.781
 
 
 wrist_max_angle: radians = math.radians(45)
 wrist_min_angle: radians = math.radians(-117)
-angle_threshold: radians = math.radians(2)  # radians
+angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 2  # amps PLACEHOLDER
 back_current_threshold: float = 10  # amps PLACEHOLDER
 current_time_threshold: float = 0.3  # seconds PLACEHOLDER
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 
-wrist_max_ff = 0  # placeholder
-wrist_ff_offset = 0  # placeholder
+wrist_max_ff = 0.17
+wrist_ff_offset = math.radians(30)
 
 intake_speed = 1  # placeholder
 intake_eject_speed = -1  # placeholder
+
+period = 0.03

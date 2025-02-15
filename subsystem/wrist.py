@@ -26,7 +26,7 @@ class Wrist(Subsystem):
         self.wrist_motor: TalonFX = TalonFX(
             config.wrist_id,
             config.foc_active,
-            inverted=False,
+            inverted=True,
             config=config.WRIST_CONFIG,
         )
 
@@ -47,6 +47,7 @@ class Wrist(Subsystem):
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
+        self.initial_zero()
         self.table = ntcore.NetworkTableInstance.getDefault().getTable("wrist")
 
     def initial_zero(self) -> None:
@@ -54,7 +55,7 @@ class Wrist(Subsystem):
         zero the wrist encoder
         """
         self.wrist_angle = (
-            self.encoder.get_absolute_position().value
+            (self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
             / constants.wrist_encoder_gear_ratio
             * 2
             * math.pi
@@ -113,7 +114,7 @@ class Wrist(Subsystem):
         ff = config.wrist_max_ff * math.cos(angle - config.wrist_ff_offset)
 
         self.wrist_motor.set_target_position(
-            (angle / 2 * math.pi) * constants.wrist_gear_ratio,
+            (angle / (2 * math.pi)) * constants.wrist_gear_ratio,
             ff
         )
 
@@ -150,6 +151,14 @@ class Wrist(Subsystem):
         self.table.putBoolean("wrist ejecting", self.wrist_ejecting)
         self.table.putNumber("feed current", self.feed_motor.get_motor_current())
         self.table.putBoolean("wrist zeroed", self.wrist_zeroed)
+        self.table.putNumber("wrist absolute position", self.encoder.get_absolute_position().value)
+        self.table.putNumber("wrist absolute angle", (self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
+            / constants.wrist_encoder_gear_ratio
+            * 2
+            * math.pi)
+        self.table.putNumber("calculated kG", config.wrist_max_ff * math.cos(self.get_wrist_angle() - config.wrist_ff_offset))
+        self.table.putNumber("wrist applied output", self.wrist_motor.get_applied_output())
+        self.table.putNumber("wrist current", self.wrist_motor.get_motor_current())
 
     def periodic(self) -> None:
         if config.NT_WRIST:
