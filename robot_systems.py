@@ -18,8 +18,12 @@ from utils.field import (
     NT_Updater,
 )
 
+import sensors
+import subsystem
+
 
 class Robot:
+    elevator = subsystem.Elevator()
     wrist = subsystem.Wrist()
     drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()

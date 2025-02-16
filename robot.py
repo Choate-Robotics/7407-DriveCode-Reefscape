@@ -4,7 +4,9 @@ from toolkit.subsystem import Subsystem
 
 import phoenix6 as ctre
 import ntcore
+import phoenix6 as ctre
 import wpilib
+
 import command
 import math
 import config

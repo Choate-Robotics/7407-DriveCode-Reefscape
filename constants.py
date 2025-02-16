@@ -10,6 +10,23 @@ from units.SI import (
     rotations_per_minute,
 )
 
+LOGGING: bool = True
+LOG_OUT_LEVEL: int = 0
+LOG_FILE_LEVEL: int = 1
+# Levels are how much information is logged
+# higher level = less information
+# level 0 will log everything
+# level 1 will log everything except debug
+# and so on
+# levels:
+# 0 = All
+# 1 = INFO
+# 2 = WARNING
+# 3 = ERROR
+# 4 = SETUP
+# anything else will log nothing
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 # cameras
 robot_to_left_cam = Transform3d(
     Translation3d(8.210*inches_to_meters, 9.764*inches_to_meters, 7.911*inches_to_meters),
@@ -68,9 +85,9 @@ vertical_gear_ratio: float = 2.5
 intake_encoder_gear_ratio: float = 3
 
 #elevator
-elevator_gear_ratio = 1 #placeholder
-elevator_driver_gear_circumference = 1 #placeholder
-elevator_max_height = 2.5 #placeholder
+elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio
+elevator_driver_gear_circumference = 1.751*inches_to_meters*math.pi
+elevator_max_height: meters = 27.5*inches_to_meters #true max=28 inches
 
 # field
 field_length = 17.548

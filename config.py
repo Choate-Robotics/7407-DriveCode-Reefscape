@@ -2,39 +2,18 @@ from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
 from pathplannerlib.config import PIDConstants
-from units.SI import degrees_to_radians, degrees, radians, meters
-
-from wpilib import AnalogEncoder
-
-from toolkit.motors.ctre_motors import TalonConfig
-from units.SI import radians
+from units.SI import degrees, radians, meters, inches_to_meters
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-LOGGING: bool = True
-LOG_OUT_LEVEL: int = 0
-LOG_FILE_LEVEL: int = 1
-# Levels are how much information is logged
-# higher level = less information
-# level 0 will log everything
-# level 1 will log everything except debug
-# and so on
-# levels:
-# 0 = All
-# 1 = INFO
-# 2 = WARNING
-# 3 = ERROR
-# 4 = SETUP
-# anything else will log nothing
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
 # DEBUGGING NETWORK TABLES
-NT_INTAKE = True
-NT_ELEVATOR: bool = False
-NT_WRIST = True
+NT_INTAKE: bool = True
+NT_ELEVATOR: bool = True
+NT_WRIST: bool = True
 
 # Cameras
 left_cam_name = "left_cam"
@@ -139,7 +118,7 @@ intake_pivot_id = 11
 intake_encoder_zero = 0.075
 INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
 INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True)
-# placehodler
+
 intake_max_angle = math.radians(60)
 intake_min_angle = math.radians(0)
 intake_angle_threshold = math.radians(2)
@@ -153,9 +132,12 @@ horizontal_intake_speed = 0.3  # placeholder
 vertical_intake_speed = 0.3  # placeholder
 
 # elevator
-elevator_lead_id = 10
-elevator_follower_id = 11
-magsensor_id = 12  # placeholder
+elevator_lead_id = 9
+elevator_follower_id = 10
+
+elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
+
+ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, motion_magic_cruise_velocity=94, motion_magic_acceleration=300)
 
 
 # TO CHANGE
