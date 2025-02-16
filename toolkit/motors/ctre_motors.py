@@ -31,6 +31,7 @@ class TalonConfig:
         kF: float,
         kA: float,
         kV: float = 0,
+        kG: float = 0,
         current_limit: int = 80,
         brake_mode: bool = True,
         output_range: tuple[float, float] = (-1, 1),
@@ -43,6 +44,7 @@ class TalonConfig:
         self.kF = kF
         self.kA = kA
         self.kV = kV
+        self.kG = kG
         self.current_limit = current_limit
         self.brake_mode = brake_mode
         self.output_range = output_range
@@ -61,6 +63,7 @@ class TalonConfig:
         pid.k_s = self.kF
         pid.k_a = self.kA
         pid.k_v = self.kV
+        pid.k_g = self.kG
 
         # current limits
         current_limits_config = talon_config.current_limits
