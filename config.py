@@ -27,7 +27,7 @@ LOG_FILE_LEVEL: int = 1
 foc_active = False  # foc for TalonFX requires paid subscription
 
 # DEBUGGING NETWORK TABLES
-NT_INTAKE = False
+NT_INTAKE = True
 NT_ELEVATOR: bool = False
 
 
@@ -99,19 +99,19 @@ vertical_id = 13
 #     0
 # )
 
-intake_cancoder_id = 400
-intake_pivot_id = 10
-intake_encoder_zero = 0  # placeholder
-INTAKE_PIVOT_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+intake_cancoder_id = 21
+intake_pivot_id = 11
+intake_encoder_zero = 0.075
+INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True)
 # placehodler
-intake_max_angle = math.radians(90)
-intake_min_angle = math.radians(60)
-intake_angle_threshold = math.radians(5)
+intake_max_angle = math.radians(60)
+intake_min_angle = math.radians(0)
+intake_angle_threshold = math.radians(2)
 intake_current_threshold = 80  # placeholder
 intake_current_time_threshold = 2  # placeholder
 
-intake_max_ff = 0  # placeholder
-intake_ff_offset = 0  # placeholder
+intake_max_ff = -0.075
+intake_ff_offset = math.radians(90)
 
 horizontal_intake_speed = 0.3  # placeholder
 vertical_intake_speed = 0.3  # placeholder

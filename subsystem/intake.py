@@ -34,7 +34,7 @@ class Intake(Subsystem):
         )
         self.intake_running: bool = False
 
-        self.pivot_angle = math.radians(90)
+        self.pivot_angle = math.radians(0)
         self.intake_pivoting: bool = False
         self.target_angle: radians = 0
         self.pivot_zeroed: bool = False
@@ -48,6 +48,8 @@ class Intake(Subsystem):
         self.horizontal_motor.init()
         self.vertical_motor.init()
         self.pivot_motor.init()
+
+        self.zero_pivot()
 
     def roll_in(self) -> None:
         """
@@ -64,7 +66,7 @@ class Intake(Subsystem):
     def intake_algae(self) -> None:
 
         self.horizontal_motor.set_raw_output(
-            -config.intake_speed * constants.horizontal_gear_ratio
+            -config.horizontal_intake_speed
         )
         self.intake_running = True
 
@@ -91,7 +93,7 @@ class Intake(Subsystem):
     def extake_algae(self) -> None:
 
         self.horizontal_motor.set_raw_output(
-            config.intake_speed * constants.horizontal_gear_ratio
+            config.horizontal_intake_speed
         )
 
         self.intake_running = True
@@ -129,7 +131,7 @@ class Intake(Subsystem):
         )
 
         self.pivot_motor.set_sensor_position(
-            self.pivot_angle * constants.intake_pivot_gear_ratio / 2 / math.pi
+            self.pivot_angle * constants.intake_pivot_gear_ratio / (2 * math.pi)
         )
 
         self.pivot_zeroed = True
@@ -145,23 +147,23 @@ class Intake(Subsystem):
         return self.pivot_angle
     
     def is_at_angle(self, angle: radians) -> bool:
-        return abs( self.get_pivot_angle() - angle) < config.intake_angle_threshold
+        return abs(self.get_pivot_angle() - angle) < config.intake_angle_threshold
 
     def set_pivot_angle(self, angle: radians) -> None:
         """
         setting the angle of the pivot
         """
 
-        ff = config.intake_max_ff * math.cos(angle - config.intake_ff_offset)
+        ff = config.intake_max_ff * math.cos(config.intake_ff_offset - angle)
 
         self.target_angle = angle
         self.pivot_motor.set_target_position(
-            (angle / 2 * math.pi) * constants.intake_pivot_gear_ratio, 
+            (angle / (2 * math.pi)) * constants.intake_pivot_gear_ratio,
             ff
         )
 
     def stop_pivot(self) -> None:
-        self.pivot_motor.set_raw_output(0)  
+        self.pivot_motor.set_raw_output(0)
 
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
@@ -169,9 +171,16 @@ class Intake(Subsystem):
         table.putBoolean("intake running", self.intake_running)
         table.putNumber("horizontal current", self.get_horizontal_motor_current())
         table.putNumber("vertical current", self.get_vertical_motor_current())
-        table.putNumber("pivot current", self.get_vertical_motor_current())
-        table.putNumber("pivot angle", self.get_pivot_angle())
+        table.putNumber("pivot current", self.pivot_motor.get_motor_current())
+        table.putNumber("pivot applied output", self.pivot_motor.get_applied_output())
+        table.putNumber("pivot angle", math.degrees(self.get_pivot_angle()))
+        table.putNumber("pivot absolute angle", math.degrees((self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi))
+        table.putNumber("absolute position", self.encoder.get_absolute_position().value)
         table.putBoolean("pivot moving", self.intake_pivoting)
+        table.putBoolean("pivot zeroed", self.pivot_zeroed)
+        table.putNumber("pivot target angle", math.degrees(self.target_angle))
+        table.putNumber("pivot velocity", self.pivot_motor.get_sensor_velocity())
+        table.putNumber("pivot acceleration", self.pivot_motor.get_sensor_acceleration())
 
     def periodic(self) -> None:
         if config.NT_INTAKE:

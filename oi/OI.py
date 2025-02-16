@@ -2,6 +2,8 @@ from utils import LocalLogger
 from oi.keymap import Keymap
 import command
 from robot_systems import Robot
+from commands2 import InstantCommand
+import math
 
 log = LocalLogger("OI")
 
@@ -16,6 +18,12 @@ class OI:
         log.info("Mapping controls...")
         pass
 
-        Keymap.Drivetrain.RESET_GYRO.onTrue(
-            command.DrivetrainZero(Robot.drivetrain)) \
-            .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
+        # Keymap.Drivetrain.RESET_GYRO.onTrue(
+        #     command.DrivetrainZero(Robot.drivetrain)) \
+        #     .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
+        Keymap.Intake.A.onTrue(
+            command.SetPivot(Robot.intake, 0)
+        ).onFalse(InstantCommand(lambda: Robot.intake.stop_pivot()))
+        Keymap.Intake.Y.onTrue(
+            command.SetPivot(Robot.intake, math.radians(60))
+        ).onFalse(InstantCommand(lambda: Robot.intake.stop_pivot()))
