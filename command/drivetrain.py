@@ -57,7 +57,8 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
     driver_centric_reversed = True
 
     def initialize(self) -> None:
-        pass
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("Drivetrain Command")
+        self.table.putBoolean("DriveSwerveCustom", True)
 
     def execute(self) -> None:
         dx, dy, d_theta = (
@@ -81,6 +82,7 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
             self.subsystem.set_robot_centric((dy, -dx, d_theta))
 
     def end(self, interrupted: bool) -> None:
+        self.table.putBoolean("DriveSwerveCustom", False)
         self.subsystem.n_front_left.set_motor_velocity(0)
         self.subsystem.n_front_right.set_motor_velocity(0)
         self.subsystem.n_back_left.set_motor_velocity(0)

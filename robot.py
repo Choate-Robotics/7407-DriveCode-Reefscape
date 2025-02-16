@@ -150,8 +150,12 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain),
-            command.DriveSwerveCustom(Robot.drivetrain)
+            command.SetWrist(Robot.wrist, 0),     
+            command.SetElevator(Robot.elevator, 0),
+        ))
+        self.scheduler.schedule(commands2.SequentialCommandGroup(
+                command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain)
             ))
         self.log.info("Teleop initialized")
         
