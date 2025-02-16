@@ -21,6 +21,7 @@ from utils.field import (
 
 class Robot:
     drivetrain = subsystem.Drivetrain()
+    intake = subsystem.Intake()
 
 
 class Pneumatics:

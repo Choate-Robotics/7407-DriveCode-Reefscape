@@ -26,9 +26,10 @@ LOG_FILE_LEVEL: int = 1
 # anything else will log nothing
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
 foc_active = False  # foc for TalonFX requires paid subscription
 
+# DEBUGGING NETWORK TABLES
+NT_INTAKE = True
 NT_ELEVATOR: bool = False
 
 # Cameras
@@ -86,6 +87,9 @@ drivetrain_y_ki: float = 0.0
 drivetrain_y_kd: float = 0.0
 drivetrain_y_tolerance: float = 0.05
 
+auto_translation_pid = PIDConstants(6, 0.0, 0.1)
+auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
+
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 
@@ -102,13 +106,33 @@ MOVE_CONFIG = TalonConfig(
     current_limit=50,
 )
 
+# intake
+horizontal_id = 12
+vertical_id = 13
+intake_cancoder_id = 21
+intake_pivot_id = 11
+intake_encoder_zero = 0.075
+INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
+INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True)
+# placehodler
+intake_max_angle = math.radians(60)
+intake_min_angle = math.radians(0)
+intake_angle_threshold = math.radians(2)
+intake_current_threshold = 80  # placeholder
+intake_current_time_threshold = 2  # placeholder
+
+intake_max_ff = -0.075
+intake_ff_offset = math.radians(90)
+
+horizontal_intake_speed = 0.3  # placeholder
+vertical_intake_speed = 0.3  # placeholder
+
 # elevator
 elevator_lead_id = 10
 elevator_follower_id = 11
 magsensor_id = 12  # placeholder
 
-auto_translation_pid = PIDConstants(6, 0.0, 0.1)
-auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
+
 
 # TO CHANGE
 period: float = 0.03

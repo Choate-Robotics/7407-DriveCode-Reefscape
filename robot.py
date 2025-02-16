@@ -24,6 +24,7 @@ from wpilib import DriverStation
 # import subsystem
 import utils
 from oi.OI import OI
+import math
 from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d
 from utils import get_red_pose

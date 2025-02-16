@@ -253,4 +253,4 @@ class TalonFX(PIDMotor):
         self._motor_vel.set_update_frequency(ms)
         self._motor_accel.set_update_frequency(ms)
         self._motor_current.set_update_frequency(ms)
-        return self._motor.optimize_bus_utilization()
+        # return self._motor.optimize_bus_utilization()
