@@ -20,7 +20,7 @@ from utils.field import (
 
 
 class Robot:
-    # drivetrain = subsystem.Drivetrain()
+    drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()
 
 
