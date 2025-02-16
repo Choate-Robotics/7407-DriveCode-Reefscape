@@ -1,0 +1,1 @@
+from four_piece_left import auto as four_l4_left

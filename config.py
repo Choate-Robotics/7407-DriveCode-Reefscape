@@ -1,36 +1,13 @@
-import math
 from dataclasses import dataclass
 from wpilib import AnalogEncoder
-from units.SI import (
-    radians,
-    meters,
-    inches_to_meters,
-    seconds
-)
 from toolkit.motors.ctre_motors import TalonConfig
+import math
 from pathplannerlib.config import PIDConstants
-
-from wpimath.geometry import Pose2d
+from units.SI import degrees, radians, meters, inches_to_meters
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-LOGGING: bool = True
-LOG_OUT_LEVEL: int = 0
-LOG_FILE_LEVEL: int = 1
-# Levels are how much information is logged
-# higher level = less information
-# level 0 will log everything
-# level 1 will log everything except debug
-# and so on
-# levels:
-# 0 = All
-# 1 = INFO
-# 2 = WARNING
-# 3 = ERROR
-# 4 = SETUP
-# anything else will log nothing
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
@@ -38,50 +15,68 @@ foc_active = False  # foc for TalonFX requires paid subscription
 trigger_threshold = 0
 
 # DEBUGGING NETWORK TABLES
-NT_INTAKE: bool = False
-NT_ELEVATOR: bool = False
-NT_WRIST: bool = False
-NT_DRIVETRAIN: bool = False
+NT_INTAKE: bool = True
+NT_ELEVATOR: bool = True
+NT_WRIST: bool = True
+NT_DRIVETRAIN: bool = True
 
 # Cameras
 left_cam_name = "left_cam"
 right_cam_name = "right_cam"
 
-#Drivetrain
-gyro_id: int = 13
+# Drivetrain
+gyro_id: int = 20
 
-front_left_move_id: int = 2
-front_left_turn_id: int = 1
-front_left_encoder_port: AnalogEncoder = AnalogEncoder(0)
-front_left_encoder_zeroed_pos: float = 0.362
+front_left_move_id: int = 1
+front_left_turn_id: int = 2
+front_left_encoder_port: AnalogEncoder = AnalogEncoder(2)
+front_left_encoder_zeroed_pos: float = 0.945
 front_left_turn_inverted = False
 front_left_move_inverted = False
 
-front_right_move_id: int = 4
-front_right_turn_id: int = 3
-front_right_encoder_port: AnalogEncoder = AnalogEncoder(1)
-front_right_encoder_zeroed_pos: float = 0.034
+front_right_move_id: int = 3
+front_right_turn_id: int = 4
+front_right_encoder_port: AnalogEncoder = AnalogEncoder(3)
+front_right_encoder_zeroed_pos: float = 0.074
 front_right_turn_inverted = False
 front_right_move_inverted = False
 
-back_left_move_id: int = 8
-back_left_turn_id: int = 7
-back_left_encoder_port: AnalogEncoder = AnalogEncoder(3)
-back_left_encoder_zeroed_pos: float = 0.735
+back_left_move_id: int = 7
+back_left_turn_id: int = 8
+back_left_encoder_port: AnalogEncoder = AnalogEncoder(1)
+back_left_encoder_zeroed_pos: float = 0.227
 back_left_turn_inverted = False
 back_left_move_inverted = False
 
-back_right_move_id: int = 6
-back_right_turn_id: int = 5
-back_right_encoder_port: AnalogEncoder = AnalogEncoder(2)
-back_right_encoder_zeroed_pos: float = 0.713
+back_right_move_id: int = 5
+back_right_turn_id: int = 6
+back_right_encoder_port: AnalogEncoder = AnalogEncoder(0)
+back_right_encoder_zeroed_pos: float = 0.597
 back_right_turn_inverted = False
 back_right_move_inverted = False
 
 driver_centric: bool = True
 drivetrain_deadzone: float = 0.1
-drivetrain_curve: float = 2.00000
-drivetrain_zero: radians = math.radians(180)
+drivetrain_curve: float = 2.0000
+drivetrain_zero: radians = math.radians(0)
+
+drivetrain_rotation_kp: float = 5.5
+drivetrain_rotation_ki: float = 0.0
+drivetrain_rotation_kd: float = 0.0
+drivetrain_rotation_tolerance: degrees = 1  # degrees
+
+drivetrain_x_kp: float = 4.0
+drivetrain_x_ki: float = 0.0
+drivetrain_x_kd: float = 0.0
+drivetrain_x_tolerance: float = 0.05
+
+drivetrain_y_kp: float = 4.0
+drivetrain_y_ki: float = 0.0
+drivetrain_y_kd: float = 0.0
+drivetrain_y_tolerance: float = 0.05
+
+auto_translation_pid = PIDConstants(6, 0.0, 0.1)
+auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
@@ -89,9 +84,7 @@ auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 
-TURN_CONFIG = TalonConfig(
-    8, 0, 0.025, 0, 0, brake_mode=True
-)
+TURN_CONFIG = TalonConfig(7, 0, 0.02, 0, 0, brake_mode=True)
 
 MOVE_CONFIG = TalonConfig(
     0.11,
@@ -104,72 +97,59 @@ MOVE_CONFIG = TalonConfig(
     current_limit=50,
 )
 
+# Wrist
+wrist_feed_id = 15
+WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+wrist_id = 14
+WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350)
+wrist_cancoder_id = 22
+wrist_encoder_zero = 0.781
 
-# WRIST
-wrist_feed_id = 10
-wrist_id = 9
-wrist_cancoder_id = 11
-
-WRIST_FEED_CONFIG = TalonConfig(
-    1,
-    0,
-    0,
-    0,
-    0
-)
-
-WRIST_CONFIG = TalonConfig(
-    1, 
-    0, 
-    0, 
-    0, 
-    0
-)
-
-wrist_encoder_zero = 0  # placeholder
-
+wrist_intake_speed = 0.35
+wrist_extake_speed = -0.25
 wrist_max_angle: radians = math.radians(45)
 wrist_min_angle: radians = math.radians(-117)
+angle_threshold: radians = math.radians(1)  # radians
+out_current_threshold: float = 13  # amps PLACEHOLDER
+back_current_threshold: float = 50
+current_time_threshold: float = 0.1
+wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 
-# TODO: Change to actual angles
-wrist_intake_angle: radians = 0
-wrist_l1_angle: radians = 0
-wrist_l2_angle: radians = 0
-wrist_l3_angle: radians = 0
-wrist_l4_angle: radians = 0
-wrist_dhigh_angle: radians = 0
-wrist_dlow_angle: radians = 0
-wrist_barge_angle: radians = 0
-wrist_processor_score_angle: radians = 0
+wrist_max_ff = 0.17
+wrist_ff_offset = math.radians(30)
 
-wrist_angle_threshold: radians = math.radians(2)
+# intake
+horizontal_id = 12
+vertical_id = 13
+intake_cancoder_id = 21
+intake_pivot_id = 11
+intake_encoder_zero = 0.075
+INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
+INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True)
 
-wrist_feed_in_speed = 1
-wrist_feed_out_speed = -1
+intake_max_angle = math.radians(60)
+intake_min_angle = math.radians(0)
+intake_angle_threshold = math.radians(2)
+intake_current_threshold = 80  # placeholder
+intake_current_time_threshold = 2  # placeholder
 
-# TODO: Change to actual thresholds
-out_current_threshold: float = 2
-back_current_threshold: float = 10
-current_time_threshold: seconds = 0.3
-wrist_algae_time_threshold: seconds = 3
+intake_max_ff = -0.075
+intake_ff_offset = math.radians(90)
 
-wrist_max_ff = 0 #placeholder
-wrist_ff_offset = 0 #placeholder
+horizontal_intake_speed = 0.3  # placeholder
+vertical_intake_speed = 0.3  # placeholder
 
-# ELEVATOR
-elevator_lead_id = 10
-elevator_follower_id = 11
-elevator_height_threshold = .1*inches_to_meters #placeholder
+# elevator
+elevator_lead_id = 9
+elevator_follower_id = 10
 
-ELEVATOR_CONFIG = TalonConfig(
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    brake_mode=True
-)
+elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
+
+ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, motion_magic_cruise_velocity=94, motion_magic_acceleration=300)
+
+
+# TO CHANGE
+period: float = 0.03
 
 # TODO: Change to actual heights
 elevator_l1_height: meters = 0
@@ -180,45 +160,21 @@ elevator_dhigh_height: meters = 0
 elevator_dlow_height: meters = 0
 elevator_barge_height: meters = 0
 
-# INTAKE
-intake_pivot_id = 0
-horizontal_id = 9
-vertical_id = 13
-intake_cancoder_id = 400
-intake_encoder_zero_pos = 0
-
-INTAKE_CONFIG = TalonConfig(
-    1, 
-    0, 
-    0, 
-    0, 
-    0
-)
-
-INTAKE_PIVOT_CONFIG = TalonConfig(
-    1, 
-    0, 
-    0, 
-    0, 
-    0
-)
-
-# TODO: Change to actual speeds
-intake_speed = 1
-intake_eject_speed = -1
-
-horizontal_intake_speed = 0
-vertical_intake_speed = 0
-
-intake_max_angle: radians = math.radians(90)
-intake_min_angle: radians = math.radians(60)
-intake_coral_station_angle: radians = 0
-
-intake_angle_threshold = math.radians(2)
-
 # TODO: Change to actual angle
 intake_algae_ground_angle = 0
 intake_climb_angle = 0
+intake_coral_station_angle = 0
+
+wrist_intake_angle = 0
+wrist_l1_angle = 0
+wrist_l2_angle = 0
+wrist_l3_angle = 0
+wrist_l4_angle = 0
+wrist_dhigh_angle = 0
+wrist_dlow_angle = 0
+wrist_barge_angle = 0
+wrist_processor_score_angle = 0
+
 
 # TARGET POSITIONS
 @dataclass
@@ -411,7 +367,3 @@ target_positions: dict[str, TargetData] = {
         intake_climb=True,
     )
 }
-
-
-# TO CHANGE
-period = 0.03

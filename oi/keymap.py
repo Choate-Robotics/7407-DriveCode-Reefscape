@@ -42,6 +42,9 @@ class Keymap:
         DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
             lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > 0.4
         )
+        CORAL_STATION_ALIGN = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
+        )
 
     class Intake:
         INTAKE_CORAL = commands2.button.Trigger(

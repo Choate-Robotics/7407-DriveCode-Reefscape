@@ -36,7 +36,7 @@ class SetElevator(SubsystemCommand[Elevator]):
         """
         stops moving
         """
-        if interrupted:
+        if interrupted: 
             self.subsystem.stop()
             log.warn("Elevator command interrupted")
 

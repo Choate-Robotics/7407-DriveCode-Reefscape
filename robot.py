@@ -4,7 +4,9 @@ from toolkit.subsystem import Subsystem
 
 import phoenix6 as ctre
 import ntcore
+import phoenix6 as ctre
 import wpilib
+
 import command
 import math
 import config
@@ -24,6 +26,7 @@ from wpilib import DriverStation
 # import subsystem
 import utils
 from oi.OI import OI
+import math
 from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d
 from utils import get_red_pose
@@ -135,7 +138,7 @@ class _Robot(wpilib.TimedRobot):
         ])
 
         Robot.drivetrain.update_tables()
-        Sensors.cam_controller.update_tables()
+        # Sensors.cam_controller.update_tables()
         ...
 
     # Initialize subsystems
@@ -146,8 +149,12 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain),
-            command.DriveSwerveCustom(Robot.drivetrain)
+            command.SetWrist(Robot.wrist, 0),     
+            command.SetElevator(Robot.elevator, 0),
+        ))
+        self.scheduler.schedule(commands2.SequentialCommandGroup(
+                command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain)
             ))
         self.log.info("Teleop initialized")
         

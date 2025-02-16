@@ -1,7 +1,9 @@
 from toolkit.command import SubsystemCommand
 
+import config
 from subsystem import Intake
 from utils import LocalLogger
+from wpimath.filter import Debouncer
 
 from units.SI import radians
 
@@ -104,3 +106,44 @@ class ZeroPivot(SubsystemCommand[Intake]):
             log.info("Intake pivot zeroed")
         else:
             log.warn("Intake pivot zeroing interrupted")
+
+class IntakeAlgae(SubsystemCommand[Intake]):
+
+    def __init__(self, subsystem):
+        super().__init__(subsystem)
+        self.subsystem = subsystem 
+
+    def initialize(self):
+        self.subsystem.intake_algae()
+
+        self.debouncer = Debouncer(config.intake_current_time_threshold, Debouncer.DebounceType.kRising)
+        
+    def execute(self):
+        pass 
+
+    def isFinished(self):                       
+        return self.debouncer.calculate(
+            self.subsystem.get_horizontal_motor_current()
+            > config.intake_current_threshold
+        )
+
+    def end(self):
+        self.subsystem.algae_in_intake = True   
+
+class ExtakeAlgae(SubsystemCommand[Intake]):
+
+    def __init__(self, subsystem):
+        super().__init__(subsystem)
+        self.subsystem = subsystem 
+
+    def initialize(self):
+        self.subsystem.extake_algae()
+
+    def execute(self):
+        pass 
+
+    def isFinished(self):                       
+        return False
+    
+    def end(self):
+        self.subsystem.algae_in_intake = False

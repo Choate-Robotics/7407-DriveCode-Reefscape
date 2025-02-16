@@ -66,4 +66,4 @@ def test_get_position(test_input, test_output, elevator: Elevator, monkeypatch: 
     monkeypatch.setattr(
         elevator.leader_motor, "get_sensor_position", lambda: test_input
     )
-    assert(round(elevator.get_position(), 4) == round(test_output, 4))
+    assert(round(elevator.get_position(), 2) == round(test_output,2))

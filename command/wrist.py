@@ -106,17 +106,18 @@ class FeedOut(SubsystemCommand[Wrist]):
         self.subsystem.feed_out()
         self.subsystem.wrist_ejecting = True
 
-        self.debouncer = Debouncer(
-            config.current_time_threshold, Debouncer.DebounceType.kRising
-        )
+        # self.debouncer = Debouncer(
+        #     config.current_time_threshold, Debouncer.DebounceType.kRising)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        return self.debouncer.calculate(
-            self.subsystem.feed_motor.get_motor_current() < config.out_current_threshold
-        )
+        # return self.debouncer.calculate(
+        #     self.subsystem.feed_motor.get_motor_current() 
+        #     < config.out_current_threshold
+        #     )
+        return False
 
     def end(self, interrupted) -> None:
         if interrupted:

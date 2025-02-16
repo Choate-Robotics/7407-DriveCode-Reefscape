@@ -12,33 +12,9 @@ from wpilib import Timer, RobotState, TimedRobot
 from photonlibpy.estimatedRobotPose import EstimatedRobotPose
 from sensors import PhotonController
 
-def weighted_pose_average(
-        robot_pose: Pose2d, vision_pose: Pose3d | Pose2d, robot_weight: float, vision_weight: float
-) -> Pose2d:
-    
-    if isinstance(vision_pose, Pose3d):
-        vision_pose = vision_pose.toPose2d()
-
-    return Pose2d(
-        Translation2d(
-            (
-                    robot_pose.translation().X() * robot_weight
-                    + vision_pose.translation().X() * vision_weight
-            ),
-            (
-                    robot_pose.translation().Y() * robot_weight
-                    + vision_pose.translation().Y() * vision_weight
-            ),
-        ),
-        Rotation2d(
-            robot_pose.rotation().radians() * robot_weight
-            + vision_pose.rotation().radians() * vision_weight
-        )
-    )
-
 class FieldOdometry:
     def __init__(
-            self, drivetrain: Drivetrain, cam_controller: PhotonController, field_width: float = constants.field_width, field_length: float = constants.field_length
+            self, drivetrain: Drivetrain, cam_controller: PhotonController | None, field_width: float = constants.field_width, field_length: float = constants.field_length
     ):
         self.drivetrain: Drivetrain = drivetrain
         self.table = ntcore.NetworkTableInstance.getDefault().getTable("Odometry")
@@ -131,7 +107,9 @@ class FieldOdometry:
         #     )
         return est_pose
 
-    def get_vision_poses(self) -> list[EstimatedRobotPose]:
+    def get_vision_poses(self) -> list[EstimatedRobotPose] | None:
+        if self.cam_controller is None:
+            return None
         return self.cam_controller.get_results()
 
     def update(self) -> Pose2d:
@@ -144,8 +122,6 @@ class FieldOdometry:
             return self.getPose()
         
         vision_robot_pose_list = self.get_vision_poses()
-
-        
 
         if vision_robot_pose_list is None:
             return self.getPose()
