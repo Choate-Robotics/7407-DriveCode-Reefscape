@@ -24,11 +24,11 @@ class OI:
         #     .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Wrist.A.onTrue(
-            command.FeedIn(Robot.wrist)
-        ).onFalse(InstantCommand(lambda: Robot.wrist.feed_stop()))
+            command.SetWrist(Robot.wrist, math.radians(-117))
+        )
         Keymap.Wrist.B.onTrue(
-            command.FeedOut(Robot.wrist)
-        ).onFalse(InstantCommand(lambda: Robot.wrist.feed_stop()))
-        # Keymap.Wrist.Y.onTrue(
-        #     command.SetWrist(Robot.wrist, math.radians(45))
-        # )
+            command.SetWrist(Robot.wrist, math.radians(0))
+        )
+        Keymap.Wrist.Y.onTrue(
+            command.SetWrist(Robot.wrist, math.radians(45))
+        )

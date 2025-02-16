@@ -87,7 +87,7 @@ INTAKE_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_feed_id = 15
 WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_id = 14
-WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75)
+WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350)
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
