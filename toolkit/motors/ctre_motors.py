@@ -100,7 +100,7 @@ class TalonConfig:
 
 class TalonFX(PIDMotor):
     _motor: hardware.TalonFX
-    
+
     _logger: LocalLogger
 
     _config: configs.TalonFXConfigurator
@@ -110,7 +110,7 @@ class TalonFX(PIDMotor):
     _motor_pos: StatusSignal
 
     _motor_vel: StatusSignal
-    
+
     _motor_accel: StatusSignal
 
     _motor_current: StatusSignal
@@ -121,12 +121,12 @@ class TalonFX(PIDMotor):
 
     _duty_cycle_out: controls.DutyCycleOut
 
-    _position_duty_cycle: controls.PositionDutyCycle
+    _position_voltage: controls.PositionVoltage
 
-    _velocity_duty_cycle: controls.VelocityDutyCycle
+    _velocity_voltage: controls.VelocityVoltage
 
     _foc: bool
-    
+
     _initialized: bool
 
     _inverted: bool
@@ -152,11 +152,10 @@ class TalonFX(PIDMotor):
         self.target_velocity = 0
 
     def init(self):
-        
         if self._initialized:
             self._logger.warn('already initialized')
             return
-        
+
         self._logger.setup('initializing')
         self._motor = hardware.TalonFX(self._can_id, 'rio')
         self._config = self._motor.configurator
@@ -172,7 +171,7 @@ class TalonFX(PIDMotor):
         if self._optimized:
             if self.optimize_normal_operation() == StatusCode.OK:
                 self._logger.complete('optimized')
-                
+
         self._initialized = True
         self._logger.complete('initialized')
 
@@ -180,9 +179,9 @@ class TalonFX(PIDMotor):
         self._motion_magic_velocity_voltage = controls.MotionMagicVelocityVoltage(0)
         self._motion_magic_voltage = controls.MotionMagicVoltage(0)
         self._duty_cycle_out = controls.DutyCycleOut(0)
-        self._position_duty_cycle = controls.PositionDutyCycle(0)
-        self._velocity_duty_cycle = controls.VelocityDutyCycle(0)
-        
+        self._position_voltage = controls.PositionVoltage(0)
+        self._velocity_voltage = controls.VelocityVoltage(0)
+
     def error_check(self, status: StatusCode, message: str = ''):
         if TimedRobot.isSimulation():
             return
@@ -206,13 +205,12 @@ class TalonFX(PIDMotor):
         self.error_check(self._motor.set_control(self._motion_magic_velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
         self.target_velocity = vel
 
-    def set_position_duty_cycle(self, pos: rotations):
-        self.error_check(self._motor.set_control(self._position_duty_cycle.with_position(pos)), f'target position: {pos}')
+    def set_target_position_voltage(self, pos: rotations):
+        self.error_check(self._motor.set_control(self._position_voltage.with_position(pos)), f'target position: {pos}')
         self.target = pos
 
-    def set_velocity_duty_cycle(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
-        self.error_check(self._motor.set_control(self._velocity_duty_cycle.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
-        self.target_velocity = vel
+    def set_target_velocity_voltage(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
+        self.error_check(self._motor.set_control(self._velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
 
     def set_raw_output(self, x: float):
         self.error_check(self._motor.set_control(self._duty_cycle_out.with_output(x)), f'raw output: {x}')
@@ -223,7 +221,7 @@ class TalonFX(PIDMotor):
     def get_sensor_velocity(self) -> rotations_per_second:
         self._motor_vel.refresh()
         return self._motor_vel.value
-    
+
     def get_sensor_acceleration(self) -> rotations_per_second_squared:
         self._motor_accel.refresh()
         return self._motor_accel.value
@@ -231,10 +229,10 @@ class TalonFX(PIDMotor):
     def get_motor_current(self) -> float:
         self._motor_current.refresh()
         return self._motor_current.value
-    
+
     def get_applied_output(self) -> float:
         return self._motor.get_motor_voltage().value
-    
+
     def get_target(self) -> rotations:
         return self.target
     
@@ -243,10 +241,8 @@ class TalonFX(PIDMotor):
 
     def optimize_normal_operation(self, ms: int = 25) -> StatusCode.OK:
         """removes every status signal except for motor position, current, and velocty to optimize bus utilization
-
         Args:
             ms: (int, optional) the update frequency of the status signals (default is 25ms)
-
         Returns:
             StatusCode.OK: if the talon was optimized
         """
