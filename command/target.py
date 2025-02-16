@@ -3,50 +3,39 @@ from config import TargetData
 import command
 import commands2
 from commands2 import SequentialCommandGroup, InstantCommand
+from robot_systems import Robot
 
 
-class Target(commands2.Command):
-    def __init__(self, elevator: Elevator, wrist: Wrist, target: TargetData):
-        super().__init__()
-        self.elevator = elevator
-        self.wrist = wrist
-
-        self.target = target
-        self.finished = False
-
-    def finish(self):
-        self.finished = True
-
-    def initialize(self):
-        target_elevator_height = self.target.elevator_height
-        target_wrist_angle = self.target.wrist_angle
-
-        self.giraffe = SequentialCommandGroup()
-
-        # Set elevator and wrist
-        if not self.elevator.is_at_position(target_elevator_height):
-            # Set wrist idle if necessary before setting the elevator
-            if not self.wrist.is_at_angle(0):
-                self.giraffe.addCommands(command.SetWrist(self.wrist, 0))
-            self.giraffe.addCommands(
-                command.SetElevator(self.elevator, target_elevator_height)
-            )
-
-        self.giraffe.addCommands(command.SetWrist(self.wrist, target_wrist_angle))
-
-        commands2.CommandScheduler.getInstance()(
-            self.giraffe,
-            InstantCommand(lambda: self.finish()),
+def target_command_generator(target: TargetData)->SequentialCommandGroup:
+    """
+    Generates a command group to move the elevator and wrist to the target position, 
+    in an order that keeps the wrist from colliding with the elevator.
+    
+    Args:
+        target: The target data to move to
+        
+    Returns:
+        A command group to move the elevator and the wrist to the target position
+    
+    """
+    elevator = Robot.elevator
+    wrist = Robot.wrist
+    target_elevator_height = target.elevator_height
+    target_wrist_angle = target.wrist_angle
+    target_command = SequentialCommandGroup()
+    # Set elevator and wrist
+    if not elevator.is_at_position(target_elevator_height):
+        # Set wrist idle if necessary before setting the elevator
+        if not wrist.is_at_angle(0):
+            target_command.addCommands(command.SetWrist(wrist, 0))
+        target_command.addCommands(
+            command.SetElevator(elevator, target_elevator_height)
         )
 
-    def execute(self) -> None:
-        pass
+    target_command.addCommands(command.SetWrist(wrist, target_wrist_angle))
 
-    def isFinished(self) -> bool:
-        return self.finished
+    return target_command
 
-    def end(self) -> None:
-        pass
 
 
 class IntakeCoral(commands2.ParallelRaceGroup):

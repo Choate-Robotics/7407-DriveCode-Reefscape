@@ -1,5 +1,5 @@
 import commands2.instantcommand
-import command.target
+from command import target_command_generator
 from utils import LocalLogger
 from oi.keymap import Keymap
 import command
@@ -38,72 +38,52 @@ class OI:
         
         # Scoring on reef
         Keymap.Scoring.SCORE_L1.onTrue(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["L1"]
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
 
         Keymap.Scoring.SCORE_L2.onTrue(
-            command.Target(
-                Robot.elevator, 
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["L2"]
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
 
         Keymap.Scoring.SCORE_L3.onTrue(
-            command.Target(
-                Robot.elevator, 
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["L3"]
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
 
         Keymap.Scoring.SCORE_L4.onTrue(
-            command.Target(
-                Robot.elevator, 
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["L4"]
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
 
         # Score algae in barge
         Keymap.Scoring.SCORE_BARGE.onTrue(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["SCORE_BARGE"]
             ).andThen(command.FeedOut(Robot.wrist))
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
@@ -118,9 +98,7 @@ class OI:
         # Intake coral from station
         Keymap.Intake.INTAKE_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
-                command.Target(
-                    Robot.elevator,
-                    Robot.wrist,
+                target_command_generator(
                     config.target_positions["STATION_INTAKING"]
                 ),
                 command.SetPivot(
@@ -131,9 +109,7 @@ class OI:
                 command.IntakeCoral(Robot.intake, Robot.wrist)
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
@@ -141,9 +117,7 @@ class OI:
         # Eject coral from wrist and intake
         Keymap.Intake.EJECT_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
-                command.Target(
-                    Robot.elevator,
-                    Robot.wrist,
+                target_command_generator(
                     config.target_positions["STATION_INTAKING"]
                 ),
                 command.SetPivot(
@@ -154,9 +128,7 @@ class OI:
                 command.EjectCoral(Robot.intake, Robot.wrist)
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
@@ -164,22 +136,16 @@ class OI:
         # De-algae
         Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).onTrue(
             commands2.ConditionalCommand(
-                command.Target(
-                    Robot.elevator,
-                    Robot.wrist,
+                target_command_generator(
                     config.target_positions["DEALGAE_HIGH"]
                 ),
-                command.Target(
-                    Robot.elevator,
-                    Robot.wrist,
+                target_command_generator(
                     config.target_positions["DEALGAE_LOW"]
                 ),
                 lambda: (Field.odometry.getPose().nearest(Field.reef_face.get_faces()) in Field.reef_face.get_high_algae())
             ).andThen(command.FeedIn(Robot.wrist))
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
@@ -187,9 +153,7 @@ class OI:
         # Intaking algae with ground intake
         Keymap.Intake.INTAKE_ALGAE.onTrue(
             commands2.ParallelCommandGroup(
-                command.Target(
-                    Robot.elevator,
-                    Robot.wrist,
+                target_command_generator(
                     config.target_positions["INTAKE_ALGAE"]
                 ),
                 command.SetPivot(
@@ -200,9 +164,7 @@ class OI:
                 command.RunIntake(Robot.intake).onlyIf(lambda: not Robot.intake.intake_running)
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             ).andThen(
                 commands2.InstantCommand(lambda: Robot.intake.stop())
@@ -211,17 +173,13 @@ class OI:
 
         # Score algae in processor
         Keymap.Wrist.EXTAKE_ALGAE.onTrue(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["SCORE_PROCESSOR_WRIST"]
             ).andThen(
                 command.FeedOut(Robot.wrist)
             )
         ).onFalse(
-            command.Target(
-                Robot.elevator,
-                Robot.wrist,
+            target_command_generator(
                 config.target_positions["IDLE"]
             )
         )
