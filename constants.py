@@ -10,6 +10,23 @@ from units.SI import (
     rotations_per_minute,
 )
 
+LOGGING: bool = True
+LOG_OUT_LEVEL: int = 0
+LOG_FILE_LEVEL: int = 1
+# Levels are how much information is logged
+# higher level = less information
+# level 0 will log everything
+# level 1 will log everything except debug
+# and so on
+# levels:
+# 0 = All
+# 1 = INFO
+# 2 = WARNING
+# 3 = ERROR
+# 4 = SETUP
+# anything else will log nothing
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 # cameras
 robot_to_left_cam = Transform3d(
     Translation3d(8.210*inches_to_meters, 9.764*inches_to_meters, 7.911*inches_to_meters),

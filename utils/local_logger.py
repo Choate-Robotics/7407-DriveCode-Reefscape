@@ -1,7 +1,7 @@
 from wpilib import DataLogManager, Timer, DriverStation, TimedRobot
 from wpilib.deployinfo import getDeployData
 from wpiutil.log import StringLogEntry
-import config
+from constants import LOGGING, LOG_FILE_LEVEL, LOG_OUT_LEVEL
 
 
 class BColors:
@@ -73,7 +73,7 @@ class LocalLogger:
     def __init__(self, name: str):
         self.name = name
         self.dlm = DataLogManager
-        if config.LOGGING:
+        if LOGGING:
             self.dlm.start("home/lvuser/py/logs/")
             self.log_data = self.dlm.getLog()
             self.custom_entry = StringLogEntry(self.log_data, f"messages/{self.name}")
@@ -120,19 +120,19 @@ class LocalLogger:
 
         :returns: str"""
 
-        if config.LOGGING == False:
+        if LOGGING == False:
             self.setup("WARNING: Logging to file is disabled")
         else:
             self.setup("Logging to file is enabled")
-            self.setup(f"Log File Level: {config.LOG_FILE_LEVEL}")
-        self.setup(f"Log Out Level: {config.LOG_OUT_LEVEL}")
+            self.setup(f"Log File Level: {LOG_FILE_LEVEL}")
+        self.setup(f"Log Out Level: {LOG_OUT_LEVEL}")
 
     def log_driverstation(self, joysticks: bool):
         """
         Enables logging of DriverStation data to the file.
 
         :param joysticks: Whether or not to log joystick data"""
-        if not config.LOGGING:
+        if not LOGGING:
             return
         DriverStation.startDataLog(self.log_data, joysticks)
         self.setup("DriverStation logging started")
@@ -211,9 +211,9 @@ class LocalLogger:
 
         This should not be used outside of this class.
         """
-        if std_out and config.LOG_OUT_LEVEL <= level:
+        if std_out and LOG_OUT_LEVEL <= level:
             print(self.__format_std_out(color, type, message))
-        if config.LOGGING and config.LOG_FILE_LEVEL <= level:
+        if LOGGING and LOG_FILE_LEVEL <= level:
             self.custom_entry.append(f"{self.__pms(False)}{type}{self.name}: {message}")
 
     def message(self, message: str):

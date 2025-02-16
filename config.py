@@ -2,32 +2,11 @@ from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
 from pathplannerlib.config import PIDConstants
-from units.SI import degrees_to_radians, degrees, radians, meters
-
-from wpilib import AnalogEncoder
-
-from toolkit.motors.ctre_motors import TalonConfig
-from units.SI import inches_to_meters, radians
+from units.SI import degrees, radians, meters, inches_to_meters
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-LOGGING: bool = True
-LOG_OUT_LEVEL: int = 0
-LOG_FILE_LEVEL: int = 1
-# Levels are how much information is logged
-# higher level = less information
-# level 0 will log everything
-# level 1 will log everything except debug
-# and so on
-# levels:
-# 0 = All
-# 1 = INFO
-# 2 = WARNING
-# 3 = ERROR
-# 4 = SETUP
-# anything else will log nothing
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
