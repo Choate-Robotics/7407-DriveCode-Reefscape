@@ -1,22 +1,22 @@
-from subsystem import Elevator, Intake, Wrist
+from subsystem import Intake, Wrist
 from config import TargetData
 import command
 import commands2
-from commands2 import SequentialCommandGroup, InstantCommand
+from commands2 import SequentialCommandGroup
 from robot_systems import Robot
 
 
-def target_command_generator(target: TargetData)->SequentialCommandGroup:
+def target_command_generator(target: TargetData) -> SequentialCommandGroup:
     """
-    Generates a command group to move the elevator and wrist to the target position, 
+    Generates a command group to move the elevator and wrist to the target position,
     in an order that keeps the wrist from colliding with the elevator.
-    
+
     Args:
         target: The target data to move to
-        
+
     Returns:
         A command group to move the elevator and the wrist to the target position
-    
+
     """
     elevator = Robot.elevator
     wrist = Robot.wrist
@@ -35,7 +35,6 @@ def target_command_generator(target: TargetData)->SequentialCommandGroup:
     target_command.addCommands(command.SetWrist(wrist, target_wrist_angle))
 
     return target_command
-
 
 
 class IntakeCoral(commands2.ParallelRaceGroup):
