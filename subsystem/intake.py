@@ -18,13 +18,13 @@ class Intake(Subsystem):
             config.horizontal_id,
             config.foc_active,
             inverted=False,
-            # config=config.HORIZONTAL_CONFIG,
+            config=config.INTAKE_CONFIG,
         )
         self.vertical_motor: TalonFX = TalonFX(
             config.vertical_id,
             config.foc_active,
             inverted=False,
-            # config=config.VERTICAL_CONFIG,
+            config=config.INTAKE_CONFIG,
         )
         self.pivot_motor: TalonFX = TalonFX(
             config.intake_pivot_id,

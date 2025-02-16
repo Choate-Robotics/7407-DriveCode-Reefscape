@@ -21,9 +21,9 @@ class OI:
         # Keymap.Drivetrain.RESET_GYRO.onTrue(
         #     command.DrivetrainZero(Robot.drivetrain)) \
         #     .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
-        Keymap.Intake.A.onTrue(
-            command.SetPivot(Robot.intake, 0)
-        ).onFalse(InstantCommand(lambda: Robot.intake.stop_pivot()))
-        Keymap.Intake.Y.onTrue(
-            command.SetPivot(Robot.intake, math.radians(60))
-        ).onFalse(InstantCommand(lambda: Robot.intake.stop_pivot()))
+        Keymap.Intake.A.whileTrue(
+            command.RunIntake(Robot.intake)
+        )
+        Keymap.Intake.Y.whileTrue(
+            command.EjectIntake(Robot.intake)
+        )

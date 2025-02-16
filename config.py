@@ -82,26 +82,12 @@ MOVE_CONFIG = TalonConfig(
 
 
 # intake
-horizontal_id = 9
-# HORIZONTAL_CONFIG = TalonConfig(
-#     1,
-#     0,
-#     0,
-#     0,
-#     0
-# )
+horizontal_id = 12
 vertical_id = 13
-# VERTICAL_CONFIG = TalonConfig(
-#     1,
-#     0,
-#     0,
-#     0,
-#     0
-# )
-
 intake_cancoder_id = 21
 intake_pivot_id = 11
 intake_encoder_zero = 0.075
+INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
 INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True)
 # placehodler
 intake_max_angle = math.radians(60)
