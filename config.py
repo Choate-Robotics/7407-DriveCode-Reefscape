@@ -91,13 +91,14 @@ WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
-
+wrist_intake_speed = 0.35
+wrist_extake_speed = -0.25
 wrist_max_angle: radians = math.radians(45)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
-out_current_threshold: float = 2  # amps PLACEHOLDER
-back_current_threshold: float = 10  # amps PLACEHOLDER
-current_time_threshold: float = 0.3  # seconds PLACEHOLDER
+out_current_threshold: float = 13  # amps PLACEHOLDER
+back_current_threshold: float = 50
+current_time_threshold: float = 0.1
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 
 wrist_max_ff = 0.17

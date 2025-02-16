@@ -4,6 +4,8 @@ import command
 from robot_systems import Robot
 import math
 
+from commands2 import InstantCommand
+
 log = LocalLogger("OI")
 
 
@@ -22,11 +24,11 @@ class OI:
         #     .onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Wrist.A.onTrue(
-            command.SetWrist(Robot.wrist, math.radians(-117))
-        )
+            command.FeedIn(Robot.wrist)
+        ).onFalse(InstantCommand(lambda: Robot.wrist.feed_stop()))
         Keymap.Wrist.B.onTrue(
-            command.SetWrist(Robot.wrist, math.radians(0))
-        )
-        Keymap.Wrist.Y.onTrue(
-            command.SetWrist(Robot.wrist, math.radians(45))
-        )
+            command.FeedOut(Robot.wrist)
+        ).onFalse(InstantCommand(lambda: Robot.wrist.feed_stop()))
+        # Keymap.Wrist.Y.onTrue(
+        #     command.SetWrist(Robot.wrist, math.radians(45))
+        # )

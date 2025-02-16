@@ -74,13 +74,13 @@ class Wrist(Subsystem):
         """
         spin feed motors in, used in command to stop
         """
-        self.feed_motor.set_raw_output(1)
+        self.feed_motor.set_raw_output(config.wrist_intake_speed)
 
     def feed_out(self) -> None:
         """
         spin feed motors out, used in command to stop
         """
-        self.feed_motor.set_raw_output(-1)
+        self.feed_motor.set_raw_output(config.wrist_extake_speed)
 
     def feed_stop(self) -> None:
         """
