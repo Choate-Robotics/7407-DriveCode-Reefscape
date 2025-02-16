@@ -27,8 +27,6 @@ class _Robot(wpilib.TimedRobot):
         # Initialize Operator Interface
         if config.DEBUG_MODE == True:
             self.log.setup("WARNING: DEBUG MODE IS ENABLED")
-        OI.init()
-        # OI.map_controls()
         period = 0.03
         self.scheduler.setPeriod(period)
         self.log.info(f"Scheduler period set to {period} seconds")
@@ -97,6 +95,8 @@ class _Robot(wpilib.TimedRobot):
 
     def teleopInit(self):
         self.log.info("Teleop initialized")
+        OI.init()
+        OI.map_controls()
         # self.scheduler.schedule(commands2.SequentialCommandGroup(
         #     command.DrivetrainZero(Robot.drivetrain),
         #     command.DriveSwerveCustom(Robot.drivetrain)
