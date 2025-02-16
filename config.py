@@ -1,10 +1,13 @@
-from phoenix6 import degree
 from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
 from pathplannerlib.config import PIDConstants
 from units.SI import degrees_to_radians, degrees, radians, meters
 
+from wpilib import AnalogEncoder
+
+from toolkit.motors.ctre_motors import TalonConfig
+from units.SI import radians
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
@@ -31,6 +34,7 @@ foc_active = False  # foc for TalonFX requires paid subscription
 # DEBUGGING NETWORK TABLES
 NT_INTAKE = True
 NT_ELEVATOR: bool = False
+NT_WRIST = True
 
 # Cameras
 left_cam_name = "left_cam"
@@ -106,6 +110,27 @@ MOVE_CONFIG = TalonConfig(
     current_limit=50,
 )
 
+# Wrist
+wrist_feed_id = 15
+WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+wrist_id = 14
+WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350)
+wrist_cancoder_id = 22
+wrist_encoder_zero = 0.781
+
+wrist_intake_speed = 0.35
+wrist_extake_speed = -0.25
+wrist_max_angle: radians = math.radians(45)
+wrist_min_angle: radians = math.radians(-117)
+angle_threshold: radians = math.radians(1)  # radians
+out_current_threshold: float = 13  # amps PLACEHOLDER
+back_current_threshold: float = 50
+current_time_threshold: float = 0.1
+wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
+
+wrist_max_ff = 0.17
+wrist_ff_offset = math.radians(30)
+
 # intake
 horizontal_id = 12
 vertical_id = 13
@@ -131,7 +156,6 @@ vertical_intake_speed = 0.3  # placeholder
 elevator_lead_id = 10
 elevator_follower_id = 11
 magsensor_id = 12  # placeholder
-
 
 
 # TO CHANGE

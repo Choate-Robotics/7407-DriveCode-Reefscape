@@ -64,9 +64,3 @@ def test_stop(intake: Intake):
     intake.vertical_motor.set_raw_output.assert_called_with(0)
     intake.horizontal_motor.set_raw_output.assert_called_with(0)
     assert intake.intake_running is False
-
-
-def detect_coral(intake: Intake):
-    # intake.sensor.getVoltage.return_value = 1
-    intake.detect_coral()
-    intake.sensor.getVoltage.assert_called()

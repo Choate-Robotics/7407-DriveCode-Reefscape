@@ -57,6 +57,9 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio
 
+# wrist
+wrist_gear_ratio = 45
+wrist_encoder_gear_ratio = 1.5
 
 # intake
 intake_pivot_gear_ratio: float = 175
