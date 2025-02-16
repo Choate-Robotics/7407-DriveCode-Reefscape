@@ -162,5 +162,4 @@ cython_debug/
 
 simgui*
 
-ctre_sim/*.dat
 tests/ctre_sim/*.dat

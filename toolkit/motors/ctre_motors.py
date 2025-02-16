@@ -7,6 +7,7 @@ import config
 from toolkit.motor import PIDMotor
 from units.SI import rotations, rotations_per_second
 from utils import LocalLogger
+from wpilib import TimedRobot
 
 radians_per_second_squared = float
 
@@ -37,6 +38,7 @@ class TalonConfig:
         output_range: tuple[float, float] = (-1, 1),
         motion_magic_cruise_velocity=20,
         motion_magic_acceleration=600,
+        motion_magic_jerk=6000,
     ):
         self.kP = kP
         self.kI = kI
@@ -50,6 +52,7 @@ class TalonConfig:
         self.output_range = output_range
         self.motion_magic_cruise_velocity = motion_magic_cruise_velocity
         self.motion_magic_acceleration = motion_magic_acceleration
+        self.motion_magic_jerk = motion_magic_jerk
 
     def _apply_settings(self, motor: hardware.TalonFX, inverted: bool = False):
         print("applying settings to Talon")
@@ -90,7 +93,7 @@ class TalonConfig:
         # motion magic
         magic = talon_config.motion_magic
         magic.motion_magic_acceleration = self.motion_magic_acceleration
-        magic.motion_magic_jerk = 6000
+        magic.motion_magic_jerk = self.motion_magic_jerk
         magic.motion_magic_cruise_velocity = self.motion_magic_cruise_velocity
 
         res = motor.configurator.apply(talon_config)
@@ -255,4 +258,4 @@ class TalonFX(PIDMotor):
         self._motor_vel.set_update_frequency(ms)
         self._motor_accel.set_update_frequency(ms)
         self._motor_current.set_update_frequency(ms)
-        return self._motor.optimize_bus_utilization()
+        # return self._motor.optimize_bus_utilization()
