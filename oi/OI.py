@@ -38,27 +38,27 @@ class OI:
 
         # Scoring on reef
         Keymap.Scoring.SCORE_L1.onTrue(
-            lambda: target_command_generator(config.target_positions["L1"])
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+           commands2.ProxyCommand(target_command_generator(config.target_positions["L1"]))
+        ).onFalse(commands2.ProxyCommand( target_command_generator(config.target_positions["IDLE"])))
 
         Keymap.Scoring.SCORE_L2.onTrue(
-            lambda: target_command_generator(config.target_positions["L2"])
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+            commands2.ProxyCommand(target_command_generator(config.target_positions["L2"]))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
 
         Keymap.Scoring.SCORE_L3.onTrue(
-            lambda: target_command_generator(config.target_positions["L3"])
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+            commands2.ProxyCommand(target_command_generator(config.target_positions["L3"]))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
 
         Keymap.Scoring.SCORE_L4.onTrue(
-            lambda: target_command_generator(config.target_positions["L4"])
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+            commands2.ProxyCommand(target_command_generator(config.target_positions["L4"]))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
 
         # Score algae in barge
         Keymap.Scoring.SCORE_BARGE.onTrue(
-            lambda: target_command_generator(
+            commands2.ProxyCommand(target_command_generator(
                 config.target_positions["SCORE_BARGE"]
-            ).andThen(command.FeedOut(Robot.wrist))
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+            )).andThen(command.FeedOut(Robot.wrist))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
 
         # Scoring coral
         Keymap.Wrist.EXTAKE_CORAL.onTrue(command.FeedOut(Robot.wrist)).onFalse(
@@ -68,35 +68,35 @@ class OI:
         # Intake coral from station
         Keymap.Intake.INTAKE_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
-                lambda: target_command_generator(
+                commands2.ProxyCommand(target_command_generator(
                     config.target_positions["STATION_INTAKING"]
-                ),
+                )),
                 command.SetPivot(
                     Robot.intake,
                     config.target_positions["STATION_INTAKING"].intake_angle,
                 ),
             ).andThen(command.IntakeCoral(Robot.intake, Robot.wrist))
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
 
         # Eject coral from wrist and intake
         Keymap.Intake.EJECT_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
-                lambda: target_command_generator(
+                commands2.ProxyCommand(target_command_generator(
                     config.target_positions["STATION_INTAKING"]
-                ),
+                )),
                 command.SetPivot(Robot.intake, config.intake_coral_station_angle),
             ).andThen(command.EjectCoral(Robot.intake, Robot.wrist))
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
 
         # De-algae
         Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).onTrue(
             commands2.ConditionalCommand(
-                lambda: target_command_generator(
+                commands2.ProxyCommand(target_command_generator(
                     config.target_positions["DEALGAE_HIGH"]
-                ),
-                lambda: target_command_generator(
+                )),
+                commands2.ProxyCommand(target_command_generator(
                     config.target_positions["DEALGAE_LOW"]
-                ),
+                )),
                 lambda: (
                     Field.odometry.getPose().nearest(Field.reef_face.get_faces())
                     in Field.reef_face.get_high_algae()
@@ -107,9 +107,9 @@ class OI:
         # Intaking algae with ground intake
         Keymap.Intake.INTAKE_ALGAE.onTrue(
             commands2.ParallelCommandGroup(
-                lambda: target_command_generator(
+                commands2.ProxyCommand(target_command_generator(
                     config.target_positions["INTAKE_ALGAE"]
-                ),
+                )),
                 command.SetPivot(
                     Robot.intake, config.target_positions["INTAKE_ALGAE"].intake_angle
                 ),
@@ -119,14 +119,14 @@ class OI:
                 )
             )
         ).onFalse(
-            lambda: target_command_generator(config.target_positions["IDLE"]).andThen(
+            commands2.ProxyCommand( target_command_generator(config.target_positions["IDLE"])).andThen(
                 commands2.InstantCommand(lambda: Robot.intake.stop())
             )
         )
 
         # Score algae in processor
         Keymap.Wrist.EXTAKE_ALGAE.onTrue(
-            lambda: target_command_generator(
+            commands2.ProxyCommand(target_command_generator(
                 config.target_positions["SCORE_PROCESSOR_WRIST"]
-            ).andThen(command.FeedOut(Robot.wrist))
-        ).onFalse(lambda: target_command_generator(config.target_positions["IDLE"]))
+            )).andThen(command.FeedOut(Robot.wrist))
+        ).onFalse(commands2.ProxyCommand(target_command_generator(config.target_positions["IDLE"])))
