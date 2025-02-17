@@ -20,12 +20,6 @@ class Intake(Subsystem):
             inverted=False,
             config=config.INTAKE_CONFIG,
         )
-        self.vertical_motor: TalonFX = TalonFX(
-            config.vertical_id,
-            config.foc_active,
-            inverted=False,
-            config=config.INTAKE_CONFIG,
-        )
         self.pivot_motor: TalonFX = TalonFX(
             config.intake_pivot_id,
             config.foc_active,
@@ -46,7 +40,6 @@ class Intake(Subsystem):
 
     def init(self):
         self.horizontal_motor.init()
-        self.vertical_motor.init()
         self.pivot_motor.init()
 
         self.zero_pivot()
@@ -57,9 +50,6 @@ class Intake(Subsystem):
         """
         self.horizontal_motor.set_raw_output(
             config.horizontal_intake_speed
-        )
-        self.vertical_motor.set_raw_output(
-            config.vertical_intake_speed
         )
         self.intake_running = True
     
@@ -74,7 +64,6 @@ class Intake(Subsystem):
         """
         stop the motors
         """
-        self.vertical_motor.set_raw_output(0)
         self.horizontal_motor.set_raw_output(0)
         self.intake_running = False
 
@@ -85,9 +74,6 @@ class Intake(Subsystem):
         self.horizontal_motor.set_raw_output(
             -config.horizontal_intake_speed
         )
-        self.vertical_motor.set_raw_output(
-            -config.vertical_intake_speed
-        )
         self.intake_running = True
 
     def extake_algae(self) -> None:
@@ -97,9 +83,6 @@ class Intake(Subsystem):
         )
 
         self.intake_running = True
-
-    def get_vertical_motor_current(self) -> float:
-        return self.vertical_motor.get_motor_current()
 
     def get_horizontal_motor_current(self) -> float:
         return self.horizontal_motor.get_motor_current()
@@ -170,7 +153,6 @@ class Intake(Subsystem):
 
         table.putBoolean("intake running", self.intake_running)
         table.putNumber("horizontal current", self.get_horizontal_motor_current())
-        table.putNumber("vertical current", self.get_vertical_motor_current())
         table.putNumber("pivot current", self.pivot_motor.get_motor_current())
         table.putNumber("pivot applied output", self.pivot_motor.get_applied_output())
         table.putNumber("pivot angle", math.degrees(self.get_pivot_angle()))
