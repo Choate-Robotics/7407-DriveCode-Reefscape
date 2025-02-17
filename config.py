@@ -91,6 +91,7 @@ WRIST_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_cancoder_id = 11
 wrist_encoder_zero = 0  #place holder
 
+wrist_extake_distance: radians = math.radians(2)
 
 wrist_max_angle: radians = math.radians(45)
 wrist_min_angle: radians = math.radians(-117)

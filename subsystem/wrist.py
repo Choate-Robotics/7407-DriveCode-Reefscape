@@ -40,6 +40,8 @@ class Wrist(Subsystem):
         self.coral_in_feed: bool = False
         self.wrist_zeroed: bool = False
 
+        self.cummulative_extake_distance: radians = 0
+
         self.algae_in_wrist: bool = False
         self.algae_running_in: bool = False
         self.algae_running_out: bool = False

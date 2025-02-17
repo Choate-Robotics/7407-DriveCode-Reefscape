@@ -3,6 +3,7 @@ import config
 from subsystem import Wrist
 
 from units.SI import radians
+import math
 from wpimath.filter import Debouncer
 from utils import LocalLogger
 
@@ -118,6 +119,30 @@ class FeedOut(SubsystemCommand[Wrist]):
     def end(self, interrupted) -> None:
         self.subsystem.feed_stop()
         self.subsystem.wrist_ejecting = False
+
+
+class FeedInForDistance(SubsystemCommand[Wrist]):
+    def __init__(self, subsystem: Wrist):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+        
+
+    def initialize(self) -> None:
+        self.subsystem.feed_out()
+        self.subsystem.wrist_ejecting = True
+        self.subsystem.cummulative_extake_distance = (self.subsystem.feed_motor.get_sensor_position()*2*math.pi)
+        
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return (self.subsystem.feed_motor.get_sensor_position()*2*math.pi)  - self.subsystem.cummulative_extake_distance < config.wrist_extake_distance
+
+    def end(self, interrupted) -> None:
+        self.subsystem.feed_stop()
+        self.subsystem.wrist_ejecting = False
+        self.subsystem.cummulative_extake_distance = self.subsystem.feed_motor.get_sensor_position()
 
 class WristAlgaeIn(SubsystemCommand[Wrist]):
     """
