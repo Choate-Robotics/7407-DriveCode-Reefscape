@@ -15,7 +15,6 @@ def climber() -> Climber:
     # classes for its dependencies
     my_climber = Climber()
     my_climber.climber_motor = MagicMock()
-    my_climber.climber_motor_follower = MagicMock()
     # my_climber.init()
     return my_climber
 
@@ -23,7 +22,6 @@ def climber_zero(climber: Climber):
 
     climber.init()
     climber.climber_motor.init.assert_called()
-    climber.climber_motor_follower.init.assert_called()
 
 @pytest.mark.parametrize(
     "test_input",
