@@ -116,19 +116,21 @@ class IntakeAlgae(SubsystemCommand[Intake]):
     def initialize(self):
         self.subsystem.intake_algae()
 
-        self.debouncer = Debouncer(config.intake_current_time_threshold, Debouncer.DebounceType.kRising)
+        # self.debouncer = Debouncer(config.intake_current_time_threshold, Debouncer.DebounceType.kRising)
         
     def execute(self):
         pass 
 
     def isFinished(self):                       
-        return self.debouncer.calculate(
-            self.subsystem.get_horizontal_motor_current()
-            > config.intake_current_threshold
-        )
+        # return self.debouncer.calculate(
+        #     self.subsystem.get_horizontal_motor_current()
+        #     > config.intake_current_threshold
+        # )
+        return False
 
-    def end(self):
-        self.subsystem.algae_in_intake = True   
+    def end(self, interrupted):
+        self.subsystem.stop()
+        self.subsystem.algae_in_intake = True
 
 class ExtakeAlgae(SubsystemCommand[Intake]):
 
@@ -147,3 +149,4 @@ class ExtakeAlgae(SubsystemCommand[Intake]):
     
     def end(self):
         self.subsystem.algae_in_intake = False
+        self.subsystem.stop()

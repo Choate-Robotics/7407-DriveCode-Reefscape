@@ -89,6 +89,8 @@ class FeedIn(SubsystemCommand[Wrist]):
     def end(self, interrupted) -> None:
         if interrupted:
             log.warn("Feed in command interrupted")
+        if not interrupted:
+            self.subsystem.coral_in_feed = True
         self.subsystem.feed_stop()
         self.subsystem.wrist_feeding = False
 
@@ -122,6 +124,7 @@ class FeedOut(SubsystemCommand[Wrist]):
     def end(self, interrupted) -> None:
         if interrupted:
             log.warn("Feed out command interrupted")
+        self.subsystem.coral_in_feed = False
         self.subsystem.feed_stop()
         self.subsystem.wrist_ejecting = False
 
@@ -136,7 +139,7 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
         self.subsystem = subsystem
 
     def initialize(self) -> None:
-        self.subsystem.feed_in()
+        self.subsystem.algae_in()
         self.subsystem.algae_running_in = True
 
         self.debouncer = Debouncer(
@@ -149,7 +152,7 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
     def isFinished(self) -> bool:
         return self.debouncer.calculate(
             self.subsystem.feed_motor.get_motor_current()
-            > config.wrist_algae_time_threshold
+            > config.back_current_threshold
         )
 
     def end(self, interrupted) -> None:

@@ -4,6 +4,7 @@ from toolkit.motors.ctre_motors import TalonConfig
 import math
 from pathplannerlib.config import PIDConstants
 from units.SI import degrees, radians, meters, inches_to_meters
+import constants
 
 DEBUG_MODE: bool = True
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
@@ -101,31 +102,32 @@ MOVE_CONFIG = TalonConfig(
 wrist_feed_id = 15
 WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_id = 14
-WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350)
+WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350) # 97.75
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
 wrist_intake_speed = 0.35
 wrist_extake_speed = -0.25
-wrist_max_angle: radians = math.radians(45)
+wrist_algae_speed = 0.25
+wrist_max_angle: radians = math.radians(75)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
 back_current_threshold: float = 50
-current_time_threshold: float = 0.1
+current_time_threshold: float = 0.2
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 
 wrist_max_ff = 0.17
 wrist_ff_offset = math.radians(30)
 
 # intake
-horizontal_id = 12
-vertical_id = 13
+horizontal_id = 13
+vertical_id = 12
 intake_cancoder_id = 21
 intake_pivot_id = 11
 intake_encoder_zero = 0.075
 INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
-INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True)
+INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True) # 97
 
 intake_max_angle = math.radians(60)
 intake_min_angle = math.radians(0)
@@ -138,6 +140,7 @@ intake_ff_offset = math.radians(90)
 
 horizontal_intake_speed = 0.3  # placeholder
 vertical_intake_speed = 0.3  # placeholder
+intake_algae_speed = 1
 
 # elevator
 elevator_lead_id = 9
@@ -145,33 +148,31 @@ elevator_follower_id = 10
 
 elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
-ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, motion_magic_cruise_velocity=94, motion_magic_acceleration=300)
+ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, motion_magic_cruise_velocity=94, motion_magic_acceleration=300) # 94
 
 
 # TO CHANGE
 period: float = 0.03
 
-# TODO: Change to actual heights
-elevator_l1_height: meters = 0
-elevator_l2_height: meters = 0
-elevator_l3_height: meters = 0
-elevator_l4_height: meters = 0
+elevator_l1_height: meters = 2 * inches_to_meters
+elevator_l2_height: meters = 6 * inches_to_meters
+elevator_l3_height: meters = 13.25 * inches_to_meters
+elevator_l4_height: meters = constants.elevator_max_height
 elevator_dhigh_height: meters = 0
-elevator_dlow_height: meters = 0
+elevator_dlow_height: meters = 1 * inches_to_meters
 elevator_barge_height: meters = 0
 
-# TODO: Change to actual angle
-intake_algae_ground_angle = 0
+intake_algae_ground_angle = math.radians(58)
 intake_climb_angle = 0
 intake_coral_station_angle = 0
 
-wrist_intake_angle = 0
-wrist_l1_angle = 0
-wrist_l2_angle = 0
-wrist_l3_angle = 0
-wrist_l4_angle = 0
-wrist_dhigh_angle = 0
-wrist_dlow_angle = 0
+wrist_intake_angle = math.radians(-113)
+wrist_l1_angle = math.radians(72)
+wrist_l2_angle = math.radians(55)
+wrist_l3_angle = math.radians(55)
+wrist_l4_angle = math.radians(45)
+wrist_dhigh_angle = math.radians(55)
+wrist_dlow_angle = math.radians(55)
 wrist_barge_angle = 0
 wrist_processor_score_angle = 0
 

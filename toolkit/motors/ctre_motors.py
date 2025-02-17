@@ -203,8 +203,7 @@ class TalonFX(PIDMotor):
         return self._motor_pos.value
 
     def set_target_position(self, pos: rotations, arbFF: float = 0.0):
-        self.error_check(self._motor.set_control(self._motion_magic_voltage.with_position(pos)),
-                         f'target position: {pos}, arbFF: {arbFF}')
+        self.error_check(self._motor.set_control(self._motion_magic_voltage.with_position(pos)), f'target position: {pos}, arbFF: {arbFF}')
         self.target = pos
 
     def set_sensor_position(self, pos: rotations):
@@ -219,15 +218,13 @@ class TalonFX(PIDMotor):
         self.target = pos
 
     def set_target_velocity_voltage(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
-        self.error_check(self._motor.set_control(self._velocity_voltage.with_velocity(vel).with_acceleration(accel)),
-                         f'target velocity: {vel}, accel: {accel}')
+        self.error_check(self._motor.set_control(self._velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
 
     def set_raw_output(self, x: float):
         self.error_check(self._motor.set_control(self._duty_cycle_out.with_output(x)), f'raw output: {x}')
 
     def follow(self, master: TalonFX, inverted: bool = False) -> StatusCode.OK:
-        self.error_check(self._motor.set_control(controls.Follower(master._can_id, inverted)),
-                         f'following {master._can_id} inverted: {inverted}')
+        self.error_check(self._motor.set_control(controls.Follower(master._can_id, inverted)), f'following {master._can_id} inverted: {inverted}')
 
     def get_sensor_velocity(self) -> rotations_per_second:
         self._motor_vel.refresh()
@@ -247,9 +244,6 @@ class TalonFX(PIDMotor):
     def get_target(self) -> rotations:
         return self.target
     
-    def get_target_velocity(self) -> rotations_per_second:
-        return self.target_velocity
-
     def get_target_velocity(self) -> rotations_per_second:
         return self.target_velocity
 

@@ -54,8 +54,8 @@ drivetrain_move_motor_free_speed: rotations_per_minute = (
 )
 
 drivetrain_wheel_diameter: meters = (
-    3.858 * inches_to_meters
-)  
+    3.873 * inches_to_meters
+) 
  
 
 drivetrain_max_vel: meters = (

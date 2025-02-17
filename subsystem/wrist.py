@@ -77,6 +77,9 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_raw_output(config.wrist_intake_speed)
 
+    def algae_in(self) -> None:
+        self.feed_motor.set_raw_output(config.wrist_algae_speed)
+
     def feed_out(self) -> None:
         """
         Runs feed motors out to score or send coral from wrist to intake.
@@ -172,6 +175,7 @@ class Wrist(Subsystem):
         self.table.putNumber("calculated kG", config.wrist_max_ff * math.cos(self.get_wrist_angle() - config.wrist_ff_offset))
         self.table.putNumber("wrist applied output", self.wrist_motor.get_applied_output())
         self.table.putNumber("wrist current", self.wrist_motor.get_motor_current())
+        self.table.putBoolean("coral in feed", self.coral_in_feed)
 
     def periodic(self) -> None:
         if config.NT_WRIST:

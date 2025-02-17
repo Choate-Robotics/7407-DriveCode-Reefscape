@@ -61,12 +61,12 @@ class Keymap:
 
     class Scoring:
         SCORE_L1 = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X
         )
         SCORE_L2 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.A
         )
-        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X
+        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
         )
         SCORE_L4 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y

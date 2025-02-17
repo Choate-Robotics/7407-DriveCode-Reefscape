@@ -66,7 +66,7 @@ class Intake(Subsystem):
     def intake_algae(self) -> None:
 
         self.horizontal_motor.set_raw_output(
-            -config.horizontal_intake_speed
+            -config.intake_algae_speed
         )
         self.intake_running = True
 
