@@ -95,6 +95,13 @@ class Wrist(Subsystem):
 
         self.feed_motor.set_raw_output(0)
 
+    def set_coral(self, is_there_a_coral_in_the_feed: bool):
+        """
+        Says coral is in the feed
+
+        """
+        self.coral_in_feed = is_there_a_coral_in_the_feed
+
     # wrist
 
     def limit_angle(self, angle: radians) -> radians:
