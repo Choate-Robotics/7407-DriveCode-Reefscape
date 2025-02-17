@@ -9,7 +9,13 @@ from subsystem import Climber
 from toolkit.command import SubsystemCommand
 from units.SI import radians
 from enum import Enum
+from utils import LocalLogger
 
+from wpimath.controller import (
+    PIDController
+)
+
+logger = LocalLogger("Climber Command: ")
 
 # cmds: set climber (angle), zero climber
 class SetClimber(SubsystemCommand[Climber]):
@@ -24,42 +30,23 @@ class SetClimber(SubsystemCommand[Climber]):
         self.subsystem = subsystem
         self.angle = angle
 
+        self.pid = PIDController(0.01, 0, 0) #TODO: Tune
+
     def initialize(self):
         # change to actual name
-        self.subsystem.set_angle(self.angle)
-        self.subsystem.arm_moving = True
+        self.pid.setSetpoint(self.angle)
+        self.subsystem.moving = True
 
     def execute(self):
-        pass
+        self.subsystem.set_raw_output(self.pid.calculate(self.subsystem.get_angle()))
 
     def isFinished(self):
-        return self.subsystem.check_angle(self.angle)
+        return abs(self.angle - self.subsystem.get_angle(self.angle)) < config.climber_angle_threshold
 
     def end(self, interrupted: bool):
         if interrupted:
             arm_radians = self.subsystem.get_angle()
-            print(f"Stuck at {arm_radians} radians")
+            logger.warn(f"Stuck at {arm_radians} radians")
 
-        self.subsystem.arm_moving = False
-
-class ZeroClimber(SubsystemCommand[Climber]):
-    """
-    Zeros the climber.
-    """
-
-    def __init__(self, subsystem: Climber):
-        super().__init__(subsystem)
-        self.subsystem = subsystem
-
-    def initialize(self):
-        return self.subsystem.zeroed == True
-
-    def execute(self):
-        pass
-
-    def isFinished(self):
-        return self.subsystem.zeroed
-    
-    def end(self, interrupted: bool):
-        if not interrupted:
-            self.subsystem.zero()
+        self.subsystem.set_raw_output(0)
+        self.subsystem.moving = False

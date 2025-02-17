@@ -81,3 +81,6 @@ MOVE_CONFIG = TalonConfig(
 climber_motor_id = 23
 climber_motor_follower_id = 24
 climber_config = TalonConfig(0, 0, 0, 0, 0, 0)
+climber_encoder_id = 25
+climber_encoder_zero = 0.075
+climber_angle_threshold = 0.01
