@@ -2,7 +2,6 @@ import commands2
 import wpilib.drive
 from toolkit.subsystem import Subsystem
 
-import phoenix6 as ctre
 import ntcore
 import phoenix6 as ctre
 import wpilib
@@ -26,11 +25,9 @@ from wpilib import DriverStation
 # import subsystem
 import utils
 from oi.OI import OI
-import math
 from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d
 from utils import get_red_pose
-from wpilib import DriverStation
 
 
 class _Robot(wpilib.TimedRobot):
