@@ -12,7 +12,6 @@ class Climber(Subsystem):
     def __init__(self) -> None:
         super().__init__()
         self.climber_motor = TalonFX(can_id=config.climber_motor_id, config=config.climber_config)
-        self.climber_motor_follower = TalonFX(can_id=config.climber_motor_follower_id, config=config.climber_config)
 
         self.zeroed = False
         self.moving = False
@@ -20,8 +19,6 @@ class Climber(Subsystem):
     # Start motors
     def init(self) -> None:
         self.climber_motor.init()
-        self.climber_motor_follower.init()
-        self.climber_motor_follower.follow(self.climber_motor, inverted=True)
 
     # Zero the climber
     def zero(self) -> None:
@@ -32,7 +29,7 @@ class Climber(Subsystem):
     # Set a custom angle for the climber
     def set_angle(self, angle: radians) -> None:
         self.climber_motor.set_target_position(max(min(angle, math.radians(constants.upper_climber_bound)), math.radians(constants.lower_climber_bound)) * constants.climber_gear_ratio)
-        self.moving = True
+        self.moving = True 
 
     # Compare current sensor position with target position
     def check_angle(self, angle: radians) -> bool:

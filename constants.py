@@ -42,6 +42,6 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
 ) * drivetrain_wheel_gear_ratio
 
 # TODO: Placeholder
-climber_gear_ratio = 1
-upper_climber_bound = 90
-lower_climber_bound = 0
+climber_gear_ratio = 75
+upper_climber_bound = 56.606
+lower_climber_bound = 35.608
