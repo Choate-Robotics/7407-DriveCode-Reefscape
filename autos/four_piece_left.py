@@ -1,6 +1,8 @@
 from pathplannerlib.path import PathPlannerPath
 from pathplannerlib.auto import AutoBuilder
 
+import config
+
 from robot_systems import Robot, Field
 from utils.field import get_red_pose
 from command import *
@@ -15,10 +17,15 @@ starting_pose = get_red_pose(paths[0].getStartingHolonomicPose()) if DriverStati
 auto = SequentialCommandGroup(
     InstantCommand(lambda: Robot.drivetrain.reset_odometry_auto(starting_pose)),
     AutoBuilder.followPath(paths[0]),
+    Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
     AutoBuilder.followPath(paths[1]),
     AutoBuilder.followPath(paths[2]),
     AutoBuilder.followPath(paths[3]),
+    Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
     AutoBuilder.followPath(paths[4]),
+    Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
     AutoBuilder.followPath(paths[5]),
-    AutoBuilder.followPath(paths[6])
+    Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
+    AutoBuilder.followPath(paths[6]),
+    Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
 )
