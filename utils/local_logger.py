@@ -4,8 +4,7 @@ from enum import IntEnum
 from wpilib import DataLogManager, DriverStation, TimedRobot, Timer
 from wpilib.deployinfo import getDeployData
 from wpiutil.log import StringLogEntry
-
-import config
+from constants import LOGGING, LOG_FILE_LEVEL, LOG_OUT_LEVEL
 
 
 class BColors:
@@ -80,7 +79,7 @@ class LocalLogger:
         usb_path = "/u/logs"
         self.name: str = name
         self.dlm: DataLogManager = DataLogManager
-        if config.LOGGING:
+        if LOGGING:
             # Check if the USB mount exists
             if os.path.exists(usb_path):
                 self.dlm.start(usb_path)
@@ -126,19 +125,19 @@ class LocalLogger:
 
         :returns: str"""
 
-        if config.LOGGING:
+        if LOGGING:
             self.setup("Logging to file is enabled")
         else:
             self.warn("WARNING: Logging to file is disabled")
 
-        self.setup(f"Log Out Level: {config.LOG_OUT_LEVEL}")
+        self.setup(f"Log Out Level: {LOG_OUT_LEVEL}")
 
     def log_driverstation(self, joysticks: bool):
         """
         Enables logging of DriverStation data to the file.
 
         :param joysticks: Whether or not to log joystick data"""
-        if not config.LOGGING:
+        if not LOGGING:
             return
         DriverStation.startDataLog(self.log_data, joysticks)
         self.setup("DriverStation logging started")
@@ -217,9 +216,9 @@ class LocalLogger:
 
         This should not be used outside of this class.
         """
-        if std_out and config.LOG_OUT_LEVEL <= level:
+        if std_out and LOG_OUT_LEVEL <= level:
             print(self.__format_std_out(color, type, message))
-        if config.LOGGING and config.LOG_FILE_LEVEL <= level:
+        if LOGGING and LOG_FILE_LEVEL <= level:
             self.custom_entry.append(f"{self.__pms(False)}{type}{self.name}: {message}")
 
     def message(self, message: str):
