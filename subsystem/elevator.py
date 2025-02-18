@@ -5,7 +5,7 @@ import config
 import constants
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
-from units.SI import meters
+from units.SI import meters, meters_to_inches
 
 
 class Elevator(Subsystem):
@@ -15,20 +15,23 @@ class Elevator(Subsystem):
             config.elevator_lead_id,
             config.foc_active,
             inverted=False,
+            config=config.ELEVATOR_CONFIG
         )
         self.follower_motor: TalonFX = TalonFX(
             config.elevator_follower_id,
             config.foc_active,
+            inverted=False,
+            config=config.ELEVATOR_CONFIG
         )
 
-        self.zeroed: bool = False
         self.target_height: meters = 0.0
+        self.elevator_moving: bool = False
 
     def init(self):
         self.leader_motor.init()
         self.follower_motor.init()
         self.follower_motor.follow(self.leader_motor, inverted=True)
-        self.magsensor = DigitalInput(config.magsensor_id)
+        self.leader_motor.set_sensor_position(0)
 
     @staticmethod
     def limit_height(height: meters) -> meters:
@@ -41,12 +44,12 @@ class Elevator(Subsystem):
             return 0.0
         return height
 
-    def set_position(self, height) -> None:
+    def set_position(self, height: meters) -> None:
         """
         Brings the elevator to given height
 
         Args:
-            height (float): intended elevator height in meters
+            height (meters): intended elevator height in meters
         """
         height = self.limit_height(height)
         self.target_height = height
@@ -56,18 +59,11 @@ class Elevator(Subsystem):
         ) / constants.elevator_driver_gear_circumference
         self.leader_motor.set_target_position(rotations)
 
-    def set_elevator_climb_down(self) -> None:
-        """
-        Moves the elevator down
-        Used primarily for zeroing the elevator
-        """
-        self.leader_motor.set_raw_output(-0.25)
-
     def stop(self) -> None:
         """
         Stops the elevator
         """
-        self.leader_motor.set_raw_output(0)
+        self.set_position(self.get_position())
 
     def set_zero(self) -> None:
         """
@@ -88,13 +84,6 @@ class Elevator(Subsystem):
             / constants.elevator_gear_ratio
         )
 
-    def zero(self) -> None:
-        """
-        Tells the elevator that its position is at zero
-        """
-        self.leader_motor.set_sensor_position(0)
-        self.zeroed = True
-
     def is_at_position(self, height: meters) -> bool:
         """
         checks if the elevator is at a certain height
@@ -102,17 +91,18 @@ class Elevator(Subsystem):
         Args:
             height (meters): height to be checked
         """
-        # Rounding to make sure it's not too precise (will cause err)
-        return round(self.get_position(), 2) == round(height, 2)
+        return abs(self.get_position() - height) < config.elevator_height_threshold
 
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
 
-        table.putNumber("height", self.get_position())
-        table.putBoolean("zeroed", self.zeroed)
-        table.putNumber("target height", self.target_height)
+        table.putNumber("height", self.get_position() * meters_to_inches)
+        table.putNumber("target height", self.target_height * meters_to_inches)
         table.putNumber(
             "motor lead applied output", self.leader_motor.get_applied_output()
+        )
+        table.putNumber(
+            "motor lead current", self.leader_motor.get_motor_current()
         )
         table.putNumber(
             "motor follow applied output", self.follower_motor.get_applied_output()
