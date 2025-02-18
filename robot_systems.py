@@ -13,6 +13,7 @@ class Robot:
         config.leds_brightness, 
         config.leds_saturation,
         config.leds_spacing, 
+        config.leds_blink_frequency
         )
 
 

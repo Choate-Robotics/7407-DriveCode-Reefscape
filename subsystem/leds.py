@@ -12,20 +12,16 @@ class AddressableLEDStrip(Subsystem):
             brightness: int, 
             saturation: int,
             spacing: int, 
-            # blink_frequency: int,
-            # rightlimit, 
-            # leftlimit
+            blink_frequency: float,
         ):
 
         self.size = size
         self.id = id
-        #self.speed = speed 
+        self.speed = speed 
         self.brightness = brightness
         self.saturation = saturation
         self.LEDSpacing = spacing
-        #self.blink_frequency = blink_frequency #seconds
-        #self.rightlimit = rightlimit 
-        #self.leftlimit = leftlimit
+        self.blink_frequency = blink_frequency #seconds
         self.pattern = None
         self.mode = "None"
         
@@ -37,6 +33,8 @@ class AddressableLEDStrip(Subsystem):
        
         self.ledBuffer = [self.led.LEDData() for i in range(self.size)]
         self.led.enable()
+        self.led.set_brightness()
+        self.led.set_speed()
         SmartDashboard.putBoolean("LEDs Initialized", True)
 
     def enable(self):
@@ -63,17 +61,18 @@ class AddressableLEDStrip(Subsystem):
 
     def set_Solid(self, r: int, g: int, b: int):
 
-        self.pattern = LEDPattern.solid(Color(r/255, g/255, b/255))
+        self.pattern = LEDPattern.solid(Color(g/255, r/255, b/255))
         self.mode = f"Solid r:{r} g:{g} b:{b}"
 
     def set_Alternate(self, r1: int, g1: int, b1: int, r2:int, g2:int, b2: int):
 
         self.alternate = []
+        #red and green are switched for an unknown reason
         for i in range(self.size):
             if i % 2 == 0:
-                self.alternate.append((i/self.size, Color(r1/255, g1/255, b1/255)))
+                self.alternate.append((i/self.size, Color(g1/255, r1/255, b1/255)))
             elif i % 2 == 1:
-                self.alternate.append((i/self.size, Color(r2/255, g2/255, b2/255)))
+                self.alternate.append((i/self.size, Color(g2/255, r2/255, b2/255)))
 
         self.pattern = LEDPattern.steps(self.alternate)
         self.mode = f"Alternate"
@@ -89,30 +88,9 @@ class AddressableLEDStrip(Subsystem):
 
     def set_Blink(self, r: int, g: int, b: int):
 
-        self.base = LEDPattern.discontinousGradient(r/255, g/255, b/255)
+        self.base = LEDPattern.solid((r/255, g/255, b/255))
         self.pattern = self.base.blink(self.blink_frequency)
         self.mode = f"Blink r:{r} g:{g} b:{b}"  
-    
-    def field_position(self, r1, g1, b1, r2, b2, g2):
-        """ 
-        identify where the robot is on the field
-
-        """
-        self.robotposition = 0
-    
-        if self.robotposition > self.rightlimit:
-            
-            #to do: left side green, right side red 
-
-            self.mode = "robot position on starting line is too far right"
-        
-        elif self.robotposition < self.leftlimit:
-            
-            #to do: left side red, right side green 
-            self.mode = "robot positioning on starting line is too far left"
-        
-        else:
-            self.set_Solid(0, 100, 0) # robot is where it needs to be
 
     def periodic(self):
 

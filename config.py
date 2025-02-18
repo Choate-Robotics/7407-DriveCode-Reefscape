@@ -84,3 +84,4 @@ leds_spacing = 1/120.0 # placeholder, density of __ per meter
 leds_speed = 5
 leds_brightness = 128
 leds_saturation = 255
+leds_blink_frequency = 0.5
