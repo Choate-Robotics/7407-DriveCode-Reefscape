@@ -14,13 +14,17 @@ class PhotonCamCustom:
         self.name = name
         self.robot_to_camera = robot_to_camera
         self.estimator = PhotonPoseEstimator(
-            AprilTagFieldLayout.loadField(AprilTagField.k2025Reefscape),
+            AprilTagFieldLayout.loadField(AprilTagField.k2025ReefscapeAndyMark),
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             self.cam,
-            self.robot_to_camera
+            self.robot_to_camera,
         )
         self.estimator.multiTagFallbackStrategy = PoseStrategy.LOWEST_AMBIGUITY
-        self.table = ntcore.NetworkTableInstance.getDefault().getTable("Cameras").getSubTable(self.name)
+        self.table = (
+            ntcore.NetworkTableInstance.getDefault()
+            .getTable("Cameras")
+            .getSubTable(self.name)
+        )
 
     def init(self):
         pass
@@ -37,22 +41,29 @@ class PhotonCamCustom:
                     [
                         estimatedPose.X(),
                         estimatedPose.Y(),
-                        estimatedPose.rotation().radians()
-                    ]
+                        estimatedPose.rotation().radians(),
+                    ],
                 )
 
             self.table.putBoolean("has target", result.hasTargets())
             if result.hasTargets():
-                self.table.putNumberArray("ids", [target.getFiducialId() for target in result.getTargets()])
-                self.table.putNumber("distance to closest target", result.getBestTarget().bestCameraToTarget.translation().toTranslation2d().distance(Translation2d(0, 0)))
-
+                self.table.putNumberArray(
+                    "ids", [target.getFiducialId() for target in result.getTargets()]
+                )
+                self.table.putNumber(
+                    "distance to closest target",
+                    result.getBestTarget()
+                    .bestCameraToTarget.translation()
+                    .toTranslation2d()
+                    .distance(Translation2d(0, 0)),
+                )
 
     def get_estimated_robot_pose(self) -> Pose3d:
         """
         Returns a Pose3d of the estimated robot position
         """
         return self.estimator.update(self.cam.getLatestResult()).estimatedPose
-    
+
     def get_result(self) -> EstimatedRobotPose | None:
         """
         Returns an EstimatedRobotPose, which includes pose, timestamp, tags, and strategy
@@ -61,7 +72,7 @@ class PhotonCamCustom:
 
 
 class PhotonController:
-    def __init__(self, cams: list[PhotonCamCustom]):
+    def __init__(self, cams: list[PhotonCamCustom | None]):
         self.cams = cams
 
     def init(self):

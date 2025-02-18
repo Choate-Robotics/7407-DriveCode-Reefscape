@@ -6,7 +6,7 @@ from units.SI import radians
 from wpimath.filter import Debouncer
 from utils import LocalLogger
 
-log = LocalLogger("wrist_command_log")
+log = LocalLogger("Wrist Command")
 
 
 class SetWrist(SubsystemCommand[Wrist]):
@@ -73,18 +73,24 @@ class FeedIn(SubsystemCommand[Wrist]):
         self.subsystem.feed_in()
         self.subsystem.wrist_feeding = True
 
-        self.debouncer = Debouncer(config.current_time_threshold, Debouncer.DebounceType.kRising)
+        self.debouncer = Debouncer(
+            config.current_time_threshold, Debouncer.DebounceType.kRising
+        )
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
         return self.debouncer.calculate(
-            self.subsystem.feed_motor.get_motor_current() 
+            self.subsystem.feed_motor.get_motor_current()
             > config.back_current_threshold
         )
 
     def end(self, interrupted) -> None:
+        if interrupted:
+            log.warn("Feed in command interrupted")
+        if not interrupted:
+            self.subsystem.coral_in_feed = True
         self.subsystem.feed_stop()
         self.subsystem.wrist_feeding = False
 
@@ -97,27 +103,31 @@ class FeedOut(SubsystemCommand[Wrist]):
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        
 
     def initialize(self) -> None:
         self.subsystem.feed_out()
         self.subsystem.wrist_ejecting = True
 
-        self.debouncer = Debouncer(
-            config.current_time_threshold, Debouncer.DebounceType.kRising)
+        # self.debouncer = Debouncer(
+        #     config.current_time_threshold, Debouncer.DebounceType.kRising)
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        return self.debouncer.calculate(
-            self.subsystem.feed_motor.get_motor_current() 
-            < config.out_current_threshold
-            )
+        # return self.debouncer.calculate(
+        #     self.subsystem.feed_motor.get_motor_current() 
+        #     < config.out_current_threshold
+        #     )
+        return False
 
     def end(self, interrupted) -> None:
+        if interrupted:
+            log.warn("Feed out command interrupted")
+        self.subsystem.coral_in_feed = False
         self.subsystem.feed_stop()
         self.subsystem.wrist_ejecting = False
+
 
 class WristAlgaeIn(SubsystemCommand[Wrist]):
     """
@@ -127,28 +137,31 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        
 
     def initialize(self) -> None:
-        self.subsystem.feed_in()
+        self.subsystem.algae_in()
         self.subsystem.algae_running_in = True
 
         self.debouncer = Debouncer(
-            config.current_time_threshold, Debouncer.DebounceType.kRising)
+            config.current_time_threshold, Debouncer.DebounceType.kRising
+        )
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
         return self.debouncer.calculate(
-            self.subsystem.feed_motor.get_motor_current() 
-            > config.wrist_algae_time_threshold
-            )
+            self.subsystem.feed_motor.get_motor_current()
+            > config.back_current_threshold
+        )
 
     def end(self, interrupted) -> None:
+        if interrupted:
+            log.warn("Algae in command interrupted")
         self.subsystem.feed_stop()
         self.subsystem.algae_running_in = False
         self.subsystem.algae_in_wrist = True
+
 
 class WristAlgaeOut(SubsystemCommand[Wrist]):
     """
@@ -158,25 +171,27 @@ class WristAlgaeOut(SubsystemCommand[Wrist]):
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        
 
     def initialize(self) -> None:
         self.subsystem.feed_out()
         self.subsystem.algae_running_out = True
 
         self.debouncer = Debouncer(
-            config.current_time_threshold, Debouncer.DebounceType.kRising)
+            config.current_time_threshold, Debouncer.DebounceType.kRising
+        )
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
         return self.debouncer.calculate(
-            self.subsystem.feed_motor.get_motor_current() 
+            self.subsystem.feed_motor.get_motor_current()
             < config.wrist_algae_time_threshold
         )
 
     def end(self, interrupted) -> None:
+        if interrupted:
+            log.warn("Algae out command interrupted")
         self.subsystem.feed_stop()
         self.subsystem.algae_running_out = False
         self.subsystem.algae_in_wrist = False

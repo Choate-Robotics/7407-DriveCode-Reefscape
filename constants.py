@@ -5,13 +5,29 @@ from units.SI import (
     degrees_per_second__to__radians_per_second,
     inches_to_meters,
     meters,
-    rotations_per_minute,
     meters_per_second_squared,
     rotations_per_minute,
     rotations_per_minute,
 )
 
-# CAMERAS
+LOGGING: bool = True
+LOG_OUT_LEVEL: int = 0
+LOG_FILE_LEVEL: int = 1
+# Levels are how much information is logged
+# higher level = less information
+# level 0 will log everything
+# level 1 will log everything except debug
+# and so on
+# levels:
+# 0 = All
+# 1 = INFO
+# 2 = WARNING
+# 3 = ERROR
+# 4 = SETUP
+# anything else will log nothing
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+# cameras
 robot_to_left_cam = Transform3d(
     Translation3d(8.210*inches_to_meters, 9.764*inches_to_meters, 7.911*inches_to_meters),
     Rotation3d(0, 0, math.radians(-20))
@@ -21,16 +37,16 @@ robot_to_right_cam = Transform3d(
     Rotation3d(0, 0, math.radians(20))
 )
 
-# DRIVETRAIN
-drivetrain_turn_gear_ratio: float = 150 / 7
-drivetrain_wheel_gear_ratio: float = 5.9
-track_width: meters = 19.75 * inches_to_meters #distance between the center of the wheels (front side)
-track_length: meters = 18.25 * inches_to_meters #(left/right side)
-drivetrain_length: meters = 20 * inches_to_meters #length of one side of the robot, placeholder
+#drivetrain
+drivetrain_turn_gear_ratio: float = 18.75
+drivetrain_wheel_gear_ratio: float = 7.13
+track_width: meters = 23.75 * inches_to_meters # distance between the center of the wheels (front side)
+track_length: meters = track_width # (left/right side)
+drivetrain_length: meters = 29 * inches_to_meters
 bumper_thickness: meters = 3.5 * inches_to_meters
-drivetrain_length_with_bumpers = drivetrain_length + (2 * bumper_thickness)
-drivetrain_radius: float = math.sqrt(math.pow(track_length/2, 2) + math.pow(track_width/2, 2))
-reef_scoring_distance = drivetrain_length_with_bumpers / 2 + 2 * inches_to_meters
+drivetrain_length_with_bumpers: meters = drivetrain_length + (2 * bumper_thickness)
+drivetrain_radius: meters = math.sqrt(math.pow(track_length/2, 2) + math.pow(track_width/2, 2))
+reef_scoring_distance: meters = drivetrain_length_with_bumpers / 2 + 2 * inches_to_meters
 
 
 drivetrain_move_motor_free_speed: rotations_per_minute = (
@@ -38,8 +54,8 @@ drivetrain_move_motor_free_speed: rotations_per_minute = (
 )
 
 drivetrain_wheel_diameter: meters = (
-    3.858 * inches_to_meters
-)  
+    3.873 * inches_to_meters
+) 
  
 
 drivetrain_max_vel: meters = (
@@ -57,22 +73,22 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio
 
-# INTAKE
+# wrist
+wrist_gear_ratio = 45
+wrist_encoder_gear_ratio = 1.5
+
+# intake
 intake_pivot_gear_ratio: float = 175
 horizontal_gear_ratio: float = 2
 vertical_gear_ratio: float = 2.5
 intake_encoder_gear_ratio: float = 3
 
-# WRIST
-wrist_gear_ratio = 45
-wrist_encoder_gear_ratio = 1.5
-
-# ELEVATOR
+#elevator
 elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio
 elevator_driver_gear_circumference = 1.751*inches_to_meters*math.pi
 elevator_max_height: meters = 27.5*inches_to_meters #true max=28 inches
 
-# FIELD
+# field
 field_length = 17.548
 field_width = 8.052
 

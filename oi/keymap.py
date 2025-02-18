@@ -42,6 +42,9 @@ class Keymap:
         DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
             lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > 0.4
         )
+        CORAL_STATION_ALIGN = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
+        )
 
     class Intake:
         INTAKE_CORAL = commands2.button.Trigger(
@@ -58,12 +61,12 @@ class Keymap:
 
     class Scoring:
         SCORE_L1 = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X
         )
         SCORE_L2 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.A
         )
-        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X
+        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
         )
         SCORE_L4 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y
