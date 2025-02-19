@@ -17,7 +17,22 @@ from wpimath.controller import (
 
 logger = LocalLogger("Climber Command: ")
 
-# cmds: set climber (angle), zero climber
+# cmds: zero climber
+class ZeroClimber(SubsystemCommand[Climber]):
+    def __init__(self, subsystem: Climber):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self):
+        self.subsystem.zero_encoder()
+
+    def execute(self):
+        pass
+
+    def isFinished(self):
+        return self.subsystem.zeroed
+
+# cmds: set climber (angle)
 class SetClimber(SubsystemCommand[Climber]):
 
     """
@@ -34,6 +49,11 @@ class SetClimber(SubsystemCommand[Climber]):
 
     def initialize(self):
         # change to actual name
+
+        if self.angle > constants.upper_climber_bound or self.angle < constants.lower_climber_bound:
+            logger.warn(f"Angle {self.angle} is out of bounds")
+            return False
+
         self.pid.setSetpoint(self.angle)
         self.subsystem.moving = True
 

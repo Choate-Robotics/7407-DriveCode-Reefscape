@@ -13,13 +13,17 @@ class Climber(Subsystem):
     def __init__(self) -> None:
         super().__init__()
         self.climber_motor = TalonFX(can_id=config.climber_motor_id, config=config.climber_config)
-        self.zeroed = False
         self.moving = False
+        self.zeroed = False
         self.climber_encoder: CANcoder = CANcoder(config.climber_encoder_id)
 
     # Start motors
     def init(self) -> None:
         self.climber_motor.init()
+
+    def zero_encoder(self) -> None:
+        self.climber_encoder.set_position(config.climber_encoder_zero)
+        self.zeroed = True
 
     def get_angle(self) -> radians:
         return (self.climber_encoder.get_absolute_position().value - config.climber_encoder_zero) * 2*math.pi
