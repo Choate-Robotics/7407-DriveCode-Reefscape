@@ -122,7 +122,6 @@ wrist_ff_offset = math.radians(30)
 
 # intake
 horizontal_id = 13
-vertical_id = 12
 intake_cancoder_id = 21
 intake_pivot_id = 11
 intake_encoder_zero = 0.075
@@ -138,8 +137,7 @@ intake_current_time_threshold = 2  # placeholder
 intake_max_ff = -0.075
 intake_ff_offset = math.radians(90)
 
-horizontal_intake_speed = 0.3  # placeholder
-vertical_intake_speed = 0.3  # placeholder
+horizontal_intake_speed = 0.5
 intake_algae_speed = 1
 
 # elevator
@@ -156,7 +154,7 @@ period: float = 0.03
 
 elevator_l1_height: meters = 2 * inches_to_meters
 elevator_l2_height: meters = 6 * inches_to_meters
-elevator_l3_height: meters = 13.25 * inches_to_meters
+elevator_l3_height: meters = 13.75 * inches_to_meters
 elevator_l4_height: meters = constants.elevator_max_height
 elevator_dhigh_height: meters = 0
 elevator_dlow_height: meters = 1 * inches_to_meters
@@ -166,11 +164,11 @@ intake_algae_ground_angle = math.radians(58)
 intake_climb_angle = 0
 intake_coral_station_angle = 0
 
-wrist_intake_angle = math.radians(-113)
+wrist_intake_angle = math.radians(-111)
 wrist_l1_angle = math.radians(72)
-wrist_l2_angle = math.radians(55)
-wrist_l3_angle = math.radians(55)
-wrist_l4_angle = math.radians(45)
+wrist_l2_angle = math.radians(64)
+wrist_l3_angle = math.radians(64)
+wrist_l4_angle = math.radians(54)
 wrist_dhigh_angle = math.radians(55)
 wrist_dlow_angle = math.radians(55)
 wrist_barge_angle = 0

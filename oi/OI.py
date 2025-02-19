@@ -56,9 +56,9 @@ class OI:
             command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator)
         ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
-        # Keymap.Scoring.SCORE_L4.onTrue(
-        #     command.Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
-        # ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+        Keymap.Scoring.SCORE_L4.onTrue(
+            command.Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
+        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
         # # Score algae in barge
         # Keymap.Scoring.SCORE_BARGE.onTrue(

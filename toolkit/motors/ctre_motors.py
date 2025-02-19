@@ -12,6 +12,7 @@ from wpilib import TimedRobot
 radians_per_second_squared = float
 
 rotations_per_second_squared = float
+from time import sleep
 
 
 class TalonConfig:
