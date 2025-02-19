@@ -4,11 +4,11 @@ from toolkit.subsystem import Subsystem
 
 import phoenix6 as ctre
 import ntcore
-import phoenix6 as ctre
+
 import wpilib
 
 import command
-import math
+
 import config
 
 # import constants
@@ -16,7 +16,6 @@ from robot_systems import (  # noqa
     Robot,
     Pneumatics,
     Sensors,
-    LEDs,
     PowerDistribution,
     Field,
 )
@@ -31,7 +30,6 @@ from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d
 from utils import get_red_pose
 from wpilib import DriverStation
-
 
 
 class _Robot(wpilib.TimedRobot):
@@ -92,7 +90,10 @@ class _Robot(wpilib.TimedRobot):
 
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
         Field.update_field_table()
-        
+
+        #alternates blue and gold on leds
+        Robot.led.set_Alternate(255,190,0,0,0,255)
+
         self.log.complete("Robot initialized")
 
     def robotPeriodic(self):
@@ -127,15 +128,24 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("command scheduler", str(e))
                 raise e
-            
+
         # Field.odometry.disable()
         pose = Field.odometry.update()
 
-        self.nt.getTable("Odometry").putNumberArray("Estimated pose", [
-            pose.X(),
-            pose.Y(),
-            pose.rotation().radians()
-        ])
+        self.nt.getTable("Odometry").putNumberArray(
+            "Estimated pose", [pose.X(), pose.Y(), pose.rotation().radians()]
+        )
+
+        if Robot.wrist.coral_in_feed:
+            Robot.led.set_Blink(0,255,0) #if coral is in the intake, blinking green
+        elif Robot.intake.intake_running:
+            Robot.led.set_Solid(250, 106, 20) #if intake is running but coral is not yet intook, solid orange
+        elif Robot.wrist.wrist_ejecting:
+            Robot.led.set_Solid(0,200,255) #if extaking, cyan
+        elif Robot.drivetrain.is_moving() and Robot.drivetrain.aligned:
+            Robot.led.set_Solid(255,0,255) #if aligned to score, purple
+        else:
+            Robot.led.set_Alternate(255,190,0,0,0,255) #idling is blue and gold
 
         Robot.drivetrain.update_tables()
         # Sensors.cam_controller.update_tables()
@@ -148,37 +158,53 @@ class _Robot(wpilib.TimedRobot):
     def teleopInit(self):
         OI.init()
         OI.map_controls()
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.SetWrist(Robot.wrist, 0),     
-            command.SetElevator(Robot.elevator, 0),
-        ))
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
+        self.scheduler.schedule(
+            commands2.SequentialCommandGroup(
+                command.SetWrist(Robot.wrist, 0),
+                command.SetElevator(Robot.elevator, 0),
+            )
+        )
+        self.scheduler.schedule(
+            commands2.SequentialCommandGroup(
                 command.DrivetrainZero(Robot.drivetrain),
-                command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+                command.DriveSwerveCustom(Robot.drivetrain),
+            )
+        )
         self.log.info("Teleop initialized")
-        
 
     def teleopPeriodic(self):
         pass
 
     def autonomousInit(self):
         path = PathPlannerPath.fromChoreoTrajectory("Four L4 Left")
-        starting_pose = get_red_pose(path.getStartingHolonomicPose()) if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed else path.getStartingHolonomicPose()
+        starting_pose = (
+            get_red_pose(path.getStartingHolonomicPose())
+            if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed
+            else path.getStartingHolonomicPose()
+        )
         Robot.drivetrain.reset_odometry_auto(starting_pose)
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain, starting_pose.rotation().radians()),
-            AutoBuilder.followPath(path),
-            commands2.InstantCommand(lambda: Robot.drivetrain.set_robot_centric((0, 0, 0)))
-            ))
+        self.scheduler.schedule(
+            commands2.SequentialCommandGroup(
+                command.DrivetrainZero(
+                    Robot.drivetrain, starting_pose.rotation().radians()
+                ),
+                AutoBuilder.followPath(path),
+                commands2.InstantCommand(
+                    lambda: Robot.drivetrain.set_robot_centric((0, 0, 0))
+                ),
+            )
+        )
 
         # self.scheduler.schedule(commands2.SequentialCommandGroup(
         #     command.DrivetrainZero(Robot.drivetrain),
         #     command.FindWheelRadius(Robot.drivetrain)
         # ))
 
+        #scrolling rainbow on leds
+        Robot.led.set_Rainbow_Ladder()
+
         self.log.info("Autonomous initialized")
-        
+
     def autonomousPeriodic(self):
         pass
 

@@ -98,7 +98,7 @@ class Drivetrain(Subsystem):
         self.sim_node_states: tuple[SwerveModuleState, SwerveModuleState, SwerveModuleState, SwerveModuleState] = None
         self.node_translations: tuple[Translation2d] | None = None
         self.nt = ntcore.NetworkTableInstance.getDefault().getTable("Drivetrain")
-
+        self.aligned=False
         # auto setup
         self.pp_config = constants.auto_config
 
@@ -254,6 +254,10 @@ class Drivetrain(Subsystem):
     def get_estimated_pose(self) -> Pose2d:
         pose = self.odometry_estimator.getEstimatedPosition()
         return pose
+    
+    def is_moving(self)->bool:
+        speeds=self.get_speeds()
+        return abs(speeds.vx_fps)>config.speed_tolerance or abs(speeds.vy_fps)>config.speed_tolerance or abs(speeds.omega_dps)>config.rotation_speed_tolerance
     
     def get_speeds(self) -> ChassisSpeeds:
         return self.chassis_speeds

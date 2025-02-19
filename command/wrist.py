@@ -81,10 +81,11 @@ class FeedIn(SubsystemCommand[Wrist]):
         pass
 
     def isFinished(self) -> bool:
-        return self.debouncer.calculate(
+        self.subsystem.coral_in_feed = self.debouncer.calculate(
             self.subsystem.feed_motor.get_motor_current()
             > config.back_current_threshold
         )
+        return self.subsystem.coral_in_feed
 
     def end(self, interrupted) -> None:
         if interrupted:

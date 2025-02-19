@@ -82,6 +82,9 @@ auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 
+speed_tolerance = .1 # feet_per_second
+rotation_speed_tolerance = 5 # degrees per second
+
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 
@@ -102,7 +105,9 @@ MOVE_CONFIG = TalonConfig(
 wrist_feed_id = 15
 WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
 wrist_id = 14
-WRIST_CONFIG = TalonConfig(48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350) # 97.75
+WRIST_CONFIG = TalonConfig(
+    48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350
+)  # 97.75
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
@@ -126,7 +131,9 @@ intake_cancoder_id = 21
 intake_pivot_id = 11
 intake_encoder_zero = 0.075
 INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
-INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True) # 97
+INTAKE_PIVOT_CONFIG = TalonConfig(
+    2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True
+)  # 97
 
 intake_max_angle = math.radians(60)
 intake_min_angle = math.radians(0)
@@ -146,7 +153,18 @@ elevator_follower_id = 10
 
 elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
-ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, motion_magic_cruise_velocity=94, motion_magic_acceleration=300) # 94
+ELEVATOR_CONFIG = TalonConfig(
+    4,
+    0,
+    0.1,
+    0.13,
+    0,
+    0,
+    kG=0.28,
+    brake_mode=True,
+    motion_magic_cruise_velocity=94,
+    motion_magic_acceleration=300,
+)  # 94
 
 
 # TO CHANGE
@@ -187,7 +205,7 @@ class TargetData:
     wrist_angle: radians
     wrist_feed_on: bool
     wrist_score_on: bool
-    
+
     intake_angle: radians
     intake_in_run: bool
     intake_out_run: bool
@@ -196,7 +214,6 @@ class TargetData:
 
 
 target_positions: dict[str, TargetData] = {
-
     "IDLE": TargetData(
         elevator_idle=True,
         wrist_idle=True,
@@ -207,9 +224,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=False,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "STATION_INTAKING": TargetData(
         elevator_idle=True,
         wrist_idle=False,
@@ -220,9 +236,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=False,
         intake_angle=intake_coral_station_angle,
         intake_in_run=True,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "L1": TargetData(
         elevator_idle=True,
         wrist_idle=False,
@@ -233,9 +248,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=True,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "L2": TargetData(
         elevator_idle=False,
         wrist_idle=False,
@@ -246,9 +260,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=True,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "L3": TargetData(
         elevator_idle=False,
         wrist_idle=False,
@@ -259,9 +272,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=True,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "L4": TargetData(
         elevator_idle=False,
         wrist_idle=False,
@@ -272,9 +284,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=True,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "DEALGAE_HIGH": TargetData(
         elevator_idle=False,
         wrist_idle=False,
@@ -285,9 +296,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=False,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "DEALGAE_LOW": TargetData(
         elevator_idle=False,
         wrist_idle=False,
@@ -298,9 +308,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=False,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "SCORE_BARGE": TargetData(
         elevator_idle=False,
         wrist_idle=False,
@@ -311,9 +320,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=True,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     # "SCORE_PROCESSOR_INTAKE": TargetData(
     #     elevator_idle=True,
     #     wrist_idle=True,
@@ -325,7 +333,6 @@ target_positions: dict[str, TargetData] = {
     #     intake_in_run=False,
     #     intake_out_run=True
     # ),
-
     "SCORE_PROCESSOR_WRIST": TargetData(
         elevator_idle=True,
         wrist_idle=False,
@@ -336,9 +343,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=True,
         intake_angle=0,
         intake_in_run=False,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "INTAKE_ALGAE": TargetData(
         elevator_idle=True,
         wrist_idle=True,
@@ -349,9 +355,8 @@ target_positions: dict[str, TargetData] = {
         wrist_score_on=False,
         intake_angle=intake_algae_ground_angle,
         intake_in_run=True,
-        intake_out_run=False
+        intake_out_run=False,
     ),
-
     "CLIMB": TargetData(
         elevator_idle=True,
         wrist_idle=True,
@@ -364,5 +369,14 @@ target_positions: dict[str, TargetData] = {
         intake_in_run=True,
         intake_out_run=False,
         intake_climb=True,
-    )
+    ),
 }
+
+# Leds
+leds_id = 8  # placeholder
+leds_size = 27  # placeholder
+leds_spacing = 1 / 120.0  # placeholder, density of __ per meter
+leds_speed = 5
+leds_brightness = 128
+leds_saturation = 255
+leds_blink_frequency = 0.5

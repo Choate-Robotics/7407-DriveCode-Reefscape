@@ -1,6 +1,8 @@
 import subsystem
 import sensors
-import wpilib #noqa
+import wpilib
+import config
+import wpilib  # noqa
 import config
 import constants
 from utils.field import (
@@ -27,6 +29,15 @@ class Robot:
     wrist = subsystem.Wrist()
     drivetrain = subsystem.Drivetrain()
     intake = subsystem.Intake()
+    led = subsystem.AddressableLEDStrip(
+        config.leds_id,
+        config.leds_size,
+        config.leds_speed,
+        config.leds_brightness,
+        config.leds_saturation,
+        config.leds_spacing,
+        config.leds_blink_frequency,
+    )
 
 
 class Pneumatics:
