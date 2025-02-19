@@ -1,7 +1,7 @@
 from enum import Enum, StrEnum, EnumType
 
 import ntcore
-from constants import reef_scoring_distance
+from constants import reef_scoring_distance, reef_y_offset
 
 from ntcore import NetworkTable
 from wpilib import DriverStation  # noqa
@@ -50,14 +50,14 @@ class Branch(StrEnum):
             pose_direction.transformBy(
                 Transform2d(
                     adjust_x,
-                    (-1) ** (index % 2 + 1) * adjust_y,
+                    (-1) ** (index % 2 + 1) * adjust_y + reef_y_offset,
                     pose_direction.rotation(),
                 )
             ).X(),
             pose_direction.transformBy(
                 Transform2d(
                     adjust_x,
-                    (-1) ** (index % 2 + 1) * adjust_y,
+                    (-1) ** (index % 2 + 1) * adjust_y + reef_y_offset,
                     pose_direction.rotation(),
                 )
             ).Y(),

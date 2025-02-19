@@ -86,6 +86,8 @@ class FieldOdometry:
 
             if ((6 <= primary_id <= 11) | (17 <= primary_id <= 22)) & (distance_to_target <= 0.5):
                 std_dev = 0.5
+                if distance_to_target <= 0.25:
+                    std_dev = 0.25
         
 
         self.drivetrain.odometry_estimator.addVisionMeasurement(Pose2d(pose.X(), pose.Y(), self.drivetrain.get_heading()), vision_time, [std_dev, std_dev, 50])

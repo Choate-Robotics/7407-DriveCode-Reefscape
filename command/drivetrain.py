@@ -15,11 +15,7 @@ from enum import Enum
 import logging
 import math
 from wpimath.geometry import Pose2d, Rotation2d
-from wpimath.controller import (
-    HolonomicDriveController,
-    PIDController,
-    ProfiledPIDControllerRadians,
-)
+from wpimath.controller import PIDController
 from wpilib import DriverStation
 
 from units.SI import radians, meters_to_inches
@@ -62,8 +58,8 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
 
     def execute(self) -> None:
         dx, dy, d_theta = (
-            self.subsystem.axis_dx.value * -1,
-            self.subsystem.axis_dy.value * 1,
+            self.subsystem.axis_dx.value * 1,
+            self.subsystem.axis_dy.value * -1,
             self.subsystem.axis_rotation.value,
         )
 
@@ -254,7 +250,7 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
         vy = self.y_controller.calculate(self.current_pose.Y())
         vtheta = self.theta_controller.calculate(self.current_pose.rotation().radians())
 
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
+        if DriverStation.getAlliance() == DriverStation.Alliance.kBlue:
             vx *= -1
             vy *= -1
 
