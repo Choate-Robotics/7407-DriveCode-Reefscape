@@ -91,6 +91,9 @@ class _Robot(wpilib.TimedRobot):
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
         Field.update_field_table()
 
+        #alternates blue and gold on leds
+        Robot.led.set_Alternate(255,190,0,0,0,255)
+
         self.log.complete("Robot initialized")
 
     def robotPeriodic(self):
@@ -132,6 +135,17 @@ class _Robot(wpilib.TimedRobot):
         self.nt.getTable("Odometry").putNumberArray(
             "Estimated pose", [pose.X(), pose.Y(), pose.rotation().radians()]
         )
+
+        if Robot.wrist.coral_in_feed:
+            Robot.led.set_Blink(0,255,0) #if coral is in the intake, blinking green
+        elif Robot.intake.intake_running:
+            Robot.led.set_Solid(250, 106, 20) #if intake is running but coral is not yet intook, solid orange
+        elif Robot.wrist.wrist_ejecting:
+            Robot.led.set_Solid(0,200,255) #if extaking, cyan
+        elif Robot.drivetrain.is_moving() and Robot.drivetrain.aligned:
+            Robot.led.set_Solid(255,0,255) #if aligned to score, purple
+        else:
+            Robot.led.set_Alternate(255,190,0,0,0,255) #idling is blue and gold
 
         Robot.drivetrain.update_tables()
         # Sensors.cam_controller.update_tables()
@@ -185,6 +199,9 @@ class _Robot(wpilib.TimedRobot):
         #     command.DrivetrainZero(Robot.drivetrain),
         #     command.FindWheelRadius(Robot.drivetrain)
         # ))
+
+        #scrolling rainbow on leds
+        Robot.led.set_Rainbow_Ladder()
 
         self.log.info("Autonomous initialized")
 

@@ -82,6 +82,9 @@ auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 
+speed_tolerance = .1 # feet_per_second
+rotation_speed_tolerance = 5 # degrees per second
+
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 

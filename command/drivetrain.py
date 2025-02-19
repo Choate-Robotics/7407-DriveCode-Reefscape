@@ -61,6 +61,7 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
         self.table.putBoolean("DriveSwerveCustom", True)
 
     def execute(self) -> None:
+        self.subsystem.aligned=False
         dx, dy, d_theta = (
             self.subsystem.axis_dx.value * -1,
             self.subsystem.axis_dy.value * 1,
@@ -232,6 +233,7 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
         self.nt = ntcore.NetworkTableInstance.getDefault().getTable("drive to pose")
 
     def initialize(self):
+        self.subsystem.aligned=False
         self.current_pose = self.subsystem.get_estimated_pose()
         pose = self.current_pose.nearest(self.poses)
 
@@ -274,11 +276,12 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
         )
 
     def isFinished(self) -> bool:
-        return (
+        self.subsystem.aligned= (
             self.x_controller.atSetpoint()
             and self.y_controller.atSetpoint()
             and self.theta_controller.atSetpoint()
         )
+        return self.subsystem.aligned
 
     def end(self, interrupted):
         self.subsystem.set_driver_centric((0, 0), 0)
