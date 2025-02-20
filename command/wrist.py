@@ -127,7 +127,11 @@ class FeedOut(SubsystemCommand[Wrist]):
         self.subsystem.coral_in_feed = False
         self.subsystem.feed_stop()
         self.subsystem.wrist_ejecting = False
+
 class FeedOutForDistance(SubsystemCommand[Wrist]):
+    """
+    run out the feed motor for a set amount of rotations
+    """
     def __init__(self, subsystem: Wrist):
         super().__init__(subsystem)
         self.subsystem = subsystem
@@ -149,6 +153,7 @@ class FeedOutForDistance(SubsystemCommand[Wrist]):
         self.subsystem.feed_stop()
         self.subsystem.wrist_ejecting = False
         self.subsystem.cummulative_extake_distance = self.subsystem.feed_motor.get_sensor_position()
+
 class WristAlgaeIn(SubsystemCommand[Wrist]):
     """
     run the feed motor to get the algae
