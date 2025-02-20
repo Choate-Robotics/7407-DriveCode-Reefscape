@@ -10,7 +10,7 @@ from wpilib import DriverStation
 from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup
 
 path_name = "Four L4 Right"
-paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(6)]
+paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(8)]
 starting_pose = get_red_pose(paths[0].getStartingHolonomicPose()) if DriverStation.getAlliance() == DriverStation.Alliance.kRed else paths[0].getStartingHolonomicPose()
 
 auto = SequentialCommandGroup(
