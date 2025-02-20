@@ -21,42 +21,31 @@ auto = SequentialCommandGroup(
         AutoBuilder.followPath(paths[0]),
         Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
     ),
-
     ParallelCommandGroup(
+        Target(config.target_positions["L3"], Robot.wrist, Robot.elevator),
         AutoBuilder.followPath(paths[1]),
-        Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
     ),
     FeedOut(Robot.wrist).withTimeout(.2),
-
-    ParallelCommandGroup(
+    ParallelCommandGroup( 
+        Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
         AutoBuilder.followPath(paths[2]),
-        Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator)
     ),
-
+    IntakeCoral(Robot.intake, Robot.wrist),
+    AutoBuilder.followPath(paths[3]),
     ParallelCommandGroup(
-        AutoBuilder.followPath(paths[3]),
-        Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
-    ),
-
-    ParallelCommandGroup(
+        Target(config.target_positions["L3"]),
         AutoBuilder.followPath(paths[4]),
-        Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
     ),
     FeedOut(Robot.wrist).withTimeout(.2),
-
     ParallelCommandGroup(
-        AutoBuilder.followPath(paths[5]),
-        Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator)
+        AutoBuilder.followPath(paths[5]), 
+        Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
     ),
-
-    ParallelCommandGroup(
-        AutoBuilder.followPath(paths[6]),
-        Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
-    ),
-
+    IntakeCoral(Robot.intake, Robot.wrist),
+    AutoBuilder.followPath(paths[6]),
     ParallelCommandGroup(
         AutoBuilder.followPath(paths[7]),
-        Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
+        Target(config.target_positions["L3"]),
     ),
     FeedOut(Robot.wrist).withTimeout(.2),
 )
