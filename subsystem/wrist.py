@@ -39,6 +39,8 @@ class Wrist(Subsystem):
         self.wrist_zeroed: bool = False
         self.table = None
 
+        self.cummulative_extake_distance = 0
+
         self.algae_in_wrist: bool = False
         self.algae_running_in: bool = False
         self.algae_running_out: bool = False
@@ -180,6 +182,8 @@ class Wrist(Subsystem):
             / constants.wrist_encoder_gear_ratio
             * 2
             * math.pi)-self.get_wrist_angle())
+        
+        self.table.putNumber("wrist cummulative distance", self.cummulative_extake_distance)
 
     def periodic(self) -> None:
         if config.NT_WRIST:
