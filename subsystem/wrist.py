@@ -9,8 +9,6 @@ from toolkit.utils.toolkit_math import bounded_angle_diff
 from phoenix6.hardware import CANcoder
 import config
 import constants
-
-import wpilib
 from wpilib import Timer
 
 
@@ -39,6 +37,7 @@ class Wrist(Subsystem):
         self.wrist_ejecting: bool = False
         self.coral_in_feed: bool = False
         self.wrist_zeroed: bool = False
+        self.table = None
 
         self.algae_in_wrist: bool = False
         self.algae_running_in: bool = False
@@ -52,7 +51,8 @@ class Wrist(Subsystem):
 
     def initial_zero(self) -> None:
         """
-        zero the wrist encoder
+        Zeros the wirst.
+
         """
         self.wrist_angle = (
             (self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
@@ -72,44 +72,59 @@ class Wrist(Subsystem):
 
     def feed_in(self) -> None:
         """
-        spin feed motors in, used in command to stop
+        Runs feed motors in to send coral from intake to wrist.
+        
         """
         self.feed_motor.set_raw_output(config.wrist_intake_speed)
 
+    def algae_in(self) -> None:
+        self.feed_motor.set_raw_output(config.wrist_algae_speed)
+
     def feed_out(self) -> None:
         """
-        spin feed motors out, used in command to stop
+        Runs feed motors out to score or send coral from wrist to intake.
+        
         """
         self.feed_motor.set_raw_output(config.wrist_extake_speed)
 
     def feed_stop(self) -> None:
         """
-        stop the feed motors
+        Stops feed motors.
+        
         """
+
         self.feed_motor.set_raw_output(0)
 
     # wrist
 
     def limit_angle(self, angle: radians) -> radians:
         """
-        limits if the given angle in radians is within the range of the wrist
-        if it is out of range, it returns the min or max angle in radians
-        otherwise it returns the given angle
+        Limits given angle within the range of wrist. 
+        Returns the minimum or maximum wrist angle if input angle is outside range.
 
-        takes in angle in radians
+        Args:
+            angle (radians): target wrist angle
+        
+        Returns:
+            radians: new limited angle
         """
+
         if angle <= config.wrist_min_angle:
             return config.wrist_min_angle
         elif angle >= config.wrist_max_angle:
             return config.wrist_max_angle
         return angle
 
+
     def set_wrist_angle(self, angle: radians) -> None:
         """
-        move to motor until the wrist is at given angle
+        Sets the wrist at target angle.
+
+        Args:
+            radians: target wrist angle
         """
-        angle = self.limit_angle(angle)
-        self.target_angle = angle
+
+        self.target_angle = self.limit_angle(angle)
 
         ff = config.wrist_max_ff * math.cos(angle - config.wrist_ff_offset)
 
@@ -120,10 +135,10 @@ class Wrist(Subsystem):
 
     def get_wrist_angle(self) -> radians:
         """
-        get the current angle of the wrist
-        A single full rotation corresponds to 2π radians
-        returns angle in radians
+        Gets the current wrist angle.
+
         """
+        
         return (
             (
                 self.wrist_motor.get_sensor_position()
@@ -135,7 +150,8 @@ class Wrist(Subsystem):
 
     def is_at_angle(self, angle: radians) -> bool:
         """
-        check if the wrist angle is at the given angle
+        Checks if the wrist angle is at an input angle.
+
         """
         return abs(self.get_wrist_angle() - angle) < config.angle_threshold
 
@@ -152,13 +168,18 @@ class Wrist(Subsystem):
         self.table.putNumber("feed current", self.feed_motor.get_motor_current())
         self.table.putBoolean("wrist zeroed", self.wrist_zeroed)
         self.table.putNumber("wrist absolute position", self.encoder.get_absolute_position().value)
-        self.table.putNumber("wrist absolute angle", (self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
+        self.table.putNumber("wrist absolute angle", (math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
             / constants.wrist_encoder_gear_ratio
             * 2
-            * math.pi)
+            * math.pi))
         self.table.putNumber("calculated kG", config.wrist_max_ff * math.cos(self.get_wrist_angle() - config.wrist_ff_offset))
         self.table.putNumber("wrist applied output", self.wrist_motor.get_applied_output())
         self.table.putNumber("wrist current", self.wrist_motor.get_motor_current())
+        self.table.putBoolean("coral in feed", self.coral_in_feed)
+        self.table.putNumber("wrist angle difference", (math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
+            / constants.wrist_encoder_gear_ratio
+            * 2
+            * math.pi)-self.get_wrist_angle())
 
     def periodic(self) -> None:
         if config.NT_WRIST:

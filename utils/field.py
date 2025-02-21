@@ -91,6 +91,18 @@ class ReefFace(Enum):
             self.left.scoring_pose.rotation(),
         )
 
+    @staticmethod
+    def get_faces() -> list[Pose2d]:
+        return [ReefFace.Face1, ReefFace.Face2, ReefFace.Face3, ReefFace.Face4, ReefFace.Face5, ReefFace.Face6]
+    
+    @staticmethod
+    def get_high_algae() -> list[Pose2d]:
+        return [ReefFace.Face1, ReefFace.Face3, ReefFace.Face5]
+    
+    @staticmethod
+    def get_low_algae() -> list[Pose2d]:
+        return [ReefFace.Face2, ReefFace.Face6, ReefFace.Face5]
+
 
 class ReefHeight(Enum):
     L4 = (72 * inches_to_meters, -90)

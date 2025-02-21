@@ -12,6 +12,7 @@ from wpilib import TimedRobot
 radians_per_second_squared = float
 
 rotations_per_second_squared = float
+from time import sleep
 
 
 class TalonConfig:
@@ -141,12 +142,12 @@ class TalonFX(PIDMotor):
     _optimized: bool
 
     def __init__(
-        self,
-        can_id: int,
-        foc: bool = True,
-        inverted: bool = False,
-        config: TalonConfig = None,
-        optimize: bool = True,
+            self,
+            can_id: int,
+            foc: bool = True,
+            inverted: bool = False,
+            config: TalonConfig = None,
+            optimize: bool = True,
     ):
         self._inverted = inverted
         self._foc = foc
