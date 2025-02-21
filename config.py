@@ -61,7 +61,7 @@ drivetrain_deadzone: float = 0.1
 drivetrain_curve: float = 2.0000
 drivetrain_zero: radians = math.radians(0)
 
-drivetrain_rotation_kp: float = 5.5
+drivetrain_rotation_kp: float = 5
 drivetrain_rotation_ki: float = 0.0
 drivetrain_rotation_kd: float = 0.0
 drivetrain_rotation_tolerance: degrees = 1  # degrees
@@ -69,12 +69,12 @@ drivetrain_rotation_tolerance: degrees = 1  # degrees
 drivetrain_x_kp: float = 4.0
 drivetrain_x_ki: float = 0.0
 drivetrain_x_kd: float = 0.0
-drivetrain_x_tolerance: float = 1 * inches_to_meters
+drivetrain_x_tolerance: float = 0.001
 
 drivetrain_y_kp: float = 4.0
 drivetrain_y_ki: float = 0.0
 drivetrain_y_kd: float = 0.0
-drivetrain_y_tolerance: float = 1 * inches_to_meters
+drivetrain_y_tolerance: float = 0.001
 
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)

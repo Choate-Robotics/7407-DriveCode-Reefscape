@@ -78,8 +78,10 @@ class FieldOdometry:
         if tag_count == 1:
             if distance_to_target > config.odometry_tag_distance_threshold:
                 return
-            if ((6 <= primary_id <= 11) | (17 <= primary_id <= 22)) & (distance_to_target <= 0.5):
-                std_dev = 0.7
+            if ((6 <= primary_id <= 11) | (17 <= primary_id <= 22)) & (distance_to_target <= 1.5):
+                std_dev = 0.25
+                if distance_to_target <= 0.75:
+                    std_dev = 0.1
 
         if tag_count >= 2:
             std_dev = 0.7
@@ -91,6 +93,7 @@ class FieldOdometry:
         
 
         self.drivetrain.odometry_estimator.addVisionMeasurement(Pose2d(pose.X(), pose.Y(), self.drivetrain.get_heading()), vision_time, [std_dev, std_dev, 50])
+        # self.drivetrain.odometry_estimator.addVisionMeasurement(pose, vision_time, [std_dev, std_dev, std_dev])
 
     def getPose(self) -> Pose2d:
         """

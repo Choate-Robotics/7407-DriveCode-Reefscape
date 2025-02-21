@@ -46,8 +46,8 @@ drivetrain_length: meters = 29 * inches_to_meters
 bumper_thickness: meters = 3.5 * inches_to_meters
 drivetrain_length_with_bumpers: meters = drivetrain_length + (2 * bumper_thickness)
 drivetrain_radius: meters = math.sqrt(math.pow(track_length/2, 2) + math.pow(track_width/2, 2))
-reef_scoring_distance: meters = drivetrain_length_with_bumpers / 2 + 1 * inches_to_meters
-reef_y_offset: meters = -2 * inches_to_meters #positive is right
+reef_scoring_distance: meters = drivetrain_length_with_bumpers / 2 + 0.25 * inches_to_meters
+reef_y_offset: meters = 0 * inches_to_meters #positive is right
 
 
 drivetrain_move_motor_free_speed: rotations_per_minute = (

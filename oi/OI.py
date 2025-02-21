@@ -6,6 +6,7 @@ from robot_systems import Robot, Field
 import config
 from commands2 import InstantCommand, ConditionalCommand, SequentialCommandGroup, ParallelCommandGroup
 from wpimath.geometry import Pose2d
+import math
 
 log = LocalLogger("OI")
 
@@ -29,6 +30,7 @@ class OI:
 
         Keymap.Drivetrain.DRIVE_TO_RIGHT_POSE.onTrue(
             command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches())
+            # command.DriveToPose(Robot.drivetrain, [Pose2d(14.36, 4.15, math.radians(180))])
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_LEFT_POSE.onTrue(
