@@ -11,5 +11,6 @@ from utils.field import (  # noqa
     StagingPositions,  # noqa
     Reef,  # noqa
     flip_poses,  # noqa
-    update_table,  # noqa
+    update_table,
+    get_red_pose  # noqa
 )
