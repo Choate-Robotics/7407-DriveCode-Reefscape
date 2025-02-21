@@ -1,13 +1,12 @@
 from pathplannerlib.config import RobotConfig
 from wpimath.geometry import Transform3d, Translation3d, Rotation3d
 import math
-
 from units.SI import (
     degrees_per_second__to__radians_per_second,
     inches_to_meters,
     meters,
-    degrees_to_radians,
     meters_per_second_squared,
+    rotations_per_minute,
     rotations_per_minute,
 )
 
@@ -42,7 +41,6 @@ robot_to_right_cam = Transform3d(
     Rotation3d(0, 0, math.radians(20)),
 )
 
-
 # drivetrain
 drivetrain_turn_gear_ratio: float = 18.75
 drivetrain_wheel_gear_ratio: float = 7.13
@@ -65,12 +63,13 @@ drivetrain_move_motor_free_speed: rotations_per_minute = (
     6000  # 6000 is the free speed RPM of the Kraken without FOC
 )
 
-drivetrain_wheel_diameter: meters = 3.858 * inches_to_meters
+drivetrain_wheel_diameter: meters = 3.873 * inches_to_meters
 
 
 drivetrain_max_vel: meters = (
     (drivetrain_move_motor_free_speed / 60) / drivetrain_wheel_gear_ratio
 ) * (drivetrain_wheel_diameter * math.pi)
+
 # drivetrain_max_vel = 5.4 m/s, 17.7 ft/s, 12.1 mph
 drivetrain_max_accel: meters_per_second_squared = (
     0  # setting to 0 will set to default motor accel
@@ -78,8 +77,6 @@ drivetrain_max_accel: meters_per_second_squared = (
 drivetrain_max_angular_vel = 720 * degrees_per_second__to__radians_per_second
 drivetrain_max_angular_accel = 720 * degrees_per_second__to__radians_per_second
 
-
-# the below variable is the rotation the motor rotates per meter of wheel movement
 drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio

@@ -49,7 +49,7 @@ class Elevator(Subsystem):
         Brings the elevator to given height
 
         Args:
-            height (float): intended elevator height in meters
+            height (meters): intended elevator height in meters
         """
         height = self.limit_height(height)
         self.target_height = height

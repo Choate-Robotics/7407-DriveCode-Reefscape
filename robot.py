@@ -90,7 +90,6 @@ class _Robot(wpilib.TimedRobot):
         Field.update_field_table()
 
         self.log.complete("Robot initialized")
-        ...
 
     def robotPeriodic(self):
         table = ntcore.NetworkTableInstance.getDefault().getTable("Color")

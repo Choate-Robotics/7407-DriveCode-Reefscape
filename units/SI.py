@@ -2,7 +2,6 @@
 SI units for use in typing and conversion.
 """
 
-# Distance
 import math
 from typing import Type
 
