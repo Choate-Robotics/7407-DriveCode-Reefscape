@@ -1,6 +1,8 @@
 import subsystem
-import sensors  # noqa
-import wpilib  # noqa
+import sensors
+import wpilib #noqa
+import config
+import constants
 from utils.field import (
     FieldConstants,
     ReefFace,
@@ -16,9 +18,15 @@ from utils.field import (
     NT_Updater,
 )
 
+import sensors
+import subsystem
+
 
 class Robot:
+    elevator = subsystem.Elevator()
+    wrist = subsystem.Wrist()
     drivetrain = subsystem.Drivetrain()
+    intake = subsystem.Intake()
 
 
 class Pneumatics:
@@ -26,7 +34,10 @@ class Pneumatics:
 
 
 class Sensors:
-    pass
+    # right_cam = sensors.PhotonCamCustom(config.right_cam_name, constants.robot_to_right_cam)
+    # left_cam = sensors.PhotonCamCustom(config.left_cam_name, constants.robot_to_left_cam)
+    # cam_controller = sensors.PhotonController([left_cam, right_cam])
+    cam_controller = None
 
 
 class LEDs:
@@ -38,6 +49,7 @@ class PowerDistribution:
 
 
 class Field:
+    odometry = sensors.FieldOdometry(Robot.drivetrain, Sensors.cam_controller)
     field_constants = FieldConstants()
     reef_face = ReefFace
     branch = Branch
