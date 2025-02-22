@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from phoenix6 import StatusCode, StatusSignal, configs, controls, hardware, signals
-from wpilib import TimedRobot
 
 import config
 from toolkit.motor import PIDMotor
@@ -12,7 +11,6 @@ from wpilib import TimedRobot
 radians_per_second_squared = float
 
 rotations_per_second_squared = float
-from time import sleep
 
 
 class TalonConfig:
@@ -54,6 +52,7 @@ class TalonConfig:
         self.motion_magic_cruise_velocity = motion_magic_cruise_velocity
         self.motion_magic_acceleration = motion_magic_acceleration
         self.motion_magic_jerk = motion_magic_jerk
+        self.logger = LocalLogger("TalonConfig")
 
     def _apply_settings(self, motor: hardware.TalonFX, inverted: bool = False):
         print("applying settings to Talon")
@@ -97,13 +96,20 @@ class TalonConfig:
         magic.motion_magic_jerk = self.motion_magic_jerk
         magic.motion_magic_cruise_velocity = self.motion_magic_cruise_velocity
 
-        res = motor.configurator.apply(talon_config)
-        if res != StatusCode.OK:
-            print(res)
-            print("error! config not applying")
-            raise RuntimeError(f"error! config not applying| {res}")
+        # Implementing 6328 logic on configuring talons
+
+        for i in range(4):
+            res = motor.configurator.apply(
+                talon_config, 0.2
+            )  # default timeout is 0.1; we seem to need more time
+            if res == StatusCode.OK:
+                break
+
+        if res == StatusCode.OK:
+            self.logger.setup("talon configured")
+
         else:
-            print("talon configured")
+            self.logger.warn("error! config not applying")
 
 
 class TalonFX(PIDMotor):
@@ -142,18 +148,18 @@ class TalonFX(PIDMotor):
     _optimized: bool
 
     def __init__(
-            self,
-            can_id: int,
-            foc: bool = True,
-            inverted: bool = False,
-            config: TalonConfig = None,
-            optimize: bool = True,
+        self,
+        can_id: int,
+        foc: bool = True,
+        inverted: bool = False,
+        config: TalonConfig = None,
+        optimize: bool = True,
     ):
         self._inverted = inverted
         self._foc = foc
         self._can_id = can_id
         self._talon_config = config
-        self._logger = LocalLogger(f'TalonFX: {can_id}')
+        self._logger = LocalLogger(f"TalonFX: {can_id}")
         self._initialized = False
         self._optimized = optimize
         self.target = 0
@@ -161,11 +167,11 @@ class TalonFX(PIDMotor):
 
     def init(self):
         if self._initialized:
-            self._logger.warn('already initialized')
+            self._logger.warn("already initialized")
             return
 
-        self._logger.setup('initializing')
-        self._motor = hardware.TalonFX(self._can_id, 'rio')
+        self._logger.setup("initializing")
+        self._motor = hardware.TalonFX(self._can_id, "rio")
         self._config = self._motor.configurator
         self._motor_pos = self._motor.get_position()
         self._motor_vel = self._motor.get_velocity()
@@ -178,10 +184,10 @@ class TalonFX(PIDMotor):
 
         if self._optimized:
             if self.optimize_normal_operation() == StatusCode.OK:
-                self._logger.complete('optimized')
+                self._logger.complete("optimized")
 
         self._initialized = True
-        self._logger.complete('initialized')
+        self._logger.complete("initialized")
         pass
 
     def __setup_controls(self):
@@ -191,41 +197,69 @@ class TalonFX(PIDMotor):
         self._position_voltage = controls.PositionVoltage(0)
         self._velocity_voltage = controls.VelocityVoltage(0)
 
-    def error_check(self, status: StatusCode, message: str = ''):
+    def error_check(self, status: StatusCode, message: str = ""):
         if TimedRobot.isSimulation():
             return
         if status != StatusCode.OK:
-            self._logger.error(f'Error: {status} {message}')
+            self._logger.error(f"Error: {status} {message}")
             if config.DEBUG_MODE:
-                raise RuntimeError(f'Error: {status} {message}')
+                raise RuntimeError(f"Error: {status} {message}")
 
     def get_sensor_position(self) -> rotations:
         self._motor_pos.refresh()
         return self._motor_pos.value
 
     def set_target_position(self, pos: rotations, arbFF: float = 0.0):
-        self.error_check(self._motor.set_control(self._motion_magic_voltage.with_position(pos)), f'target position: {pos}, arbFF: {arbFF}')
+        self.error_check(
+            self._motor.set_control(self._motion_magic_voltage.with_position(pos)),
+            f"target position: {pos}, arbFF: {arbFF}",
+        )
         self.target = pos
 
     def set_sensor_position(self, pos: rotations):
-        self.error_check(self._motor.set_position(pos), f'sensor position: {pos}')
+        self.error_check(self._motor.set_position(pos), f"sensor position: {pos}")
 
-    def set_target_velocity(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
-        self.error_check(self._motor.set_control(self._motion_magic_velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
+    def set_target_velocity(
+        self, vel: rotations_per_second, accel: rotations_per_second_squared = 0
+    ):
+        self.error_check(
+            self._motor.set_control(
+                self._motion_magic_velocity_voltage.with_velocity(
+                    vel
+                ).with_acceleration(accel)
+            ),
+            f"target velocity: {vel}, accel: {accel}",
+        )
         self.target_velocity = vel
 
     def set_target_position_voltage(self, pos: rotations):
-        self.error_check(self._motor.set_control(self._position_voltage.with_position(pos)), f'target position: {pos}')
+        self.error_check(
+            self._motor.set_control(self._position_voltage.with_position(pos)),
+            f"target position: {pos}",
+        )
         self.target = pos
 
-    def set_target_velocity_voltage(self, vel: rotations_per_second, accel: rotations_per_second_squared = 0):
-        self.error_check(self._motor.set_control(self._velocity_voltage.with_velocity(vel).with_acceleration(accel)), f'target velocity: {vel}, accel: {accel}')
+    def set_target_velocity_voltage(
+        self, vel: rotations_per_second, accel: rotations_per_second_squared = 0
+    ):
+        self.error_check(
+            self._motor.set_control(
+                self._velocity_voltage.with_velocity(vel).with_acceleration(accel)
+            ),
+            f"target velocity: {vel}, accel: {accel}",
+        )
 
     def set_raw_output(self, x: float):
-        self.error_check(self._motor.set_control(self._duty_cycle_out.with_output(x)), f'raw output: {x}')
+        self.error_check(
+            self._motor.set_control(self._duty_cycle_out.with_output(x)),
+            f"raw output: {x}",
+        )
 
     def follow(self, master: TalonFX, inverted: bool = False) -> StatusCode.OK:
-        self.error_check(self._motor.set_control(controls.Follower(master._can_id, inverted)), f'following {master._can_id} inverted: {inverted}')
+        self.error_check(
+            self._motor.set_control(controls.Follower(master._can_id, inverted)),
+            f"following {master._can_id} inverted: {inverted}",
+        )
 
     def get_sensor_velocity(self) -> rotations_per_second:
         self._motor_vel.refresh()
@@ -244,7 +278,7 @@ class TalonFX(PIDMotor):
 
     def get_target(self) -> rotations:
         return self.target
-    
+
     def get_target_velocity(self) -> rotations_per_second:
         return self.target_velocity
 
