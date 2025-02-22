@@ -147,6 +147,6 @@ class ExtakeAlgae(SubsystemCommand[Intake]):
     def isFinished(self):                       
         return False
     
-    def end(self):
+    def end(self, interrupted):
         self.subsystem.algae_in_intake = False
         self.subsystem.stop()
