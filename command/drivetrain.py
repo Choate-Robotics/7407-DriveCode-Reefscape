@@ -15,14 +15,12 @@ from enum import Enum
 import logging
 import math
 from wpimath.geometry import Pose2d, Rotation2d
-from wpimath.controller import (
-    HolonomicDriveController,
-    PIDController,
-    ProfiledPIDControllerRadians,
-)
+from wpimath.controller import PIDController, ProfiledPIDController
+from wpimath.trajectory import TrapezoidProfile
+from wpimath.kinematics import ChassisSpeeds
 from wpilib import DriverStation
 
-from units.SI import radians, meters_to_inches
+from units.SI import radians, meters_to_inches, meters_per_second, meters_per_second_squared
 
 
 def deadzone(x, d=config.drivetrain_deadzone):
@@ -57,13 +55,12 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
     driver_centric_reversed = True
 
     def initialize(self) -> None:
-        self.table = ntcore.NetworkTableInstance.getDefault().getTable("Drivetrain Command")
-        self.table.putBoolean("DriveSwerveCustom", True)
+        pass
 
     def execute(self) -> None:
         dx, dy, d_theta = (
-            self.subsystem.axis_dx.value * -1,
-            self.subsystem.axis_dy.value * 1,
+            self.subsystem.axis_dx.value * 1,
+            self.subsystem.axis_dy.value * -1,
             self.subsystem.axis_rotation.value,
         )
 
@@ -82,7 +79,6 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
             self.subsystem.set_robot_centric((dy, -dx, d_theta))
 
     def end(self, interrupted: bool) -> None:
-        self.table.putBoolean("DriveSwerveCustom", False)
         self.subsystem.n_front_left.set_motor_velocity(0)
         self.subsystem.n_front_right.set_motor_velocity(0)
         self.subsystem.n_back_left.set_motor_velocity(0)
@@ -122,13 +118,13 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
     def initialize(self) -> None:
         self.theta_pid_controller.enableContinuousInput(radians(-180), radians(180))
         self.theta_pid_controller.reset()
-        self.theta_pid_controller.setSetpoint(self.angle)
+        self.theta_pid_controller.setSetpoint(math.radians(bound_angle(math.degrees(self.angle))))
 
     def execute(self) -> None:
         self.table.putNumber("target angle", math.degrees(self.angle))
         dx, dy = (
-            self.subsystem.axis_dx.value * -1,
-            self.subsystem.axis_dy.value * 1
+            self.subsystem.axis_dx.value * 1,
+            self.subsystem.axis_dy.value * -1
         )
 
         current = self.subsystem.get_heading().radians()
@@ -204,22 +200,25 @@ class DrivetrainXMode(SubsystemCommand[Drivetrain]):
 
 
 class DriveToPose(SubsystemCommand[Drivetrain]):
-    def __init__(self, subsystem: Drivetrain, poses: list[Pose2d] = None):
+    def __init__(self, subsystem: Drivetrain, poses: list[Pose2d], max_vel: meters_per_second = 4, max_accel: meters_per_second_squared = 4):
         super().__init__(subsystem)
         self.subsystem = subsystem
         self.poses = poses
         self.current_pose: Pose2d
 
-        self.x_controller = PIDController(
+        self.constraints = TrapezoidProfile.Constraints(max_vel, max_accel)
+        self.x_controller = ProfiledPIDController(
             config.drivetrain_x_kp,
             config.drivetrain_x_ki,
             config.drivetrain_x_kd,
-            config.period,
+            self.constraints,
+            config.period
         )
-        self.y_controller = PIDController(
+        self.y_controller = ProfiledPIDController(
             config.drivetrain_y_kp,
             config.drivetrain_y_ki,
             config.drivetrain_y_kd,
+            self.constraints,
             config.period,
         )
         self.theta_controller = PIDController(
@@ -233,7 +232,21 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
 
     def initialize(self):
         self.current_pose = self.subsystem.get_estimated_pose()
+        self.current_speeds = ChassisSpeeds.fromRobotRelativeSpeeds(self.subsystem.get_speeds(), self.subsystem.get_heading())
+
         pose = self.current_pose.nearest(self.poses)
+        current_vx = self.current_speeds.vx
+        current_vy = self.current_speeds.vy
+
+        # if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
+        #     current_vx *= -1
+        #     current_vy *= -1
+
+        self.x_controller.reset(TrapezoidProfile.State(self.current_pose.X(), current_vx))
+        self.y_controller.reset(TrapezoidProfile.State(self.current_pose.Y(), current_vy))
+        self.theta_controller.reset()
+
+        self.nt.putNumber("current vx", current_vx)
 
         self.theta_controller.enableContinuousInput(0, math.radians(360))
 
@@ -243,9 +256,13 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
             math.radians(config.drivetrain_rotation_tolerance)
         )
 
-        self.x_controller.setSetpoint(pose.X())
-        self.y_controller.setSetpoint(pose.Y())
+        self.x_controller.setGoal(TrapezoidProfile.State(pose.X(), 0))
+        self.y_controller.setGoal(TrapezoidProfile.State(pose.Y(), 0))
         self.theta_controller.setSetpoint(pose.rotation().radians())
+
+        self.pose = pose
+        self.nt.putNumber("max velocity", self.x_controller.getConstraints().maxVelocity)
+        self.nt.putNumber("max acceleration", self.x_controller.getConstraints().maxAcceleration)
 
     def execute(self):
         self.current_pose = self.subsystem.get_estimated_pose()
@@ -254,29 +271,26 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
         vy = self.y_controller.calculate(self.current_pose.Y())
         vtheta = self.theta_controller.calculate(self.current_pose.rotation().radians())
 
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
+        if DriverStation.getAlliance() == DriverStation.Alliance.kBlue:
             vx *= -1
             vy *= -1
 
         self.subsystem.set_driver_centric((vx, vy), vtheta)
 
-        self.nt.putNumber("goal x", self.x_controller.getSetpoint())
-        self.nt.putNumber("goal y", self.y_controller.getSetpoint())
-        self.nt.putNumber(
-            "goal theta", math.degrees(self.theta_controller.getSetpoint())
-        )
-
-        self.nt.putNumber("current x", self.current_pose.X())
-        self.nt.putNumber("current y", self.current_pose.Y())
-        self.nt.putNumber(
-            "current theta",
-            math.degrees(bounded_angle_diff(self.current_pose.rotation().radians(), 0)),
-        )
+        self.nt.putNumberArray("goal pose", [
+            self.x_controller.getGoal().position,
+            self.y_controller.getGoal().position,
+            math.degrees(self.theta_controller.getSetpoint())
+            ])
+        
+        self.nt.putNumber("vx", vx)
+        self.nt.putNumber("x sample position", self.x_controller.getSetpoint().position)
+        self.nt.putNumber("x sample velocity", self.x_controller.getSetpoint().velocity)
 
     def isFinished(self) -> bool:
         return (
-            self.x_controller.atSetpoint()
-            and self.y_controller.atSetpoint()
+            self.x_controller.atGoal()
+            and self.y_controller.atGoal()
             and self.theta_controller.atSetpoint()
         )
 

@@ -61,7 +61,7 @@ drivetrain_deadzone: float = 0.1
 drivetrain_curve: float = 2.0000
 drivetrain_zero: radians = math.radians(0)
 
-drivetrain_rotation_kp: float = 5.5
+drivetrain_rotation_kp: float = 5
 drivetrain_rotation_ki: float = 0.0
 drivetrain_rotation_kd: float = 0.0
 drivetrain_rotation_tolerance: degrees = 1  # degrees
@@ -69,21 +69,18 @@ drivetrain_rotation_tolerance: degrees = 1  # degrees
 drivetrain_x_kp: float = 4.0
 drivetrain_x_ki: float = 0.0
 drivetrain_x_kd: float = 0.0
-drivetrain_x_tolerance: float = 0.05
+drivetrain_x_tolerance: float = 0.001
 
 drivetrain_y_kp: float = 4.0
 drivetrain_y_ki: float = 0.0
 drivetrain_y_kd: float = 0.0
-drivetrain_y_tolerance: float = 0.05
+drivetrain_y_tolerance: float = 0.001
 
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 
 auto_translation_pid = PIDConstants(6, 0.0, 0.1)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
-
-# odometry
-odometry_tag_distance_threshold: meters = 2.5
 
 TURN_CONFIG = TalonConfig(7, 0, 0.02, 0, 0, brake_mode=True)
 
@@ -98,6 +95,9 @@ MOVE_CONFIG = TalonConfig(
     current_limit=50,
 )
 
+# odometry
+odometry_tag_distance_threshold: meters = 2.5
+
 # Wrist
 wrist_feed_id = 15
 WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
@@ -108,7 +108,7 @@ wrist_encoder_zero = 0.781
 
 wrist_intake_speed = 0.35
 wrist_extake_speed = -0.25
-wrist_algae_speed = 0.25
+wrist_algae_speed = 0.5
 wrist_max_angle: radians = math.radians(75)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
@@ -125,7 +125,7 @@ horizontal_id = 13
 intake_cancoder_id = 21
 intake_pivot_id = 11
 intake_encoder_zero = 0.075
-INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=False)
+INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
 INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True) # 97
 
 intake_max_angle = math.radians(60)
@@ -152,20 +152,21 @@ ELEVATOR_CONFIG = TalonConfig(4, 0, 0.1, 0.13, 0, 0, kG=0.28, brake_mode=True, m
 # TO CHANGE
 period: float = 0.03
 
-elevator_l1_height: meters = 2 * inches_to_meters
+elevator_l1_height: meters = 5 * inches_to_meters
 elevator_l2_height: meters = 6 * inches_to_meters
 elevator_l3_height: meters = 13.75 * inches_to_meters
 elevator_l4_height: meters = constants.elevator_max_height
-elevator_dhigh_height: meters = 0
-elevator_dlow_height: meters = 1 * inches_to_meters
+elevator_dhigh_height: meters = 11 * inches_to_meters
+elevator_dlow_height: meters = 2.75 * inches_to_meters
 elevator_barge_height: meters = 0
 
 intake_algae_ground_angle = math.radians(58)
 intake_climb_angle = 0
 intake_coral_station_angle = 0
+intake_l1_angle = math.radians(37)
 
 wrist_intake_angle = math.radians(-111)
-wrist_l1_angle = math.radians(72)
+wrist_l1_angle = math.radians(64)
 wrist_l2_angle = math.radians(64)
 wrist_l3_angle = math.radians(64)
 wrist_l4_angle = math.radians(54)

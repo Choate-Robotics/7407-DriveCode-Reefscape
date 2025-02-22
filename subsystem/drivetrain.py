@@ -196,7 +196,7 @@ class Drivetrain(Subsystem):
         # vel = rotate_vector(vel[0], vel[1], -self.gyro.get_robot_heading())
 
         heading = self.get_heading()
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
+        if DriverStation.getAlliance() == DriverStation.Alliance.kBlue:
             heading = heading.rotateBy(Rotation2d(math.pi))
 
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vel[0], vel[1], angular_vel, heading)
