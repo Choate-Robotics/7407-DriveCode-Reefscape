@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from wpilib import AnalogEncoder
 from toolkit.motors.ctre_motors import TalonConfig
 import math
