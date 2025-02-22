@@ -163,7 +163,7 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self):
-        path = PathPlannerPath.fromChoreoTrajectory("Four L4 Left")
+        path = PathPlannerPath.fromChoreoTrajectory("Four L4 Right")
         starting_pose = get_red_pose(path.getStartingHolonomicPose()) if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed else path.getStartingHolonomicPose()
         Robot.drivetrain.reset_odometry_auto(starting_pose)
         self.scheduler.schedule(commands2.SequentialCommandGroup(
