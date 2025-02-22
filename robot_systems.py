@@ -13,6 +13,8 @@ from utils.field import (
     StagingPositions,
     CoralStation,
     Processor,
+    ManualBranchesRed,
+    ManualBranchesBlue,
     flip_poses,
     update_table,
     NT_Updater,
@@ -59,12 +61,21 @@ class Field:
     staging_positions = StagingPositions
     coral_station = CoralStation
     processor = Processor
+    manual_branches_red = ManualBranchesRed
+    manual_branches_blue = ManualBranchesBlue
     nt_reporter = NT_Updater("Field")
 
     @staticmethod
     def flip_poses():
         print("Flipping Pos")
         flip_poses()
+
+    @staticmethod
+    def get_branches():
+        if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed:
+            return Field.manual_branches_red
+        else:
+            return Field.manual_branches_blue
 
     @staticmethod
     def update_field_table(debug=False):

@@ -29,20 +29,17 @@ class OI:
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_RIGHT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches())
-            # command.DriveToPose(Robot.drivetrain, [Pose2d(14.36, 4.15, math.radians(180))])
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_LEFT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Drivetrain.CORAL_STATION_ALIGN.onTrue(
-            ConditionalCommand(
-                command.DriveSwerveAim(Robot.drivetrain, Field.coral_station.rightCenterFace.rotation().radians()),
-                command.DriveSwerveAim(Robot.drivetrain, Field.coral_station.leftCenterFace.rotation().radians()),
-                lambda: Field.odometry.getPose().nearest([Field.coral_station.leftCenterFace, Field.coral_station.rightCenterFace]) == Field.coral_station.rightCenterFace
-            )
+            command.DriveToPose(Robot.drivetrain, [Field.coral_station.leftCenterFace, Field.coral_station.rightCenterFace])
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         # Scoring on reef

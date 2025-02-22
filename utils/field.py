@@ -14,7 +14,7 @@ from wpimath.geometry import (
     Translation2d,
     Translation3d,
 )
-
+import math
 from units.SI import degrees_to_radians, inches_to_meters
 
 
@@ -130,13 +130,13 @@ class Barge:
 
 class CoralStation:
     leftCenterFace = Pose2d(
-        33.526 * inches_to_meters,
-        291.176 * inches_to_meters,
+        (46.254 + 2.828) * inches_to_meters,
+        (278.448 - 2.828) * inches_to_meters,
         Rotation2d.fromDegrees(90 - 144.011),
     )
     rightCenterFace = Pose2d(
-        33.526 * inches_to_meters,
-        25.824 * inches_to_meters,
+        (46.254 + 2.828) * inches_to_meters,
+        (38.552 + 2.828) * inches_to_meters,
         Rotation2d.fromDegrees(144.011 - 90),
     )
 
@@ -149,6 +149,83 @@ class StagingPositions:
     )
     rightIceCream = Pose2d(48 * inches_to_meters, 86.5 * inches_to_meters, Rotation2d())
 
+class ManualBranchesRed(StrEnum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
+    G = "G"
+    H = "H"
+    I = "I"
+    J = "J"
+    K = "K"
+    L = "L"
+
+    def __init__(self, label):
+        self.label = label
+        self.scoring_pose = Pose2d()
+
+    @staticmethod
+    def get_right_branches() -> list[Pose2d]:
+        return [ManualBranchesRed.B.scoring_pose, ManualBranchesRed.D.scoring_pose, ManualBranchesRed.F.scoring_pose, ManualBranchesRed.H.scoring_pose, ManualBranchesRed.J.scoring_pose, ManualBranchesRed.L.scoring_pose]
+
+    @staticmethod
+    def get_left_branches() -> list[Pose2d]:
+        return [ManualBranchesRed.A.scoring_pose, ManualBranchesRed.C.scoring_pose, ManualBranchesRed.E.scoring_pose, ManualBranchesRed.G.scoring_pose, ManualBranchesRed.I.scoring_pose, ManualBranchesRed.K.scoring_pose]
+
+ManualBranchesRed.A.scoring_pose = Pose2d(14.363, 3.834, math.radians(180))
+ManualBranchesRed.B.scoring_pose = Pose2d(14.359, 4.178, math.radians(180))
+ManualBranchesRed.C.scoring_pose = Pose2d(13.914, 5.051, math.radians(-120))
+ManualBranchesRed.D.scoring_pose = Pose2d(13.587, 5.214, math.radians(-120))
+ManualBranchesRed.E.scoring_pose = Pose2d(12.584, 5.232, math.radians(-60))
+ManualBranchesRed.F.scoring_pose = Pose2d(12.277, 5.059, math.radians(-60))
+ManualBranchesRed.G.scoring_pose = Pose2d(11.758, 4.229, math.radians(0))
+ManualBranchesRed.H.scoring_pose = Pose2d(11.759, 3.864, math.radians(0))
+ManualBranchesRed.I.scoring_pose = Pose2d(12.235, 2.988, math.radians(60))
+ManualBranchesRed.J.scoring_pose = Pose2d(12.549, 2.822, math.radians(60))
+ManualBranchesRed.K.scoring_pose = Pose2d(13.543, 2.790, math.radians(120))
+ManualBranchesRed.L.scoring_pose = Pose2d(13.838, 2.973, math.radians(120))
+
+class ManualBranchesBlue(StrEnum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
+    G = "G"
+    H = "H"
+    I = "I"
+    J = "J"
+    K = "K"
+    L = "L"
+
+    def __init__(self, label):
+        self.label = label
+        self.scoring_pose = Pose2d()
+    
+    @staticmethod
+    def get_right_branches() -> list[Pose2d]:
+        return [ManualBranchesBlue.B.scoring_pose, ManualBranchesBlue.D.scoring_pose, ManualBranchesBlue.F.scoring_pose, ManualBranchesBlue.H.scoring_pose, ManualBranchesBlue.J.scoring_pose, ManualBranchesBlue.L.scoring_pose]
+
+    @staticmethod
+    def get_left_branches() -> list[Pose2d]:
+        return [ManualBranchesBlue.A.scoring_pose, ManualBranchesBlue.C.scoring_pose, ManualBranchesBlue.E.scoring_pose, ManualBranchesBlue.G.scoring_pose, ManualBranchesBlue.I.scoring_pose, ManualBranchesBlue.K.scoring_pose]
+
+ManualBranchesBlue.A.scoring_pose = Pose2d(1, 0, math.radians(0))
+ManualBranchesBlue.B.scoring_pose = Pose2d(9, 0, math.radians(0))
+ManualBranchesBlue.C.scoring_pose = Pose2d(9, 0, math.radians(60))
+ManualBranchesBlue.D.scoring_pose = Pose2d(9, 0, math.radians(60))
+ManualBranchesBlue.E.scoring_pose = Pose2d(9, 0, math.radians(120))
+ManualBranchesBlue.F.scoring_pose = Pose2d(9, 0, math.radians(120))
+ManualBranchesBlue.G.scoring_pose = Pose2d(9, 0, math.radians(180))
+ManualBranchesBlue.H.scoring_pose = Pose2d(9, 0, math.radians(180))
+ManualBranchesBlue.I.scoring_pose = Pose2d(9, 0, math.radians(-120))
+ManualBranchesBlue.J.scoring_pose = Pose2d(9, 0, math.radians(-120))
+ManualBranchesBlue.K.scoring_pose = Pose2d(9, 0, math.radians(-60))
+ManualBranchesBlue.L.scoring_pose = Pose2d(9, 0, math.radians(-60))
 
 class Reef:
     right_branches = [Branch.B, Branch.D, Branch.F, Branch.H, Branch.J, Branch.L]
@@ -375,6 +452,8 @@ def update_table(nt_reporter: NT_Updater, debug=False):
     nt_reporter.update_table(CoralStation, "CoralStation", debug)
     nt_reporter.update_table(StagingPositions, "StagingPositions", debug)
     nt_reporter.update_table(Reef, "Reef", debug)
+    nt_reporter.update_table(ManualBranchesBlue, "ManualBranchesBlue", debug)
+    nt_reporter.update_table(ManualBranchesRed, "ManualBranchesRed", debug)
 
 
 if __name__ == "__main__":
