@@ -93,15 +93,15 @@ class ReefFace(Enum):
 
     @staticmethod
     def get_faces() -> list[Pose2d]:
-        return [ReefFace.Face1, ReefFace.Face2, ReefFace.Face3, ReefFace.Face4, ReefFace.Face5, ReefFace.Face6]
+        return [ReefFace.Face1.scoring_pose, ReefFace.Face2.scoring_pose, ReefFace.Face3.scoring_pose, ReefFace.Face4.scoring_pose, ReefFace.Face5.scoring_pose, ReefFace.Face6.scoring_pose]
     
     @staticmethod
     def get_high_algae() -> list[Pose2d]:
-        return [ReefFace.Face1, ReefFace.Face3, ReefFace.Face5]
+        return [ReefFace.Face1.scoring_pose, ReefFace.Face3.scoring_pose, ReefFace.Face5.scoring_pose]
     
     @staticmethod
     def get_low_algae() -> list[Pose2d]:
-        return [ReefFace.Face2, ReefFace.Face6, ReefFace.Face5]
+        return [ReefFace.Face2.scoring_pose, ReefFace.Face6.scoring_pose, ReefFace.Face5.scoring_pose]
 
 
 class ReefHeight(Enum):
@@ -130,13 +130,13 @@ class Barge:
 
 class CoralStation:
     leftCenterFace = Pose2d(
-        (46.254 + 2.828) * inches_to_meters,
-        (278.448 - 2.828) * inches_to_meters,
+        (46.254 + 1.414) * inches_to_meters,
+        (278.448 - 1.414) * inches_to_meters,
         Rotation2d.fromDegrees(90 - 144.011),
     )
     rightCenterFace = Pose2d(
-        (46.254 + 2.828) * inches_to_meters,
-        (38.552 + 2.828) * inches_to_meters,
+        (46.254 + 1.414) * inches_to_meters,
+        (38.552 + 1.414) * inches_to_meters,
         Rotation2d.fromDegrees(144.011 - 90),
     )
 
