@@ -51,6 +51,7 @@ auto = SequentialCommandGroup(
         AutoBuilder.followPath(paths[8]),
         Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
     ),
+    
     IntakeCoral(Robot.intake, Robot.wrist),
     AutoBuilder.followPath(paths[9]),
     ParallelCommandGroup(
