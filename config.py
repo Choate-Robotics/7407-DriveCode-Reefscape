@@ -95,6 +95,8 @@ MOVE_CONFIG = TalonConfig(
     current_limit=50,
 )
 
+auto_position_max_velocity = 0.8
+
 # odometry
 odometry_tag_distance_threshold: meters = 2.5
 
