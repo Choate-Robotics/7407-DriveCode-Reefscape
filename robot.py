@@ -41,7 +41,7 @@ class _Robot(wpilib.TimedRobot):
         self.log = utils.LocalLogger("Robot")
         self.nt = ntcore.NetworkTableInstance.getDefault()
         self.scheduler = commands2.CommandScheduler.getInstance()
-        self.color = DriverStation.Alliance.kBlue
+        self.color = DriverStation.Alliance.kRed
 
     def robotInit(self):
         self.log._robot_log_setup()
@@ -138,7 +138,7 @@ class _Robot(wpilib.TimedRobot):
         ])
 
         Robot.drivetrain.update_tables()
-        # Sensors.cam_controller.update_tables()
+        Sensors.cam_controller.update_tables()
         ...
 
     # Initialize subsystems

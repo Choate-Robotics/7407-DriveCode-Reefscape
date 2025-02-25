@@ -7,6 +7,7 @@ import config
 from commands2 import InstantCommand, ConditionalCommand, SequentialCommandGroup, ParallelCommandGroup
 from wpimath.geometry import Pose2d
 from wpimath.geometry import Translation2d, Rotation2d
+import math
 
 log = LocalLogger("OI")
 
@@ -29,28 +30,30 @@ class OI:
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_RIGHT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_LEFT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Drivetrain.CORAL_STATION_ALIGN.onTrue(
-            ConditionalCommand(
-                command.DriveSwerveAim(Robot.drivetrain, Field.coral_station.rightCenterFace.rotation().radians()),
-                command.DriveSwerveAim(Robot.drivetrain, Field.coral_station.leftCenterFace.rotation().radians()),
-                lambda: Field.odometry.getPose().nearest([Field.coral_station.leftCenterFace, Field.coral_station.rightCenterFace]) == Field.coral_station.rightCenterFace
-            )
+            command.DriveToPose(Robot.drivetrain, [Field.coral_station.leftCenterFace, Field.coral_station.rightCenterFace], 4, 7)
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.RIGHT_AUTO_START_POSE.onTrue(
             command.DriveToPose(Robot.drivetrain, [Pose2d(Translation2d(7.385, 1.46), Rotation2d.fromDegrees(90))])
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         # Scoring on reef
+        # Keymap.Scoring.SCORE_L1.onTrue(
+        #     command.Target(config.target_positions["L1"], Robot.wrist, Robot.elevator)
+        # ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+
         Keymap.Scoring.SCORE_L1.onTrue(
-            command.Target(config.target_positions["L1"], Robot.wrist, Robot.elevator)
-        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+            command.SetPivot(Robot.intake, config.intake_l1_angle).andThen(command.EjectIntake(Robot.intake))
+        ).onFalse(command.SetPivot(Robot.intake, config.intake_coral_station_angle))
 
         Keymap.Scoring.SCORE_L2.onTrue(
             command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)
@@ -72,7 +75,13 @@ class OI:
         # ).onFalse(target_command_generator(config.target_positions["IDLE"]))
 
         # # Scoring coral
-        Keymap.Wrist.EXTAKE_CORAL.whileTrue(command.FeedOut(Robot.wrist))
+        Keymap.Wrist.EXTAKE_CORAL.and_(
+            lambda: not Robot.elevator.elevator_moving
+        ).and_(
+            lambda: not Robot.wrist.wrist_angle_moving
+        ).and_(
+            lambda: not Robot.intake.intake_running
+        ).whileTrue(command.FeedOut(Robot.wrist))
 
         # Intake coral from station
         Keymap.Intake.INTAKE_CORAL.and_(lambda: not Robot.wrist.coral_in_feed).whileTrue(
@@ -94,32 +103,30 @@ class OI:
         # ).onFalse(target_command_generator(config.target_positions["IDLE"]))
 
         # De-algae
-        # Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).onTrue(
-        #     commands2.ConditionalCommand(
-        #         target_command_generator(config.target_positions["DEALGAE_HIGH"]),
-        #         target_command_generator(config.target_positions["DEALGAE_LOW"]),
-        #         lambda: (
-        #             Field.odometry.getPose().nearest(Field.reef_face.get_faces())
-        #             in Field.reef_face.get_high_algae()
-        #         ),
-        #     ).andThen(command.FeedIn(Robot.wrist))
-        # ).onFalse(target_command_generator(config.target_positions["IDLE"]))
-
-        Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).whileTrue(
-            command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator).andThen(
-                command.WristAlgaeIn(Robot.wrist)
-            )
+        Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).onTrue(
+            commands2.ConditionalCommand(
+                command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator),
+                command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator),
+                lambda: (
+                    Field.odometry.getPose().nearest(Field.reef_face.get_faces())
+                    in Field.reef_face.get_high_algae()
+                ),
+            ).andThen(command.WristAlgaeIn(Robot.wrist))
         ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
+        # Keymap.Wrist.REMOVE_ALGAE.and_(lambda: not Robot.wrist.coral_in_feed).whileTrue(
+        #     command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator).andThen(
+        #         command.WristAlgaeIn(Robot.wrist)
+        #     )
+        # ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+
         # Intaking algae with ground intake
-        Keymap.Intake.INTAKE_ALGAE.and_(lambda: not Robot.intake.intake_running).whileTrue(
+        Keymap.Intake.INTAKE_ALGAE.whileTrue(
             command.SetPivot(
                 Robot.intake, config.target_positions["INTAKE_ALGAE"].intake_angle
             ).andThen(
                 command.IntakeAlgae(Robot.intake)
             )
-        ).onFalse(
-            commands2.InstantCommand(lambda: Robot.intake.stop()).alongWith(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
         )
 
         # Score algae in processor
