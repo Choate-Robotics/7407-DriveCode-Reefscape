@@ -6,6 +6,7 @@ from robot_systems import Robot, Field
 import config
 from commands2 import InstantCommand, ConditionalCommand, SequentialCommandGroup, ParallelCommandGroup
 from wpimath.geometry import Pose2d
+from wpimath.geometry import Translation2d, Rotation2d
 
 log = LocalLogger("OI")
 
@@ -43,6 +44,9 @@ class OI:
             )
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
+        Keymap.Drivetrain.RIGHT_AUTO_START_POSE.onTrue(
+            command.DriveToPose(Robot.drivetrain, [Pose2d(Translation2d(7.385, 1.46), Rotation2d.fromDegrees(90))])
+        ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         # Scoring on reef
         Keymap.Scoring.SCORE_L1.onTrue(
             command.Target(config.target_positions["L1"], Robot.wrist, Robot.elevator)

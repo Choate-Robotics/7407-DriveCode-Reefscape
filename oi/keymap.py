@@ -45,6 +45,9 @@ class Keymap:
         CORAL_STATION_ALIGN = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
         )
+        RIGHT_AUTO_START_POSE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.SELECT
+        )
 
     class Intake:
         INTAKE_CORAL = commands2.button.Trigger(
