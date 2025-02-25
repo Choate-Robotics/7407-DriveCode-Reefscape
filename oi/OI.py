@@ -44,7 +44,7 @@ class OI:
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.RIGHT_AUTO_START_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, [Pose2d(Translation2d(7.385, 1.46), Rotation2d.fromDegrees(90))])
+            command.DriveToPose(Robot.drivetrain, [Pose2d(Translation2d(7.385, 1.46), Rotation2d.fromDegrees(90))], 0.8)
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         # Scoring on reef
         # Keymap.Scoring.SCORE_L1.onTrue(
