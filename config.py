@@ -76,10 +76,7 @@ drivetrain_y_ki: float = 0.0
 drivetrain_y_kd: float = 0.0
 drivetrain_y_tolerance: float = 0.001
 
-auto_translation_pid = PIDConstants(6, 0.0, 0.1)
-auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
-
-auto_translation_pid = PIDConstants(6, 0.0, 0.1)
+auto_translation_pid = PIDConstants(4, 0.0, 0)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
 
 TURN_CONFIG = TalonConfig(7, 0, 0.02, 0, 0, brake_mode=True)

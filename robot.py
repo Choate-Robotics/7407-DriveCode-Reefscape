@@ -9,6 +9,7 @@ import wpilib
 import command
 import math
 import config
+import autos
 
 # import constants
 from robot_systems import (  # noqa
@@ -142,18 +143,14 @@ class _Robot(wpilib.TimedRobot):
     def teleopInit(self):
         OI.init()
         OI.map_controls()
-        self.scheduler.schedule(
-            commands2.SequentialCommandGroup(
-                command.SetWrist(Robot.wrist, 0),
-                command.SetElevator(Robot.elevator, 0),
-            )
-        )
-        self.scheduler.schedule(
-            commands2.SequentialCommandGroup(
-                command.DrivetrainZero(Robot.drivetrain),
-                command.DriveSwerveCustom(Robot.drivetrain),
-            )
-        )
+        self.scheduler.schedule(commands2.SequentialCommandGroup(
+            command.SetWrist(Robot.wrist, 0),     
+            command.SetElevator(Robot.elevator, 0),
+        ))
+        self.scheduler.schedule(commands2.SequentialCommandGroup(
+                # command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain)
+            ))
         self.log.info("Teleop initialized")
 
     def teleopPeriodic(self):
@@ -163,22 +160,18 @@ class _Robot(wpilib.TimedRobot):
         path = PathPlannerPath.fromChoreoTrajectory("Four L4 Right")
         starting_pose = get_red_pose(path.getStartingHolonomicPose()) if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed else path.getStartingHolonomicPose()
         Robot.drivetrain.reset_odometry_auto(starting_pose)
-        self.scheduler.schedule(
-            commands2.SequentialCommandGroup(
-                command.DrivetrainZero(
-                    Robot.drivetrain, starting_pose.rotation().radians()
-                ),
-                AutoBuilder.followPath(path),
-                commands2.InstantCommand(
-                    lambda: Robot.drivetrain.set_robot_centric((0, 0, 0))
-                ),
-            )
-        )
+        self.scheduler.schedule(commands2.SequentialCommandGroup(
+            # command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
+            command.DrivetrainZero(Robot.drivetrain, math.radians(-90)),
+            autos.three_piece_right
+            # AutoBuilder.followPath(path)
+        ))
 
         # self.scheduler.schedule(commands2.SequentialCommandGroup(
         #     command.DrivetrainZero(Robot.drivetrain),
         #     command.FindWheelRadius(Robot.drivetrain)
         # ))
+        # Robot.drivetrain.find_ks(0.25)
 
         self.log.info("Autonomous initialized")
 

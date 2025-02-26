@@ -96,7 +96,7 @@ class TalonConfig:
 
         # Implementing 6328 logic on configuring talons
 
-        for i in range(4):
+        for i in range(10):
             res = motor.configurator.apply(
                 talon_config, 0.2
             )  # default timeout is 0.1; we seem to need more time
