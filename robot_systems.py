@@ -1,6 +1,4 @@
-import subsystem
-import sensors
-import wpilib #noqa
+import wpilib  # noqa
 import config
 import constants
 from utils.field import (
