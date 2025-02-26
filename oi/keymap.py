@@ -51,7 +51,7 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold
         )
 
-        EJECT_CORAL = commands2.button.Trigger(
+        INTAKE_L1 = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold
         )
 

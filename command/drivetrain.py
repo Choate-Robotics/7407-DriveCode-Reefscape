@@ -238,10 +238,6 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
         current_vx = self.current_speeds.vx
         current_vy = self.current_speeds.vy
 
-        # if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
-        #     current_vx *= -1
-        #     current_vy *= -1
-
         self.x_controller.reset(TrapezoidProfile.State(self.current_pose.X(), current_vx))
         self.y_controller.reset(TrapezoidProfile.State(self.current_pose.Y(), current_vy))
         self.theta_controller.reset()
@@ -284,6 +280,7 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
             ])
         
         self.nt.putNumber("vx", vx)
+        self.nt.putNumber("current x position", self.current_pose.X())
         self.nt.putNumber("x sample position", self.x_controller.getSetpoint().position)
         self.nt.putNumber("x sample velocity", self.x_controller.getSetpoint().velocity)
 

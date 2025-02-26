@@ -179,6 +179,7 @@ intake_coral_station_angle = 0
 intake_l1_angle = math.radians(37)
 
 wrist_intake_angle = math.radians(-111)
+wrist_intake_l1_angle = math.radians(-100)
 wrist_l1_angle = math.radians(64)
 wrist_l2_angle = math.radians(64)
 wrist_l3_angle = math.radians(64)
@@ -228,6 +229,18 @@ target_positions: dict[str, TargetData] = {
         intake_idle=True,
         elevator_height=0,
         wrist_angle=wrist_intake_angle,
+        wrist_feed_on=True,
+        wrist_score_on=False,
+        intake_angle=intake_coral_station_angle,
+        intake_in_run=True,
+        intake_out_run=False,
+    ),
+    "INTAKE_L1": TargetData(
+        elevator_idle=True,
+        wrist_idle=False,
+        intake_idle=True,
+        elevator_height=0,
+        wrist_angle=wrist_intake_l1_angle,
         wrist_feed_on=True,
         wrist_score_on=False,
         intake_angle=intake_coral_station_angle,
