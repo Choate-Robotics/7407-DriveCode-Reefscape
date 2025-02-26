@@ -37,11 +37,13 @@ robot_to_right_cam = Transform3d(
     Rotation3d(0, math.radians(-20), math.radians(20))
 )
 
-#drivetrain
+# drivetrain
 drivetrain_turn_gear_ratio: float = 18.75
 drivetrain_wheel_gear_ratio: float = 7.13
-track_width: meters = 23.75 * inches_to_meters # distance between the center of the wheels (front side)
-track_length: meters = track_width # (left/right side)
+track_width: meters = (
+    23.75 * inches_to_meters
+)  # distance between the center of the wheels (front side)
+track_length: meters = track_width  # (left/right side)
 drivetrain_length: meters = 29 * inches_to_meters
 bumper_thickness: meters = 3.5 * inches_to_meters
 drivetrain_length_with_bumpers: meters = drivetrain_length + (2 * bumper_thickness)
@@ -54,10 +56,8 @@ drivetrain_move_motor_free_speed: rotations_per_minute = (
     6000  # 6000 is the free speed RPM of the Kraken without FOC
 )
 
-drivetrain_wheel_diameter: meters = (
-    3.873 * inches_to_meters
-) 
- 
+drivetrain_wheel_diameter: meters = 3.873 * inches_to_meters
+
 
 drivetrain_max_vel: meters = (
     (drivetrain_move_motor_free_speed / 60) / drivetrain_wheel_gear_ratio
@@ -84,10 +84,10 @@ horizontal_gear_ratio: float = 2
 vertical_gear_ratio: float = 2.5
 intake_encoder_gear_ratio: float = 3
 
-#elevator
-elevator_gear_ratio = 12 #REAL VALUE: 12:1 gear ratio
-elevator_driver_gear_circumference = 1.751*inches_to_meters*math.pi
-elevator_max_height: meters = 27.5*inches_to_meters #true max=28 inches
+# elevator
+elevator_gear_ratio = 12  # REAL VALUE: 12:1 gear ratio
+elevator_driver_gear_circumference = 1.751 * inches_to_meters * math.pi
+elevator_max_height: meters = 27.5 * inches_to_meters  # true max=28 inches
 
 # field
 field_length = 17.548
