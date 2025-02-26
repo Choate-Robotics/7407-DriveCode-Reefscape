@@ -7,7 +7,7 @@ from command import *
 import config
 
 from wpilib import DriverStation
-from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup, WaitCommand, ParallelRaceGroup
+from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup, WaitCommand, ParallelRaceGroup, ConditionalCommand, ParallelDeadlineGroup
 
 path_name = "Four L4 Right"
 paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(9)]
@@ -26,20 +26,32 @@ auto = SequentialCommandGroup(
     Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
     # ),
     FeedOut(Robot.wrist).withTimeout(.4),
-    ParallelRaceGroup(
+    ParallelDeadlineGroup(
+        SequentialCommandGroup(
+            AutoBuilder.followPath(paths[2]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
+            WaitCommand(0.3),
+            AutoBuilder.followPath(paths[3]),
+        ),
         SequentialCommandGroup(
             WaitCommand(0.3),
             Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
-            IntakeCoral(Robot.intake, Robot.wrist)
-        ),
-        AutoBuilder.followPath(paths[2]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))).andThen(WaitCommand(0.3)),
+            IntakeCoral(Robot.intake, Robot.wrist),
+            Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
+        )
     ),
-    AutoBuilder.followPath(paths[3]).alongWith(Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)),
-    # ParallelCommandGroup(
-    AutoBuilder.followPath(paths[4]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
-    Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
-    # ),
-    FeedOut(Robot.wrist).withTimeout(.4),
+    ParallelCommandGroup(
+        AutoBuilder.followPath(paths[4]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
+        ConditionalCommand(
+            Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
+            WaitCommand(0),
+            lambda: Robot.wrist.coral_in_feed
+        )
+    ),
+    ConditionalCommand(
+        FeedOut(Robot.wrist).withTimeout(.4),
+        WaitCommand(0),
+        lambda: Robot.wrist.coral_in_feed
+    ),
     ParallelRaceGroup(
         SequentialCommandGroup(
             WaitCommand(0),
