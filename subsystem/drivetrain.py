@@ -351,6 +351,12 @@ class Drivetrain(Subsystem):
         self.n_back_left.set(0, math.radians(-45))
         self.n_back_right.set(0, math.radians(45))
 
+    def find_ks(self, volts: float):
+        self.n_front_left.find_ks(volts)
+        self.n_front_right.find_ks(volts)
+        self.n_back_left.find_ks(volts)
+        self.n_back_right.find_ks(volts)
+
     def get_abs(self):
         fl = self.n_front_left.get_abs()
         fr = self.n_front_right.get_abs()

@@ -74,8 +74,6 @@ class TalonConfig:
         current_limits_config.stator_current_limit_enable = (
             True if self.current_limit > 0 else False
         )
-        current_limits_config.supply_time_threshold = 1
-        # current_limits_config.
 
         # brake mode
         brake_mode_config = talon_config.motor_output
@@ -139,6 +137,8 @@ class TalonFX(PIDMotor):
 
     _velocity_voltage: controls.VelocityVoltage
 
+    _voltage: controls.VoltageOut
+
     _foc: bool
 
     _initialized: bool
@@ -196,6 +196,7 @@ class TalonFX(PIDMotor):
         self._duty_cycle_out = controls.DutyCycleOut(0)
         self._position_voltage = controls.PositionVoltage(0)
         self._velocity_voltage = controls.VelocityVoltage(0)
+        self._voltage = controls.VoltageOut(0)
 
     def error_check(self, status: StatusCode, message: str = ""):
         if TimedRobot.isSimulation():
@@ -253,6 +254,12 @@ class TalonFX(PIDMotor):
         self.error_check(
             self._motor.set_control(self._duty_cycle_out.with_output(x)),
             f"raw output: {x}",
+        )
+    
+    def set_voltage(self, voltage: float):
+        self.error_check(
+            self._motor.set_control(self._voltage.with_output(voltage)),
+            f"voltage: {voltage}",
         )
 
     def follow(self, master: TalonFX, inverted: bool = False) -> StatusCode.OK:
