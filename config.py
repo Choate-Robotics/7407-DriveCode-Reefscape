@@ -97,7 +97,7 @@ odometry_tag_distance_threshold: meters = 2.5
 
 # Wrist
 wrist_feed_id = 15
-WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0)
+WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0, current_limit=60)
 wrist_id = 14
 WRIST_CONFIG = TalonConfig(
     48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350

@@ -73,19 +73,12 @@ class _Robot(wpilib.TimedRobot):
             # for sensor in sensors:
             #     sensor.init()
 
-        if not config.DEBUG_MODE:
-            try:
-                init_subsystems()
-            except Exception as e:
-                self.log.error(e)
-                self.nt.getTable("errors").putString("subsystem init", str(e))
-        else:
-            try:
-                init_subsystems()
-            except Exception as e:
-                self.log.error(e)
-                self.nt.getTable("errors").putString("subsystem init", str(e))
-                raise e
+        try:
+            init_subsystems()
+        except Exception as e:
+            self.log.error(e)
+            self.nt.getTable("errors").putString("subsystem init", str(e))
+            raise e
 
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
         Field.update_field_table()
@@ -144,13 +137,13 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.SetWrist(Robot.wrist, 0),     
-            command.SetElevator(Robot.elevator, 0),
-        ))
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
                 # command.DrivetrainZero(Robot.drivetrain),
                 command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+        ))
+        self.scheduler.schedule(commands2.SequentialCommandGroup(
+            command.SetWrist(Robot.wrist, 0),
+            # command.SetElevator(Robot.elevator, 0),
+        ))
         self.log.info("Teleop initialized")
 
     def teleopPeriodic(self):
@@ -177,6 +170,10 @@ class _Robot(wpilib.TimedRobot):
 
     def autonomousPeriodic(self):
         pass
+
+    def autonomousExit(self):
+        Robot.drivetrain.set_driver_centric((0, 0), 0)
+        self.scheduler.cancelAll()
 
     def disabledInit(self) -> None:
         self.log.info("Robot disabled")
