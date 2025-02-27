@@ -21,10 +21,10 @@ auto = SequentialCommandGroup(
         AutoBuilder.followPath(paths[0]),
         Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
     ),
-    # ParallelCommandGroup(
+    ParallelCommandGroup(
     AutoBuilder.followPath(paths[1]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
     Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
-    # ),
+    ),
     FeedOut(Robot.wrist).withTimeout(.4),
     ParallelDeadlineGroup(
         SequentialCommandGroup(
@@ -52,28 +52,36 @@ auto = SequentialCommandGroup(
         WaitCommand(0),
         lambda: Robot.wrist.coral_in_feed
     ),
-    ParallelRaceGroup(
+    ParallelDeadlineGroup(
         SequentialCommandGroup(
-            WaitCommand(0),
-            Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
-            IntakeCoral(Robot.intake, Robot.wrist)
+            AutoBuilder.followPath(paths[5]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
+            WaitCommand(0.3),
+            AutoBuilder.followPath(paths[6]),
         ),
-        AutoBuilder.followPath(paths[5]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))).andThen(WaitCommand(0.3)),
+        SequentialCommandGroup(
+            WaitCommand(0.3),
+            Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
+            IntakeCoral(Robot.intake, Robot.wrist),
+            Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
+        )
     ),
-    AutoBuilder.followPath(paths[6]).alongWith(Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)),
     ParallelCommandGroup(
         AutoBuilder.followPath(paths[7]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
-        Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
-    ),
-    FeedOut(Robot.wrist).withTimeout(.4),
-    ParallelRaceGroup(
-        SequentialCommandGroup(
+        ConditionalCommand(
+            Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
             WaitCommand(0),
-            Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
-            IntakeCoral(Robot.intake, Robot.wrist)
-        ),
-        AutoBuilder.followPath(paths[8]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))).andThen(WaitCommand(0.3)),
+            lambda: Robot.wrist.coral_in_feed
+        )
     ),
+    ConditionalCommand(
+        FeedOut(Robot.wrist).withTimeout(.4),
+        WaitCommand(0),
+        lambda: Robot.wrist.coral_in_feed
+    ),
+    ParallelCommandGroup(
+        AutoBuilder.followPath(paths[5]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
+        Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator).andThen(IntakeCoral(Robot.intake, Robot.wrist)),   
+    )
     # AutoBuilder.followPath(paths[0]),
     # AutoBuilder.followPath(paths[1]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
     # WaitCommand(1),
