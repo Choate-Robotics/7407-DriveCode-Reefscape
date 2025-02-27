@@ -177,7 +177,7 @@ class ManualBranchesRed(StrEnum):
 
 ManualBranchesRed.A.scoring_pose = Pose2d(14.363, 3.834, math.radians(180))
 ManualBranchesRed.B.scoring_pose = Pose2d(14.359, 4.178, math.radians(180))
-ManualBranchesRed.C.scoring_pose = Pose2d(13.914, 5.051, math.radians(-120))
+ManualBranchesRed.C.scoring_pose = Pose2d(13.93, 5.02, math.radians(-120))
 ManualBranchesRed.D.scoring_pose = Pose2d(13.587, 5.214, math.radians(-120))
 ManualBranchesRed.E.scoring_pose = Pose2d(12.584, 5.232, math.radians(-60))
 ManualBranchesRed.F.scoring_pose = Pose2d(12.277, 5.059, math.radians(-60))
