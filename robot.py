@@ -1,5 +1,6 @@
 import commands2
 import wpilib.drive
+import autos.auto_routine
 from toolkit.subsystem import Subsystem
 
 import ntcore
@@ -20,7 +21,7 @@ from robot_systems import (  # noqa
     PowerDistribution,
     Field,
 )
-from wpilib import DriverStation
+from wpilib import DriverStation, SendableChooser
 
 # import sensors
 # import subsystem
@@ -79,6 +80,12 @@ class _Robot(wpilib.TimedRobot):
             self.log.error(e)
             self.nt.getTable("errors").putString("subsystem init", str(e))
             raise e
+        
+        self.auto_selection = SendableChooser()
+        self.auto_selection.setDefaultOption("Three L4 Right", autos.three_l4_right)
+        self.auto_selection.addOption("Three L4 Left", autos.three_l4_left)
+
+        wpilib.SmartDashboard.putData("Auto", self.auto_selection)
 
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
         Field.update_field_table()
@@ -150,21 +157,13 @@ class _Robot(wpilib.TimedRobot):
         pass
 
     def autonomousInit(self):
-        path = PathPlannerPath.fromChoreoTrajectory("Four L4 Right")
-        starting_pose = get_red_pose(path.getStartingHolonomicPose()) if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed else path.getStartingHolonomicPose()
+        auto: autos.AutoRoutine = self.auto_selection.getSelected()
+        starting_pose: Pose2d = auto.blue_start_pose if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else auto.red_start_pose
         Robot.drivetrain.reset_odometry_auto(starting_pose)
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-            # command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
-            command.DrivetrainZero(Robot.drivetrain, math.radians(-90)),
-            autos.three_piece_right
-            # AutoBuilder.followPath(path)
+            command.DrivetrainZero(Robot.drivetrain, starting_pose.rotation().radians()),
+            auto.command
         ))
-
-        # self.scheduler.schedule(commands2.SequentialCommandGroup(
-        #     command.DrivetrainZero(Robot.drivetrain),
-        #     command.FindWheelRadius(Robot.drivetrain)
-        # ))
-        # Robot.drivetrain.find_ks(0.25)
 
         self.log.info("Autonomous initialized")
 

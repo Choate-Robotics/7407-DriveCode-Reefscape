@@ -6,15 +6,15 @@ from utils.field import get_red_pose
 from command import *
 import config
 
+from autos import AutoRoutine
+
 from wpilib import DriverStation
 from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup, WaitCommand, ParallelRaceGroup, ConditionalCommand, ParallelDeadlineGroup
 
 path_name = "Four L4 Right"
 paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(9)]
-starting_pose = get_red_pose(paths[0].getStartingHolonomicPose()) if DriverStation.getAlliance() == DriverStation.Alliance.kRed else paths[0].getStartingHolonomicPose()
 
-auto = SequentialCommandGroup(
-    # InstantCommand(lambda: Robot.drivetrain.reset_odometry_auto(starting_pose)),
+command = SequentialCommandGroup(
     InstantCommand(lambda: Robot.wrist.set_coral(True)),
 
     ParallelCommandGroup(
@@ -97,3 +97,5 @@ auto = SequentialCommandGroup(
     # AutoBuilder.followPath(paths[8]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
     # WaitCommand(1),
 )
+
+auto = AutoRoutine(command, paths[0].getStartingHolonomicPose())
