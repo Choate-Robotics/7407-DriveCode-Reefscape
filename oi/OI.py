@@ -48,7 +48,7 @@ class OI:
         # ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
         Keymap.Scoring.SCORE_L1.onTrue(
-            command.SetPivot(Robot.intake, config.intake_l1_angle).andThen(command.EjectIntake(Robot.intake))
+            command.SetPivot(Robot.intake, config.intake_l1_angle).andThen(command.EjectL1(Robot.intake))
         ).onFalse(command.SetPivot(Robot.intake, config.intake_coral_station_angle))
 
         Keymap.Scoring.SCORE_L2.onTrue(
@@ -80,14 +80,14 @@ class OI:
         ).whileTrue(command.FeedOut(Robot.wrist))
 
         # Intake coral from station
-        Keymap.Intake.INTAKE_CORAL.and_(lambda: not Robot.wrist.coral_in_feed).whileTrue(
+        Keymap.Intake.INTAKE_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
                 command.Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
                 command.SetPivot(
                     Robot.intake,
                     config.target_positions["STATION_INTAKING"].intake_angle,
                 ),
-            ).andThen(command.IntakeCoral(Robot.intake, Robot.wrist))
+            ).onlyIf(lambda: not Robot.wrist.coral_in_feed).andThen(command.IntakeCoral(Robot.intake, Robot.wrist))
         ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed))
 
         Keymap.Intake.INTAKE_L1.whileTrue(

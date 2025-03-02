@@ -113,7 +113,7 @@ wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
 back_current_threshold: float = 50
-current_time_threshold: float = 0.2
+current_time_threshold: float = 0.25
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 
 wrist_max_ff = 0.17
@@ -137,6 +137,7 @@ intake_max_ff = -0.075
 intake_ff_offset = math.radians(90)
 
 horizontal_intake_speed = 0.5
+l1_eject_speed = 0.25
 intake_algae_speed = 1
 
 # elevator
@@ -176,7 +177,7 @@ intake_climb_angle = 0
 intake_coral_station_angle = 0
 intake_l1_angle = math.radians(37)
 
-wrist_intake_angle = math.radians(-111)
+wrist_intake_angle = math.radians(-114.5)
 wrist_intake_l1_angle = math.radians(-100)
 wrist_l1_angle = math.radians(64)
 wrist_l2_angle = math.radians(64)

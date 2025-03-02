@@ -67,12 +67,12 @@ class Intake(Subsystem):
         self.horizontal_motor.set_raw_output(0)
         self.intake_running = False
 
-    def roll_out(self) -> None:
+    def roll_out(self, speed: float = config.horizontal_intake_speed) -> None:
         """
         eject coral in the intake
         """
         self.horizontal_motor.set_raw_output(
-            -config.horizontal_intake_speed
+            -speed
         )
         self.intake_running = True
 
