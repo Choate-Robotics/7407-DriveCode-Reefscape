@@ -1,6 +1,8 @@
 import wpilib
 import commands2.button
 
+import config
+
 from toolkit.oi import (
     XBoxController,
     LogitechController,
@@ -34,3 +36,63 @@ class Keymap:
         X_MODE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
         )
+        DRIVE_TO_RIGHT_POSE = commands2.button.Trigger(
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.RT) > 0.4
+        )
+        DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > 0.4
+        )
+        CORAL_STATION_ALIGN = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
+        )
+
+    class Intake:
+        INTAKE_CORAL = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold
+        )
+
+        INTAKE_L1 = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold
+        )
+
+        INTAKE_ALGAE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.RB
+        )
+
+    class Scoring:
+        SCORE_L1 = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.X
+        )
+        SCORE_L2 = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.A
+        )
+        SCORE_L3 = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.B
+        )
+        SCORE_L4 = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y
+        )
+        SCORE_BARGE = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
+        )
+
+    class Climb:
+        CLIMB_UNLOCK = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
+        )
+        CLIMB = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.START
+        )
+
+    class Wrist:
+        REMOVE_ALGAE = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
+        )
+        EXTAKE_CORAL = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.A
+        )
+        EXTAKE_ALGAE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
+        )
+    class Elevator:
+        pass
+        

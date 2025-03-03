@@ -163,3 +163,7 @@ cython_debug/
 .DS_Store
 
 simgui*
+#Sim Data
+ctre_sim/*.dat
+tests/ctre_sim/*.dat
+ctre_sim/*.dat
