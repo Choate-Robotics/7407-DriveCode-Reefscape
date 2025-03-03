@@ -32,41 +32,66 @@ class ZeroClimber(SubsystemCommand[Climber]):
     def isFinished(self):
         return self.subsystem.zeroed
 
-# cmds: set climber (angle)
-class SetClimber(SubsystemCommand[Climber]):
+# cmds: deploy climber
+class DeployClimb(SubsystemCommand[Climber]):
 
     """
     Sets the climber to a given angle (radians).
     param: radians in radians
     """
 
-    def __init__(self, subsystem: Climber, angle: radians):
+    def __init__(self, subsystem: Climber):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        self.angle = angle
-
-        self.pid = PIDController(0.01, 0, 0) #TODO: Tune
+        self.revolutions = config.climber_revolutions
 
     def initialize(self):
         # change to actual name
-
-        if self.angle > constants.upper_climber_bound or self.angle < constants.lower_climber_bound:
-            logger.warn(f"Angle {self.angle} is out of bounds")
-            return False
-
-        self.pid.setSetpoint(self.angle)
-        self.subsystem.moving = True
+        self.subsystem.set_raw_output(config.deploy_climber_speed)
 
     def execute(self):
-        self.subsystem.set_raw_output(self.pid.calculate(self.subsystem.get_angle()))
+        pass
 
     def isFinished(self):
-        return abs(self.angle - self.subsystem.get_angle(self.angle)) < config.climber_angle_threshold
+        if self.subsystem.get_motor_revolutions() >= self.revolutions:
+            return True
+        return False
 
     def end(self, interrupted: bool):
         if interrupted:
-            arm_radians = self.subsystem.get_angle()
-            logger.warn(f"Stuck at {arm_radians} radians")
+            logger.warn(f"Climber stuck")
+
+        self.subsystem.set_raw_output(0)
+        self.subsystem.moving = False
+
+# cmds: lift climb
+class LiftClimb(SubsystemCommand[Climber]):
+
+    """
+    Sets the climber to a given angle (radians).
+    param: radians in radians
+    """
+
+    def __init__(self, subsystem: Climber):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+        self.revolutions = config.climber_revolutions
+
+    def initialize(self):
+        # change to actual name
+        self.subsystem.set_raw_output(config.lift_climber_speed)
+
+    def execute(self):
+        pass
+
+    def isFinished(self):
+        if self.subsystem.get_motor_revolutions() >= self.revolutions:
+            return True
+        return False
+
+    def end(self, interrupted: bool):
+        if interrupted:
+            logger.warn(f"Climber stuck")
 
         self.subsystem.set_raw_output(0)
         self.subsystem.moving = False

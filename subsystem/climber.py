@@ -22,17 +22,14 @@ class Climber(Subsystem):
         self.climber_motor.init()
 
     def zero_encoder(self) -> None:
-        self.climber_encoder.set_position(config.climber_encoder_zero)
+        self.climber_encoder.set_position(0)
         self.zeroed = True
 
-    def get_angle(self) -> radians:
-        return (self.climber_encoder.get_absolute_position().value - config.climber_encoder_zero) * 2*math.pi
-        
     # Set raw output of climber motor
     def set_raw_output(self, raw_value: float) -> None:
         self.climber_motor.set_raw_output(raw_value)
 
-    # Recieve voltage of motor output
-    def get_raw_output(self) -> float:
-        return self.climber_motor.get_applied_output()
+    # Get motor revolutions
+    def get_motor_revolutions(self) -> float:
+        return self.climber_encoder.get_absolute_position().value
         
