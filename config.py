@@ -173,7 +173,7 @@ elevator_barge_height: meters = 0
 
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
-intake_climb_angle = 0
+intake_climb_angle = math.radians(15)
 intake_coral_station_angle = 0
 intake_l1_angle = math.radians(37)
 

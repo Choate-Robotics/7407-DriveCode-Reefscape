@@ -131,3 +131,10 @@ class OI:
                 command.ExtakeAlgae(Robot.intake)
             )
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
+
+        Keymap.Climb.CLIMB_UNLOCK.onTrue(
+            commands2.ParallelCommandGroup(
+                command.Target(config.target_positions["CLIMB"], Robot.wrist, Robot.elevator),
+                command.SetPivot(Robot.intake, config.intake_climb_angle)
+            )
+        )
