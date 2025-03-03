@@ -7,7 +7,7 @@ from wpimath.geometry import Pose2d, Pose3d, Rotation2d, Translation2d, Translat
 
 from subsystem import Drivetrain
 from units.SI import seconds
-from wpilib import Timer, RobotState, TimedRobot
+from wpilib import Timer, RobotState, TimedRobot, DriverStation
 
 from photonlibpy.estimatedRobotPose import EstimatedRobotPose
 from sensors import PhotonController
@@ -78,17 +78,25 @@ class FieldOdometry:
         if tag_count == 1:
             if distance_to_target > config.odometry_tag_distance_threshold:
                 return
-            if ((6 <= primary_id <= 11) | (17 <= primary_id <= 22)) & (distance_to_target <= 0.5):
-                std_dev = 0.7
+            if ((6 <= primary_id <= 11) | (17 <= primary_id <= 22)) & (distance_to_target <= 1.5):
+                std_dev = 0.25
+                if distance_to_target <= 0.75:
+                    std_dev = 0.1
+                    if DriverStation.isTeleop():
+                        self.drivetrain.odometry_estimator.addVisionMeasurement(pose, vision_time, [std_dev, std_dev, std_dev])
+                        return
 
         if tag_count >= 2:
             std_dev = 0.7
 
             if ((6 <= primary_id <= 11) | (17 <= primary_id <= 22)) & (distance_to_target <= 0.5):
                 std_dev = 0.5
+                if distance_to_target <= 0.25:
+                    std_dev = 0.25
         
 
         self.drivetrain.odometry_estimator.addVisionMeasurement(Pose2d(pose.X(), pose.Y(), self.drivetrain.get_heading()), vision_time, [std_dev, std_dev, 50])
+        # self.drivetrain.odometry_estimator.addVisionMeasurement(pose, vision_time, [std_dev, std_dev, std_dev])
 
     def getPose(self) -> Pose2d:
         """

@@ -189,6 +189,10 @@ class SwerveNode:
                 * 2
                 * math.pi
         )
+    
+    def find_ks(self, ks: float):
+        self.set_motor_angle(0)
+        self.m_move.set_voltage(ks)
 
     # 0 degrees is facing right | "ethan is our FRC lord and saviour" - sid
     def _set_angle(self, target_angle: radians, initial_angle: radians):

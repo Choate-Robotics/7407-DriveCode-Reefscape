@@ -55,6 +55,27 @@ class EjectIntake(SubsystemCommand[Intake]):
     def end(self, interrupted) -> None:
         self.subsystem.stop()
 
+class EjectL1(SubsystemCommand[Intake]):
+    """
+    Eject coral from intake
+    """
+
+    def __init__(self, subsystem: Intake):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self) -> None:
+        self.subsystem.roll_out(config.l1_eject_speed)
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        # we are assuming that another command will interrupt
+        return False
+
+    def end(self, interrupted) -> None:
+        self.subsystem.stop()
 
 class SetPivot(SubsystemCommand[Intake]):
     """
