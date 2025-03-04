@@ -196,7 +196,7 @@ class Drivetrain(Subsystem):
         # vel = rotate_vector(vel[0], vel[1], -self.gyro.get_robot_heading())
 
         heading = self.get_heading()
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
+        if DriverStation.getAlliance() == DriverStation.Alliance.kBlue:
             heading = heading.rotateBy(Rotation2d(math.pi))
 
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vel[0], vel[1], angular_vel, heading)
@@ -350,6 +350,12 @@ class Drivetrain(Subsystem):
         self.n_front_right.set(0, math.radians(-45))
         self.n_back_left.set(0, math.radians(-45))
         self.n_back_right.set(0, math.radians(45))
+
+    def find_ks(self, volts: float):
+        self.n_front_left.find_ks(volts)
+        self.n_front_right.find_ks(volts)
+        self.n_back_left.find_ks(volts)
+        self.n_back_right.find_ks(volts)
 
     def get_abs(self):
         fl = self.n_front_left.get_abs()

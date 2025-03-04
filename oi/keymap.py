@@ -37,10 +37,10 @@ class Keymap:
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
         )
         DRIVE_TO_RIGHT_POSE = commands2.button.Trigger(
-            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.RT) > 0.4
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.RT) > config.trigger_threshold
         )
         DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
-            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > 0.4
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > config.trigger_threshold
         )
         CORAL_STATION_ALIGN = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
@@ -51,7 +51,7 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.RT) > config.trigger_threshold
         )
 
-        EJECT_CORAL = commands2.button.Trigger(
+        INTAKE_L1 = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getRawAxis(-controllerOPERATOR.LT) > config.trigger_threshold
         )
 
@@ -75,12 +75,19 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
         )
 
+    # to do: fix climb controllers: does not do what it's supposed to
     class Climb:
         CLIMB_UNLOCK = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.SELECT
         )
         CLIMB = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.START
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
+        )
+        MANUAL_CLIMB_DEPLOY = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 270
+        )
+        MANUAL_CLIMB = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 90
         )
 
     class Wrist:

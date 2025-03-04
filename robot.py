@@ -1,8 +1,8 @@
 import commands2
 import wpilib.drive
+import autos.auto_routine
 from toolkit.subsystem import Subsystem
 
-import phoenix6 as ctre
 import ntcore
 import phoenix6 as ctre
 import wpilib
@@ -10,6 +10,7 @@ import wpilib
 import command
 import math
 import config
+import autos
 
 # import constants
 from robot_systems import (  # noqa
@@ -20,18 +21,15 @@ from robot_systems import (  # noqa
     PowerDistribution,
     Field,
 )
-from wpilib import DriverStation
+from wpilib import DriverStation, SendableChooser
 
 # import sensors
 # import subsystem
 import utils
 from oi.OI import OI
-import math
 from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d
 from utils import get_red_pose
-from wpilib import DriverStation
-
 
 
 class _Robot(wpilib.TimedRobot):
@@ -41,7 +39,7 @@ class _Robot(wpilib.TimedRobot):
         self.log = utils.LocalLogger("Robot")
         self.nt = ntcore.NetworkTableInstance.getDefault()
         self.scheduler = commands2.CommandScheduler.getInstance()
-        self.color = DriverStation.Alliance.kBlue
+        self.color = DriverStation.Alliance.kRed
 
     def robotInit(self):
         self.log._robot_log_setup()
@@ -76,23 +74,22 @@ class _Robot(wpilib.TimedRobot):
             # for sensor in sensors:
             #     sensor.init()
 
-        if not config.DEBUG_MODE:
-            try:
-                init_subsystems()
-            except Exception as e:
-                self.log.error(e)
-                self.nt.getTable("errors").putString("subsystem init", str(e))
-        else:
-            try:
-                init_subsystems()
-            except Exception as e:
-                self.log.error(e)
-                self.nt.getTable("errors").putString("subsystem init", str(e))
-                raise e
+        try:
+            init_subsystems()
+        except Exception as e:
+            self.log.error(e)
+            self.nt.getTable("errors").putString("subsystem init", str(e))
+            raise e
+        
+        self.auto_selection = SendableChooser()
+        self.auto_selection.setDefaultOption("Three L4 Right", autos.three_l4_right)
+        self.auto_selection.addOption("Three L4 Left", autos.three_l4_left)
+
+        wpilib.SmartDashboard.putData("Auto", self.auto_selection)
 
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
         Field.update_field_table()
-        
+
         self.log.complete("Robot initialized")
 
     def robotPeriodic(self):
@@ -127,18 +124,16 @@ class _Robot(wpilib.TimedRobot):
                 self.log.error(e)
                 self.nt.getTable("errors").putString("command scheduler", str(e))
                 raise e
-            
+
         # Field.odometry.disable()
         pose = Field.odometry.update()
 
-        self.nt.getTable("Odometry").putNumberArray("Estimated pose", [
-            pose.X(),
-            pose.Y(),
-            pose.rotation().radians()
-        ])
+        self.nt.getTable("Odometry").putNumberArray(
+            "Estimated pose", [pose.X(), pose.Y(), pose.rotation().radians()]
+        )
 
         Robot.drivetrain.update_tables()
-        # Sensors.cam_controller.update_tables()
+        Sensors.cam_controller.update_tables()
         ...
 
     # Initialize subsystems
@@ -149,38 +144,35 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.SetWrist(Robot.wrist, 0),     
-            command.SetElevator(Robot.elevator, 0),
+                # command.DrivetrainZero(Robot.drivetrain),
+                command.DriveSwerveCustom(Robot.drivetrain)
         ))
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-                command.DrivetrainZero(Robot.drivetrain),
-                command.DriveSwerveCustom(Robot.drivetrain)
-            ))
+            command.SetWrist(Robot.wrist, 0),
+            # command.SetElevator(Robot.elevator, 0),
+        ))
         self.log.info("Teleop initialized")
-        
 
     def teleopPeriodic(self):
         pass
 
     def autonomousInit(self):
-        path = PathPlannerPath.fromChoreoTrajectory("Four L4 Left")
-        starting_pose = get_red_pose(path.getStartingHolonomicPose()) if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed else path.getStartingHolonomicPose()
+        auto: autos.AutoRoutine = self.auto_selection.getSelected()
+        starting_pose: Pose2d = auto.blue_start_pose if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else auto.red_start_pose
         Robot.drivetrain.reset_odometry_auto(starting_pose)
         self.scheduler.schedule(commands2.SequentialCommandGroup(
             command.DrivetrainZero(Robot.drivetrain, starting_pose.rotation().radians()),
-            AutoBuilder.followPath(path),
-            commands2.InstantCommand(lambda: Robot.drivetrain.set_robot_centric((0, 0, 0)))
-            ))
-
-        # self.scheduler.schedule(commands2.SequentialCommandGroup(
-        #     command.DrivetrainZero(Robot.drivetrain),
-        #     command.FindWheelRadius(Robot.drivetrain)
-        # ))
+            auto.command
+        ))
 
         self.log.info("Autonomous initialized")
-        
+
     def autonomousPeriodic(self):
         pass
+
+    def autonomousExit(self):
+        Robot.drivetrain.set_driver_centric((0, 0), 0)
+        self.scheduler.cancelAll()
 
     def disabledInit(self) -> None:
         self.log.info("Robot disabled")
