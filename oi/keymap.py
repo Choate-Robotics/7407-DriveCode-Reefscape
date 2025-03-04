@@ -37,10 +37,10 @@ class Keymap:
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.X
         )
         DRIVE_TO_RIGHT_POSE = commands2.button.Trigger(
-            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.RT) > 0.4
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.RT) > config.trigger_threshold
         )
         DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
-            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > 0.4
+            lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > config.trigger_threshold
         )
         CORAL_STATION_ALIGN = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB

@@ -13,7 +13,7 @@ DEBUG_MODE: bool = True
 foc_active = False  # foc for TalonFX requires paid subscription
 
 # TODO: Set deadzone
-trigger_threshold = 0
+trigger_threshold = 0.4
 
 # DEBUGGING NETWORK TABLES
 NT_INTAKE: bool = True
