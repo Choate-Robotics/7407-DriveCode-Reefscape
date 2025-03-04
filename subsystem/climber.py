@@ -12,17 +12,21 @@ class Climber(Subsystem):
     # Initialize class
     def __init__(self) -> None:
         super().__init__()
-        self.climber_motor = TalonFX(can_id=config.climber_motor_id, config=config.climber_config)
+        self.climber_motor = TalonFX(
+            can_id=config.climber_motor_id,
+            config=config.climber_config,
+            inverted=False
+        )
         self.moving = False
         self.zeroed = False
-        self.climber_encoder: CANcoder = CANcoder(config.climber_encoder_id)
 
     # Start motors
     def init(self) -> None:
         self.climber_motor.init()
+        self.zero()
 
-    def zero_encoder(self) -> None:
-        self.climber_encoder.set_position(0)
+    def zero(self) -> None:
+        self.climber_motor.set_sensor_position(0)
         self.zeroed = True
 
     # Set raw output of climber motor
@@ -31,6 +35,6 @@ class Climber(Subsystem):
 
     # Get motor revolutions
     def get_motor_revolutions(self) -> float:
-        return self.climber_encoder.get_absolute_position().value
+        return self.climber_motor.get_sensor_position()
         
 #to do: add network tables

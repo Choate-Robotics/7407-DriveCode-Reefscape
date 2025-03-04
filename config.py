@@ -12,7 +12,6 @@ DEBUG_MODE: bool = True
 
 foc_active = False  # foc for TalonFX requires paid subscription
 
-# TODO: Set deadzone
 trigger_threshold = 0.4
 
 # DEBUGGING NETWORK TABLES
@@ -89,20 +88,16 @@ MOVE_CONFIG = TalonConfig(
     kA=0.15,
     kV=0.12,
     brake_mode=True,
-    current_limit=40,
-    kV=0.12
+    current_limit=50,
 )
 
-# TODO: Placeholder
-climber_motor_id = 23
-climber_motor_follower_id = 24
-climber_config = TalonConfig(0, 0, 0, 0, 0, 0)
-climber_encoder_id = 25
-climber_angle_threshold = 0.01
-deploy_climber_speed = 0.5
-lift_climber_speed = -0.5
-climber_revolutions = 10
-current_limit=50
+climber_motor_id = 16
+climber_config = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
+deploy_climber_speed = 0.8
+climb_speed = 0.6
+manual_climber_speed = 0.2
+deploy_position = 290
+manual_lower_bound = -50
 
 
 # odometry

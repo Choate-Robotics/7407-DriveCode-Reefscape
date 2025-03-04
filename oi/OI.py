@@ -134,8 +134,23 @@ class OI:
 
         # to do: fix climber
         Keymap.Climb.CLIMB_UNLOCK.onTrue(
-            commands2.ParallelCommandGroup(
-                command.Target(config.target_positions["CLIMB"], Robot.wrist, Robot.elevator),
-                command.SetPivot(Robot.intake, config.intake_climb_angle)
+            commands2.SequentialCommandGroup(
+                command.DeployClimb(Robot.climber),
+                commands2.ParallelCommandGroup(
+                    command.Target(config.target_positions["CLIMB"], Robot.wrist, Robot.elevator),
+                    command.SetPivot(Robot.intake, config.intake_climb_angle)
+                )
             )
+        )
+
+        Keymap.Climb.CLIMB.whileTrue(
+            command.Climb(Robot.climber, config.climb_speed)
+        )
+
+        Keymap.Climb.MANUAL_CLIMB_DEPLOY.whileTrue(
+            command.DeployClimb(Robot.climber, config.manual_climber_speed)
+        )
+
+        Keymap.Climb.MANUAL_CLIMB.whileTrue(
+            command.Climb(Robot.climber, config.manual_climber_speed, config.manual_lower_bound)
         )

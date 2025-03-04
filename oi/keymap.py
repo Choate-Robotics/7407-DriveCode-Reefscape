@@ -78,10 +78,16 @@ class Keymap:
     # to do: fix climb controllers: does not do what it's supposed to
     class Climb:
         CLIMB_UNLOCK = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.SELECT
         )
         CLIMB = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerOPERATOR.START
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
+        )
+        MANUAL_CLIMB_DEPLOY = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 270
+        )
+        MANUAL_CLIMB = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 90
         )
 
     class Wrist:
