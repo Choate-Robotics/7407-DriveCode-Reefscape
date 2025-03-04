@@ -34,7 +34,7 @@ class ZeroClimber(SubsystemCommand[Climber]):
 
 # cmds: deploy climber
 class DeployClimb(SubsystemCommand[Climber]):
-
+    # to do: fix comments
     """
     Sets the climber to a given angle (radians).
     param: radians in radians
@@ -66,7 +66,7 @@ class DeployClimb(SubsystemCommand[Climber]):
 
 # cmds: lift climb
 class LiftClimb(SubsystemCommand[Climber]):
-
+    # to do: fix comments
     """
     Sets the climber to a given angle (radians).
     param: radians in radians

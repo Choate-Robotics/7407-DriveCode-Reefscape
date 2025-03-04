@@ -132,6 +132,7 @@ class OI:
             )
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
 
+        # to do: fix climber
         Keymap.Climb.CLIMB_UNLOCK.onTrue(
             commands2.ParallelCommandGroup(
                 command.Target(config.target_positions["CLIMB"], Robot.wrist, Robot.elevator),

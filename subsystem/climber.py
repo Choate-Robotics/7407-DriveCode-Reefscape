@@ -33,3 +33,4 @@ class Climber(Subsystem):
     def get_motor_revolutions(self) -> float:
         return self.climber_encoder.get_absolute_position().value
         
+#to do: add network tables

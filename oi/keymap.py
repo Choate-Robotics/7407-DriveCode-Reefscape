@@ -75,6 +75,7 @@ class Keymap:
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
         )
 
+    # to do: fix climb controllers: does not do what it's supposed to
     class Climb:
         CLIMB_UNLOCK = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.START
