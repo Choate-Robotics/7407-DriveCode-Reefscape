@@ -25,10 +25,11 @@ class DeployClimb(SubsystemCommand[Climber]):
     param: radians in radians
     """
 
-    def __init__(self, subsystem: Climber, speed: float = config.deploy_climber_speed):
+    def __init__(self, subsystem: Climber, speed: float = config.deploy_climber_speed, upper_bound: float = config.deploy_position):
         super().__init__(subsystem)
         self.subsystem = subsystem
         self.speed = speed
+        self.upper_bound = upper_bound
 
     def initialize(self):
         self.subsystem.set_raw_output(self.speed)
@@ -38,7 +39,7 @@ class DeployClimb(SubsystemCommand[Climber]):
         pass
 
     def isFinished(self):
-        return self.subsystem.get_motor_revolutions() >= config.deploy_position
+        return self.subsystem.get_motor_revolutions() >= self.upper_bound
 
     def end(self, interrupted: bool):
         self.subsystem.set_raw_output(0)
