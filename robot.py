@@ -162,7 +162,11 @@ class _Robot(wpilib.TimedRobot):
         Robot.drivetrain.reset_odometry_auto(starting_pose)
         self.scheduler.schedule(commands2.SequentialCommandGroup(
             command.DrivetrainZero(Robot.drivetrain, starting_pose.rotation().radians()),
-            auto.command
+            commands2.ParallelCommandGroup(
+                auto.command,
+                command.DeployClimb(Robot.climber, upper_bound=config.climb_initial_out)
+            )
+            
         ))
 
         self.log.info("Autonomous initialized")
