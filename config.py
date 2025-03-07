@@ -6,7 +6,7 @@ from pathplannerlib.config import PIDConstants
 from units.SI import degrees, radians, meters, inches_to_meters
 import constants
 
-DEBUG_MODE: bool = True
+DEBUG_MODE: bool = False
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
