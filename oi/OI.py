@@ -133,7 +133,7 @@ class OI:
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
 
         # to do: fix climber
-        Keymap.Climb.CLIMB_UNLOCK.and_(lambda: Robot.elevator.is_at_position(0)).onTrue(
+        Keymap.Climb.CLIMB_UNLOCK.and_(lambda: Robot.elevator.get_position() < 1).onTrue(
             commands2.SequentialCommandGroup(
                 command.DeployClimb(Robot.climber),
                 commands2.ParallelCommandGroup(
@@ -143,14 +143,14 @@ class OI:
             )
         )
 
-        Keymap.Climb.CLIMB.and_(lambda: Robot.elevator.is_at_position(0)).whileTrue(
+        Keymap.Climb.CLIMB.and_(lambda: Robot.elevator.get_position() < 1).whileTrue(
             command.Climb(Robot.climber, config.climb_speed)
         )
 
-        Keymap.Climb.MANUAL_CLIMB_DEPLOY.and_(lambda: Robot.elevator.is_at_position(0)).whileTrue(
+        Keymap.Climb.MANUAL_CLIMB_DEPLOY.and_(lambda: Robot.elevator.get_position() < 1).whileTrue(
             command.DeployClimb(Robot.climber, config.manual_climber_speed)
         )
 
-        Keymap.Climb.MANUAL_CLIMB.and_(lambda: Robot.elevator.is_at_position(0)).whileTrue(
+        Keymap.Climb.MANUAL_CLIMB.and_(lambda: Robot.elevator.get_position() < 1).whileTrue(
             command.Climb(Robot.climber, config.manual_climber_speed, config.manual_lower_bound)
         )
