@@ -127,7 +127,6 @@ class OI:
         # Extake into processor
         Keymap.Wrist.EXTAKE_ALGAE.onTrue(
             commands2.SequentialCommandGroup(
-                command.SetPivot(Robot.intake, config.intake_algae_score_angle),
                 command.ExtakeAlgae(Robot.intake)
             )
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
