@@ -96,9 +96,9 @@ climber_config = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
 deploy_climber_speed = 1
 climb_speed = 0.6
 manual_climber_speed = 0.2
-deploy_position = 290
+deploy_position = 285
 manual_lower_bound = -50
-climb_initial_out = 35
+climb_initial_out = 36
 
 
 # odometry
