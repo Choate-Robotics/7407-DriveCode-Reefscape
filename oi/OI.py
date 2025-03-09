@@ -92,7 +92,10 @@ class OI:
 
         Keymap.Intake.INTAKE_L1.whileTrue(
             commands2.SequentialCommandGroup(
-                command.Target(config.target_positions["INTAKE_L1"], Robot.wrist, Robot.elevator),
+                commands2.ParallelCommandGroup(
+                    command.Target(config.target_positions["INTAKE_L1"], Robot.wrist, Robot.elevator),
+                    command.SetPivot(Robot.intake, config.intake_coral_station_angle)
+                ),
                 command.RunIntake(Robot.intake)
             )
         )

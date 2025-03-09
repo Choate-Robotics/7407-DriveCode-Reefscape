@@ -148,6 +148,7 @@ intake_ff_offset = math.radians(90)
 horizontal_intake_speed = 0.5
 l1_eject_speed = 0.25
 intake_algae_speed = 1
+extake_algae_speed = 0.3
 
 # elevator
 elevator_lead_id = 9
@@ -183,7 +184,7 @@ elevator_barge_height: meters = 0
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
 intake_climb_angle = math.radians(20)
-intake_coral_station_angle = 0
+intake_coral_station_angle = math.radians(-0.095)
 intake_l1_angle = math.radians(37)
 
 wrist_intake_angle = math.radians(-114.5)
