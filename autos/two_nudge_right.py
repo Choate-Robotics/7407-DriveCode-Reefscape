@@ -39,10 +39,8 @@ command = SequentialCommandGroup(
             Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
         )
     ),
-    ParallelCommandGroup(
-        AutoBuilder.followPath(paths[4]),
-        Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
-    ),
+    AutoBuilder.followPath(paths[4]),
+
     ParallelCommandGroup(
         AutoBuilder.followPath(paths[5]),
         Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator)
