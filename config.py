@@ -19,6 +19,7 @@ NT_INTAKE: bool = True
 NT_ELEVATOR: bool = True
 NT_WRIST: bool = True
 NT_DRIVETRAIN: bool = True
+NT_CLIMBER: bool = True
 
 # Cameras
 left_cam_name = "left_cam"
