@@ -5,6 +5,7 @@ from units.SI import radians
 from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 from phoenix6.hardware import CANcoder
+import ntcore
 import math
 
 class Climber(Subsystem):
@@ -37,4 +38,13 @@ class Climber(Subsystem):
     def get_motor_revolutions(self) -> float:
         return self.climber_motor.get_sensor_position()
         
-#to do: add network tables
+    def update_table(self) -> None:
+        table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
+
+        table.putNumber("climber_motor_revolutions", self.climber_motor.get_sensor_position())
+        table.putBoolean("climber_moving", self.moving)
+        table.putBoolean("climber_zeroed", self.zeroed)
+
+    def periodic(self) -> None:
+        if config.NT_CLIMBER:
+            self.update_table()
