@@ -149,10 +149,10 @@ class _Robot(wpilib.TimedRobot):
                 # command.DrivetrainZero(Robot.drivetrain),
                 command.DriveSwerveCustom(Robot.drivetrain)
         ))
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.SetWrist(Robot.wrist, 0),
-            # command.SetElevator(Robot.elevator, 0),
-        ))
+        # self.scheduler.schedule(commands2.SequentialCommandGroup(
+        #     command.SetWrist(Robot.wrist, 0),
+        #     # command.SetElevator(Robot.elevator, 0),
+        # ))
         self.log.info("Teleop initialized")
 
     def teleopPeriodic(self):
