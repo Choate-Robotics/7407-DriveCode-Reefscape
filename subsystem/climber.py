@@ -44,6 +44,7 @@ class Climber(Subsystem):
         table.putNumber("climber_motor_revolutions", self.climber_motor.get_sensor_position())
         table.putBoolean("climber_moving", self.moving)
         table.putBoolean("climber_zeroed", self.zeroed)
+        table.putNumber("climber_motor_current", self.climber_motor.get_motor_current())
 
     def periodic(self) -> None:
         if config.NT_CLIMBER:
