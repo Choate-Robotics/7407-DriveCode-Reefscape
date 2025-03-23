@@ -157,17 +157,18 @@ elevator_follower_id = 10
 elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
 ELEVATOR_CONFIG = TalonConfig(
-    4,
+    6.5,
     0,
-    0.1,
+    0.175,
     0.13,
     0,
     0,
     kG=0.28,
     brake_mode=True,
-    motion_magic_cruise_velocity=94,
+    motion_magic_cruise_velocity=110,
     motion_magic_acceleration=300,
-)  # 94
+    motion_magic_jerk=1000
+) 
 
 
 # TO CHANGE
@@ -195,7 +196,7 @@ wrist_l3_angle = math.radians(64)
 wrist_l4_angle = math.radians(54)
 wrist_dhigh_angle = math.radians(55)
 wrist_dlow_angle = math.radians(55)
-wrist_barge_angle = 0
+wrist_barge_angle = math.radians(54)
 wrist_processor_score_angle = 0
 
 
