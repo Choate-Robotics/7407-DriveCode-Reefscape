@@ -131,7 +131,7 @@ class FeedOut(SubsystemCommand[Wrist]):
 
 class WristAlgaeIn(SubsystemCommand[Wrist]):
     """
-    run the feed motor to get the algae
+    run the algae motor to get the algae, and then run in slower to hold the algae
     """
 
     def __init__(self, subsystem: Wrist):
@@ -142,41 +142,6 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
         self.subsystem.algae_in()
         self.subsystem.algae_running_in = True
 
-        # self.debouncer = Debouncer(
-        #     config.current_time_threshold, Debouncer.DebounceType.kRising
-        # )
-
-    def execute(self) -> None:
-        pass
-
-    def isFinished(self) -> bool:
-        # return self.debouncer.calculate(
-        #     self.subsystem.feed_motor.get_motor_current()
-        #     > config.back_current_threshold
-        # )
-        return False
-
-    def end(self, interrupted) -> None:
-        if interrupted:
-            log.warn("Algae in command interrupted")
-        self.subsystem.feed_stop()
-        self.subsystem.algae_running_in = False
-        # self.subsystem.algae_in_wrist = True
-
-
-class WristAlgaeOut(SubsystemCommand[Wrist]):
-    """
-    run the feed motor to get the algae
-    """
-
-    def __init__(self, subsystem: Wrist):
-        super().__init__(subsystem)
-        self.subsystem = subsystem
-
-    def initialize(self) -> None:
-        self.subsystem.feed_out()
-        self.subsystem.algae_running_out = True
-
         self.debouncer = Debouncer(
             config.current_time_threshold, Debouncer.DebounceType.kRising
         )
@@ -186,13 +151,42 @@ class WristAlgaeOut(SubsystemCommand[Wrist]):
 
     def isFinished(self) -> bool:
         return self.debouncer.calculate(
-            self.subsystem.feed_motor.get_motor_current()
-            < config.wrist_algae_time_threshold
+            self.subsystem.algae_motor.get_motor_current()
+            > config.algae_current_threshold
         )
 
     def end(self, interrupted) -> None:
         if interrupted:
+            log.warn("Algae in command interrupted")
+            self.subsystem.algae_stop()
+        else:
+            self.subsystem.hold_algae()
+            self.subsystem.algae_in_wrist = True
+        self.subsystem.algae_running_in = False
+
+
+class WristAlgaeOut(SubsystemCommand[Wrist]):
+    """
+    run the algae motor to drop algae
+    """
+
+    def __init__(self, subsystem: Wrist):
+        super().__init__(subsystem)
+        self.subsystem = subsystem
+
+    def initialize(self) -> None:
+        self.subsystem.algae_out()
+        self.subsystem.algae_running_out = True
+
+    def execute(self) -> None:
+        pass
+
+    def isFinished(self) -> bool:
+        return False
+
+    def end(self, interrupted) -> None:
+        if interrupted:
             log.warn("Algae out command interrupted")
-        self.subsystem.feed_stop()
+        self.subsystem.algae_stop()
         self.subsystem.algae_running_out = False
         self.subsystem.algae_in_wrist = False

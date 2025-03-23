@@ -27,6 +27,12 @@ class Wrist(Subsystem):
             inverted=True,
             config=config.WRIST_CONFIG,
         )
+        self.algae_motor: TalonFX = TalonFX(
+            config.wrist_algae_id,
+            config.foc_active,
+            inverted = False,
+            config=config.WRIST_ALGAE_CONFIG
+        )
 
         self.encoder: CANcoder = CANcoder(config.wrist_cancoder_id)
 
@@ -46,6 +52,7 @@ class Wrist(Subsystem):
     def init(self):
         self.feed_motor.init()
         self.wrist_motor.init()
+        self.algae_motor.init()
         self.initial_zero()
         self.table = ntcore.NetworkTableInstance.getDefault().getTable("wrist")
 
@@ -77,9 +84,6 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_raw_output(config.wrist_intake_speed)
 
-    def algae_in(self) -> None:
-        self.feed_motor.set_raw_output(config.wrist_algae_speed)
-
     def feed_out(self) -> None:
         """
         Runs feed motors out to score or send coral from wrist to intake.
@@ -101,6 +105,21 @@ class Wrist(Subsystem):
 
         """
         self.coral_in_feed = is_there_a_coral_in_the_feed
+
+    def algae_in(self) -> None:
+        self.algae_motor.set_raw_output(config.wrist_algae_speed)
+    
+    def algae_out(self) -> None:
+        self.algae_motor.set_raw_output(config.wrist_algae_extake_speed)
+
+    def algae_stop(self) -> None:
+        self.algae_motor.set_raw_output(0)
+
+    def hold_algae(self) -> None:
+        self.algae_motor.set_raw_output(config.wrist_algae_hold_speed)
+
+    def set_algae(self, algae_in_feed: bool) -> None:
+        self.algae_in_wrist = algae_in_feed
 
     # wrist
 
@@ -187,6 +206,9 @@ class Wrist(Subsystem):
             / constants.wrist_encoder_gear_ratio
             * 2
             * math.pi)-self.get_wrist_angle())
+        
+        self.table.putBoolean("algae in wrist", self.algae_in_wrist)
+        self.table.putNumber("algae motor current", self.algae_motor.get_motor_current())
 
     def periodic(self) -> None:
         if config.NT_WRIST:
