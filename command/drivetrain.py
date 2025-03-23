@@ -5,6 +5,7 @@ import ntcore
 
 from robot_systems import Field
 from toolkit.command import SubsystemCommand
+import commands2
 
 import config
 import constants
@@ -19,9 +20,11 @@ from wpimath.controller import PIDController, ProfiledPIDController
 from wpimath.trajectory import TrapezoidProfile
 from wpimath.kinematics import ChassisSpeeds
 from wpilib import DriverStation
+from utils import LocalLogger
 
 from units.SI import radians, meters_to_inches, meters_per_second, meters_per_second_squared
 
+log = LocalLogger("Drivetrain Command")
 
 def deadzone(x, d=config.drivetrain_deadzone):
     if abs(x) < d:
@@ -238,8 +241,11 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
         current_vx = self.current_speeds.vx
         current_vy = self.current_speeds.vy
 
-        self.x_controller.reset(TrapezoidProfile.State(self.current_pose.X(), current_vx))
-        self.y_controller.reset(TrapezoidProfile.State(self.current_pose.Y(), current_vy))
+        x_error = self.current_pose.X() - pose.X()
+        y_error = self.current_pose.Y() - pose.Y()
+
+        self.x_controller.reset(TrapezoidProfile.State(x_error, current_vx))
+        self.y_controller.reset(TrapezoidProfile.State(y_error, current_vy))
         self.theta_controller.reset()
 
         self.nt.putNumber("current vx", current_vx)
@@ -252,19 +258,32 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
             math.radians(config.drivetrain_rotation_tolerance)
         )
 
-        self.x_controller.setGoal(TrapezoidProfile.State(pose.X(), 0))
-        self.y_controller.setGoal(TrapezoidProfile.State(pose.Y(), 0))
+        self.x_controller.setGoal(TrapezoidProfile.State(0, 0))
+        self.y_controller.setGoal(TrapezoidProfile.State(0, 0))
         self.theta_controller.setSetpoint(pose.rotation().radians())
 
         self.pose = pose
+
         self.nt.putNumber("max velocity", self.x_controller.getConstraints().maxVelocity)
         self.nt.putNumber("max acceleration", self.x_controller.getConstraints().maxAcceleration)
+        
+        self.nt.putNumberArray("goal pose", [
+            self.pose.X(),
+            self.pose.Y(),
+            math.degrees(self.theta_controller.getSetpoint())
+            ])
 
     def execute(self):
         self.current_pose = self.subsystem.get_estimated_pose()
 
-        vx = self.x_controller.calculate(self.current_pose.X())
-        vy = self.y_controller.calculate(self.current_pose.Y())
+        self.x_error = self.current_pose.X() - self.pose.X()
+        self.y_error = self.current_pose.Y() - self.pose.Y()
+
+        dx = self.x_controller.calculate(self.x_error)
+        dy = self.y_controller.calculate(self.y_error)
+
+        vx = self.x_controller.getSetpoint().velocity + dx
+        vy = self.y_controller.getSetpoint().velocity + dy
         vtheta = self.theta_controller.calculate(self.current_pose.rotation().radians())
 
         if DriverStation.getAlliance() == DriverStation.Alliance.kBlue:
@@ -272,28 +291,25 @@ class DriveToPose(SubsystemCommand[Drivetrain]):
             vy *= -1
 
         self.subsystem.set_driver_centric((vx, vy), vtheta)
-
-        self.nt.putNumberArray("goal pose", [
-            self.x_controller.getGoal().position,
-            self.y_controller.getGoal().position,
-            math.degrees(self.theta_controller.getSetpoint())
-            ])
         
         self.nt.putNumber("vx", vx)
         self.nt.putNumber("current x position", self.current_pose.X())
         self.nt.putNumber("x sample position", self.x_controller.getSetpoint().position)
         self.nt.putNumber("x sample velocity", self.x_controller.getSetpoint().velocity)
+        self.nt.putNumber("x error", self.x_error)
 
     def isFinished(self) -> bool:
         return (
-            self.x_controller.atGoal()
-            and self.y_controller.atGoal()
+            abs(self.x_error) <= 0.01
+            and abs(self.y_error) <= 0.01
             and self.theta_controller.atSetpoint()
         )
+        # return False
 
     def end(self, interrupted):
         self.subsystem.set_driver_centric((0, 0), 0)
-
+        if interrupted:
+            log.error("Drive to pose interrupted")
 
 class FindWheelRadius(SubsystemCommand[Drivetrain]):
     def __init__(self, subsystem):
