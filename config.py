@@ -6,7 +6,7 @@ from pathplannerlib.config import PIDConstants
 from units.SI import degrees, radians, meters, inches_to_meters
 import constants
 
-DEBUG_MODE: bool = True
+DEBUG_MODE: bool = False
 # MAKE SURE TO MAKE THIS FALSE FOR COMPETITION
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -96,9 +96,9 @@ climber_config = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
 deploy_climber_speed = 1
 climb_speed = 0.6
 manual_climber_speed = 0.2
-deploy_position = 290
+deploy_position = 285
 manual_lower_bound = -50
-climb_initial_out = 35
+climb_initial_out = 36
 
 
 # odometry
@@ -148,6 +148,7 @@ intake_ff_offset = math.radians(90)
 horizontal_intake_speed = 0.5
 l1_eject_speed = 0.25
 intake_algae_speed = 1
+extake_algae_speed = 0.3
 
 # elevator
 elevator_lead_id = 9
@@ -156,17 +157,18 @@ elevator_follower_id = 10
 elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
 ELEVATOR_CONFIG = TalonConfig(
-    4,
+    6.5,
     0,
-    0.1,
+    0.175,
     0.13,
     0,
     0,
     kG=0.28,
     brake_mode=True,
-    motion_magic_cruise_velocity=94,
+    motion_magic_cruise_velocity=110,
     motion_magic_acceleration=300,
-)  # 94
+    motion_magic_jerk=1000
+) 
 
 
 # TO CHANGE
@@ -183,7 +185,7 @@ elevator_barge_height: meters = 0
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
 intake_climb_angle = math.radians(20)
-intake_coral_station_angle = 0
+intake_coral_station_angle = math.radians(-0.095)
 intake_l1_angle = math.radians(37)
 
 wrist_intake_angle = math.radians(-114.5)
@@ -194,7 +196,7 @@ wrist_l3_angle = math.radians(64)
 wrist_l4_angle = math.radians(54)
 wrist_dhigh_angle = math.radians(55)
 wrist_dlow_angle = math.radians(55)
-wrist_barge_angle = 0
+wrist_barge_angle = math.radians(54)
 wrist_processor_score_angle = 0
 
 

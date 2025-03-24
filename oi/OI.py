@@ -29,13 +29,13 @@ class OI:
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_RIGHT_POSE.onTrue(
-            # command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
-            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
+            command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
+            # command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_LEFT_POSE.onTrue(
-            # command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
-            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
+            command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
+            # command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Drivetrain.CORAL_STATION_ALIGN.onTrue(
@@ -92,7 +92,10 @@ class OI:
 
         Keymap.Intake.INTAKE_L1.whileTrue(
             commands2.SequentialCommandGroup(
-                command.Target(config.target_positions["INTAKE_L1"], Robot.wrist, Robot.elevator),
+                commands2.ParallelCommandGroup(
+                    command.Target(config.target_positions["INTAKE_L1"], Robot.wrist, Robot.elevator),
+                    command.SetPivot(Robot.intake, config.intake_coral_station_angle)
+                ),
                 command.RunIntake(Robot.intake)
             )
         )
@@ -127,30 +130,28 @@ class OI:
         # Extake into processor
         Keymap.Wrist.EXTAKE_ALGAE.onTrue(
             commands2.SequentialCommandGroup(
-                command.SetPivot(Robot.intake, config.intake_algae_score_angle),
                 command.ExtakeAlgae(Robot.intake)
             )
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
 
-        # to do: fix climber
-        Keymap.Climb.CLIMB_UNLOCK.and_(lambda: Robot.elevator.get_position() < 1).onTrue(
+        Keymap.Climb.CLIMB_UNLOCK.onTrue(
             commands2.SequentialCommandGroup(
-                command.DeployClimb(Robot.climber),
                 commands2.ParallelCommandGroup(
-                    command.Target(config.target_positions["CLIMB"], Robot.wrist, Robot.elevator),
-                    command.SetPivot(Robot.intake, config.intake_climb_angle)
-                )
+                    command.DeployClimb(Robot.climber),
+                    command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
+                ),
+                command.SetPivot(Robot.intake, config.intake_climb_angle)
             )
         )
 
-        Keymap.Climb.CLIMB.and_(lambda: Robot.elevator.get_position() < 1).whileTrue(
+        Keymap.Climb.CLIMB.whileTrue(
             command.Climb(Robot.climber, config.climb_speed)
         )
 
-        Keymap.Climb.MANUAL_CLIMB_DEPLOY.and_(lambda: Robot.elevator.get_position() < 1).whileTrue(
+        Keymap.Climb.MANUAL_CLIMB_DEPLOY.whileTrue(
             command.DeployClimb(Robot.climber, config.manual_climber_speed)
         )
 
-        Keymap.Climb.MANUAL_CLIMB.and_(lambda: Robot.elevator.get_position() < 1).whileTrue(
+        Keymap.Climb.MANUAL_CLIMB.whileTrue(
             command.Climb(Robot.climber, config.manual_climber_speed, config.manual_lower_bound)
         )

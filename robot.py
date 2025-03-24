@@ -84,6 +84,8 @@ class _Robot(wpilib.TimedRobot):
         self.auto_selection = SendableChooser()
         self.auto_selection.setDefaultOption("Three L4 Right", autos.three_l4_right)
         self.auto_selection.addOption("Three L4 Left", autos.three_l4_left)
+        self.auto_selection.addOption("Bump", autos.three_l4_left_bump)
+        self.auto_selection.addOption("Leave", autos.leave)
 
         wpilib.SmartDashboard.putData("Auto", self.auto_selection)
 
@@ -147,10 +149,10 @@ class _Robot(wpilib.TimedRobot):
                 # command.DrivetrainZero(Robot.drivetrain),
                 command.DriveSwerveCustom(Robot.drivetrain)
         ))
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.SetWrist(Robot.wrist, 0),
-            # command.SetElevator(Robot.elevator, 0),
-        ))
+        # self.scheduler.schedule(commands2.SequentialCommandGroup(
+        #     command.SetWrist(Robot.wrist, 0),
+        #     # command.SetElevator(Robot.elevator, 0),
+        # ))
         self.log.info("Teleop initialized")
 
     def teleopPeriodic(self):

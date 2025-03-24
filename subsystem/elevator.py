@@ -97,6 +97,8 @@ class Elevator(Subsystem):
         table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
 
         table.putNumber("height", self.get_position() * meters_to_inches)
+        table.putNumber("velocity rps", self.leader_motor.get_sensor_velocity())
+        table.putNumber("acceleration rpss", self.leader_motor.get_sensor_acceleration())
         table.putNumber("target height", self.target_height * meters_to_inches)
         table.putNumber(
             "motor lead applied output", self.leader_motor.get_applied_output()

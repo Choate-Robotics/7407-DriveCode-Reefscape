@@ -161,6 +161,8 @@ class ExtakeAlgae(SubsystemCommand[Intake]):
 
     def initialize(self):
         self.subsystem.extake_algae()
+        self.subsystem.intake_pivoting = True
+        self.subsystem.set_pivot_angle(config.intake_algae_score_angle)
 
     def execute(self):
         pass 
@@ -171,3 +173,7 @@ class ExtakeAlgae(SubsystemCommand[Intake]):
     def end(self, interrupted):
         self.subsystem.algae_in_intake = False
         self.subsystem.stop()
+        if interrupted:
+            self.subsystem.stop_pivot()
+            log.warn("Intake pivot interrupted")
+        self.subsystem.intake_pivoting = False
