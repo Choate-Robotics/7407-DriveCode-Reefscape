@@ -43,7 +43,7 @@ command = SequentialCommandGroup(
         SequentialCommandGroup(
             WaitCommand(0.2),
             Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
-            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(2),
+            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(1.25),
             Target(config.target_positions["L4"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed)
         )
     ),
@@ -60,7 +60,7 @@ command = SequentialCommandGroup(
         ),
         SequentialCommandGroup(
             Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
-            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(2),
+            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(1.25),
             Target(config.target_positions["L4"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed)
         )
     ),
