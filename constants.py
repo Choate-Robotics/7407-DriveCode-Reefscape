@@ -74,10 +74,6 @@ drivetrain_move_gear_ratio_as_rotations_per_meter: float = (
     1 / (drivetrain_wheel_diameter * math.pi)
 ) * drivetrain_wheel_gear_ratio
 
-# TODO: Placeholder
-climber_gear_ratio = 75
-upper_climber_bound = 56.606
-lower_climber_bound = 35.608
 # wrist
 wrist_gear_ratio = 45
 wrist_encoder_gear_ratio = 1.5
@@ -89,9 +85,9 @@ vertical_gear_ratio: float = 2.5
 intake_encoder_gear_ratio: float = 3
 
 # elevator
-elevator_gear_ratio = 12  # REAL VALUE: 12:1 gear ratio
+elevator_gear_ratio = 9
 elevator_driver_gear_circumference = 1.751 * inches_to_meters * math.pi
-elevator_max_height: meters = 27.5 * inches_to_meters  # true max=28 inches
+elevator_max_height: meters = 27.5 * inches_to_meters # true max=28 inches
 
 # field
 field_length = 17.548
