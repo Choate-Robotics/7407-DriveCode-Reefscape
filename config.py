@@ -114,6 +114,8 @@ WRIST_CONFIG = TalonConfig(
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
+wrist_extake_distance = 50 #rotations
+
 wrist_intake_speed = 0.35
 wrist_extake_speed = -0.25
 wrist_algae_speed = 0.5
