@@ -12,7 +12,7 @@ from autos import AutoRoutine
 from wpilib import DriverStation
 from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup, ParallelDeadlineGroup, WaitCommand, ConditionalCommand
 
-path_name = "Four L4 Left"
+path_name = "Center L4 2 Barge Algae"
 paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(9)]
 
 command = SequentialCommandGroup(
