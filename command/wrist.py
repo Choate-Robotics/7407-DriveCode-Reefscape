@@ -20,6 +20,8 @@ class SetWrist(SubsystemCommand[Wrist]):
         self.angle = angle
 
     def initialize(self) -> None:
+        if self.subsystem.algae_in_wrist:
+            self.subsystem.hold_algae(config.algae_moving_hold_volts)
         self.subsystem.set_wrist_angle(self.angle)
         self.subsystem.wrist_angle_moving = True
 
@@ -30,6 +32,8 @@ class SetWrist(SubsystemCommand[Wrist]):
         return self.subsystem.is_at_angle(self.angle)
 
     def end(self, interrupted) -> None:
+        if self.subsystem.algae_in_wrist:
+            self.subsystem.hold_algae()
         if not interrupted:
             self.subsystem.wrist_angle_moving = False
         else:

@@ -18,7 +18,7 @@ class Wrist(Subsystem):
         self.feed_motor: TalonFX = TalonFX(
             config.wrist_feed_id,
             config.foc_active,
-            inverted=False,
+            inverted=True,
             config=config.WRIST_FEED_CONFIG,
         )
         self.wrist_motor: TalonFX = TalonFX(
@@ -30,7 +30,7 @@ class Wrist(Subsystem):
         self.algae_motor: TalonFX = TalonFX(
             config.wrist_algae_id,
             config.foc_active,
-            inverted = False,
+            inverted = True,
             config=config.WRIST_ALGAE_CONFIG
         )
 
@@ -115,8 +115,8 @@ class Wrist(Subsystem):
     def algae_stop(self) -> None:
         self.algae_motor.set_raw_output(0)
 
-    def hold_algae(self) -> None:
-        self.algae_motor.set_raw_output(config.wrist_algae_hold_speed)
+    def hold_algae(self, voltage = config.wrist_algae_hold_volts) -> None:
+        self.algae_motor.set_voltage(voltage)
 
     def set_algae(self, algae_in_feed: bool) -> None:
         self.algae_in_wrist = algae_in_feed
