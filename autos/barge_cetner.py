@@ -30,8 +30,10 @@ command = SequentialCommandGroup(
     ),
     FeedOut(Robot.wrist).withTimeout(.3),
     ParallelCommandGroup(
-        Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
-        )
+        Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator),
+        AutoBuilder.followPath(paths[2]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
+    ),
+    
     )
 
 auto = AutoRoutine(command, paths[0].getStartingHolonomicPose())
