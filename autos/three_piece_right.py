@@ -40,7 +40,7 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         SequentialCommandGroup(
-            WaitCommand(0.3),
+            # WaitCommand(0.3),
             # Station to Waypoint
             AutoBuilder.followPath(paths[3]),
             # Waypoint to second L4
@@ -63,7 +63,7 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         SequentialCommandGroup(
-            WaitCommand(0.3),
+            # WaitCommand(0.3),
             # Station to Waypoint
             AutoBuilder.followPath(paths[6]),
             # Waypoint to Third L4
