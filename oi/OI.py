@@ -52,12 +52,12 @@ class OI:
         ).onFalse(command.SetPivot(Robot.intake, config.intake_coral_station_angle))
 
         Keymap.Scoring.SCORE_L2.onTrue(
-            command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)
+            commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator))
         ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
 
         Keymap.Scoring.SCORE_L3.onTrue(
-            command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator)
-        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+            commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator))
+        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
 
         Keymap.Scoring.SCORE_L4.onTrue(
             command.Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
@@ -67,7 +67,7 @@ class OI:
         Keymap.Scoring.SCORE_BARGE.onTrue(
             commands2.ConditionalCommand(
                 commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator)),
-                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator)),
+                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)),
                 lambda: (
                     Field.odometry.getPose().nearest(Field.reef_face.get_faces())
                     in Field.reef_face.get_high_algae()
