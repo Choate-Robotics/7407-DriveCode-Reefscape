@@ -95,7 +95,7 @@ MOVE_CONFIG = TalonConfig(
 climber_motor_id = 16
 climber_config = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
 deploy_climber_speed = 1
-climb_speed = 0.6
+climb_speed = 1
 manual_climber_speed = 0.2
 deploy_position = 285
 manual_lower_bound = -50
@@ -108,6 +108,8 @@ odometry_tag_distance_threshold: meters = 2.5
 # Wrist
 wrist_feed_id = 15
 WRIST_FEED_CONFIG = TalonConfig(1, 0, 0, 0, 0, current_limit=60)
+wrist_algae_id = 17
+WRIST_ALGAE_CONFIG = TalonConfig(1, 0, 0, 0, 0, current_limit=40)
 wrist_id = 14
 WRIST_CONFIG = TalonConfig(
     48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350
@@ -117,14 +119,18 @@ wrist_encoder_zero = 0.781
 
 wrist_intake_speed = 0.35
 wrist_extake_speed = -0.25
-wrist_algae_speed = 0.5
+wrist_algae_speed = 1
+wrist_algae_extake_speed = -0.5
+wrist_algae_hold_volts = 1
+algae_moving_hold_volts = 10
 wrist_max_angle: radians = math.radians(75)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
-back_current_threshold: float = 50
+back_current_threshold: float = 43
 current_time_threshold: float = 0.25
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
+algae_current_threshold: float = 20
 
 wrist_max_ff = 0.17
 wrist_ff_offset = math.radians(30)
@@ -147,7 +153,7 @@ intake_max_ff = -0.075
 intake_ff_offset = math.radians(90)
 
 horizontal_intake_speed = 0.5
-l1_eject_speed = 0.25
+l1_eject_speed = 0.1
 intake_algae_speed = 1
 extake_algae_speed = 0.3
 
@@ -158,7 +164,7 @@ elevator_follower_id = 10
 elevator_height_threshold = 0.1 * inches_to_meters  # placeholder
 
 ELEVATOR_CONFIG = TalonConfig(
-    6.5,
+    5,
     0,
     0.175,
     0.13,
@@ -167,7 +173,7 @@ ELEVATOR_CONFIG = TalonConfig(
     kG=0.28,
     brake_mode=True,
     motion_magic_cruise_velocity=110,
-    motion_magic_acceleration=300,
+    motion_magic_acceleration=275,
     motion_magic_jerk=1000
 ) 
 
@@ -181,14 +187,16 @@ elevator_l3_height: meters = 13.75 * inches_to_meters
 elevator_l4_height: meters = constants.elevator_max_height
 elevator_dhigh_height: meters = 11 * inches_to_meters
 elevator_dlow_height: meters = 2.75 * inches_to_meters
-elevator_barge_height: meters = 0
+elevator_barge_height: meters = constants.elevator_max_height
 
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
 intake_climb_angle = math.radians(20)
 intake_coral_station_angle = math.radians(-0.095)
 intake_l1_angle = math.radians(37)
+intake_l1_hold_angle = math.radians(-5)
 
+wrist_idle_angle = math.radians(-10)
 wrist_intake_angle = math.radians(-114.5)
 wrist_intake_l1_angle = math.radians(-100)
 wrist_l1_angle = math.radians(64)
@@ -227,7 +235,7 @@ target_positions: dict[str, TargetData] = {
         wrist_idle=True,
         intake_idle=True,
         elevator_height=0,
-        wrist_angle=0,
+        wrist_angle=wrist_idle_angle,
         wrist_feed_on=False,
         wrist_score_on=False,
         intake_angle=0,
