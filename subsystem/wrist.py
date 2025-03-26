@@ -30,7 +30,7 @@ class Wrist(Subsystem):
         self.algae_motor: TalonFX = TalonFX(
             config.wrist_algae_id,
             config.foc_active,
-            inverted = True,
+            inverted=False,
             config=config.WRIST_ALGAE_CONFIG
         )
 
