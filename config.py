@@ -154,7 +154,7 @@ intake_ff_offset = math.radians(90)
 horizontal_intake_speed = 0.5
 l1_eject_speed = 0.1
 intake_algae_speed = 1
-extake_algae_speed = 0.3
+extake_algae_speed = 0.175
 
 # elevator
 elevator_lead_id = 9
