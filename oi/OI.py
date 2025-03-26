@@ -29,13 +29,13 @@ class OI:
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_RIGHT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
-            # command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_LEFT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
-            # command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Drivetrain.ALGAE_ALIGN.onTrue(
@@ -53,7 +53,7 @@ class OI:
 
         Keymap.Scoring.SCORE_L2.onTrue(
             command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)
-        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
 
         Keymap.Scoring.SCORE_L3.onTrue(
             command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator)
@@ -65,8 +65,15 @@ class OI:
 
         # # Score algae in barge
         Keymap.Scoring.SCORE_BARGE.onTrue(
-            command.Target(config.target_positions["SCORE_BARGE"], Robot.wrist, Robot.elevator)
-        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+            commands2.ConditionalCommand(
+                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator)),
+                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator)),
+                lambda: (
+                    Field.odometry.getPose().nearest(Field.reef_face.get_faces())
+                    in Field.reef_face.get_high_algae()
+                ),
+            )
+        ).onFalse(command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator).andThen(commands2.InstantCommand(lambda: Robot.wrist.algae_stop())))
 
         # # Scoring coral
         Keymap.Wrist.EXTAKE_CORAL.and_(
@@ -78,7 +85,7 @@ class OI:
         ).whileTrue(command.FeedOut(Robot.wrist))
 
         # Intake coral from station
-        Keymap.Intake.INTAKE_CORAL.and_(lambda: not Robot.wrist.algae_in_wrist).whileTrue(
+        Keymap.Intake.INTAKE_CORAL.whileTrue(
             commands2.ParallelCommandGroup(
                 command.Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
                 command.SetPivot(
@@ -88,7 +95,7 @@ class OI:
             ).onlyIf(lambda: not Robot.wrist.coral_in_feed).andThen(command.IntakeCoral(Robot.intake, Robot.wrist))
         ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed))
 
-        Keymap.Intake.INTAKE_L1.and_(lambda: not Robot.wrist.algae_in_wrist).whileTrue(
+        Keymap.Intake.INTAKE_L1.whileTrue(
             commands2.SequentialCommandGroup(
                 commands2.ParallelCommandGroup(
                     command.Target(config.target_positions["INTAKE_L1"], Robot.wrist, Robot.elevator),
@@ -101,14 +108,14 @@ class OI:
         # De-algae
         Keymap.Wrist.REMOVE_ALGAE.onTrue(
             commands2.ConditionalCommand(
-                command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator),
-                command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator),
+                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator)),
+                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator)),
                 lambda: (
                     Field.odometry.getPose().nearest(Field.reef_face.get_faces())
                     in Field.reef_face.get_high_algae()
                 ),
-            ).andThen(command.WristAlgaeIn(Robot.wrist))
-        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
+            )
+        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
 
         # Intaking algae with ground intake
         Keymap.Intake.INTAKE_ALGAE.or_(Keymap.Intake.INTAKE_ALGAE_DRIVER).whileTrue(

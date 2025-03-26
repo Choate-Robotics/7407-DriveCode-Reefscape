@@ -153,6 +153,7 @@ class _Robot(wpilib.TimedRobot):
         #     command.SetWrist(Robot.wrist, 0),
         #     # command.SetElevator(Robot.elevator, 0),
         # ))
+        self.scheduler.schedule(command.DeployClimb(Robot.climber, upper_bound=config.climb_initial_out).onlyIf(lambda: Robot.climber.get_motor_revolutions() <= 30))
         self.log.info("Teleop initialized")
 
     def teleopPeriodic(self):

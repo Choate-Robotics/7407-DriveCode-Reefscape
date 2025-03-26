@@ -20,8 +20,8 @@ class SetWrist(SubsystemCommand[Wrist]):
         self.angle = angle
 
     def initialize(self) -> None:
-        if self.subsystem.algae_in_wrist:
-            self.subsystem.hold_algae(config.algae_moving_hold_volts)
+        # if self.subsystem.algae_in_wrist:
+        #     self.subsystem.hold_algae(config.algae_moving_hold_volts)
         self.subsystem.set_wrist_angle(self.angle)
         self.subsystem.wrist_angle_moving = True
 
@@ -32,8 +32,8 @@ class SetWrist(SubsystemCommand[Wrist]):
         return self.subsystem.is_at_angle(self.angle)
 
     def end(self, interrupted) -> None:
-        if self.subsystem.algae_in_wrist:
-            self.subsystem.hold_algae()
+        # if self.subsystem.algae_in_wrist:
+        #     self.subsystem.hold_algae()
         if not interrupted:
             self.subsystem.wrist_angle_moving = False
         else:
@@ -146,26 +146,25 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
         self.subsystem.algae_in()
         self.subsystem.algae_running_in = True
 
-        self.debouncer = Debouncer(
-            config.current_time_threshold, Debouncer.DebounceType.kRising
-        )
+        # self.debouncer = Debouncer(
+        #     config.current_time_threshold, Debouncer.DebounceType.kRising
+        # )
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        return self.debouncer.calculate(
-            self.subsystem.algae_motor.get_motor_current()
-            > config.algae_current_threshold
-        )
+        # return self.debouncer.calculate(
+        #     self.subsystem.algae_motor.get_motor_current()
+        #     > config.algae_current_threshold
+        # )
+        return False
 
     def end(self, interrupted) -> None:
         if interrupted:
             log.warn("Algae in command interrupted")
-            self.subsystem.algae_stop()
-        else:
-            self.subsystem.hold_algae()
-            self.subsystem.algae_in_wrist = True
+        self.subsystem.algae_stop()
+        self.subsystem.algae_in_wrist = True
         self.subsystem.algae_running_in = False
 
 

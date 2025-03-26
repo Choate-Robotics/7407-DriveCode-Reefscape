@@ -94,7 +94,7 @@ MOVE_CONFIG = TalonConfig(
 climber_motor_id = 16
 climber_config = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
 deploy_climber_speed = 1
-climb_speed = 0.6
+climb_speed = 1
 manual_climber_speed = 0.2
 deploy_position = 285
 manual_lower_bound = -50
@@ -111,7 +111,7 @@ wrist_algae_id = 17
 WRIST_ALGAE_CONFIG = TalonConfig(1, 0, 0, 0, 0, current_limit=40)
 wrist_id = 14
 WRIST_CONFIG = TalonConfig(
-    48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=250
+    48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350
 )  # 97.75
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
@@ -121,12 +121,12 @@ wrist_extake_speed = -0.25
 wrist_algae_speed = 1
 wrist_algae_extake_speed = -0.5
 wrist_algae_hold_volts = 1
-algae_moving_hold_volts = 2
+algae_moving_hold_volts = 10
 wrist_max_angle: radians = math.radians(75)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
-back_current_threshold: float = 50
+back_current_threshold: float = 43
 current_time_threshold: float = 0.25
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 algae_current_threshold: float = 20
@@ -152,7 +152,7 @@ intake_max_ff = -0.075
 intake_ff_offset = math.radians(90)
 
 horizontal_intake_speed = 0.5
-l1_eject_speed = 0.25
+l1_eject_speed = 0.1
 intake_algae_speed = 1
 extake_algae_speed = 0.3
 
@@ -193,8 +193,9 @@ intake_algae_score_angle = math.radians(32)
 intake_climb_angle = math.radians(20)
 intake_coral_station_angle = math.radians(-0.095)
 intake_l1_angle = math.radians(37)
+intake_l1_hold_angle = math.radians(-5)
 
-wrist_idle_angle = math.radians(37.5)
+wrist_idle_angle = math.radians(-10)
 wrist_intake_angle = math.radians(-114.5)
 wrist_intake_l1_angle = math.radians(-100)
 wrist_l1_angle = math.radians(64)

@@ -99,7 +99,7 @@ class SetPivot(SubsystemCommand[Intake]):
 
     def end(self, interrupted) -> None:
         if interrupted:
-            self.subsystem.stop_pivot()
+            # self.subsystem.stop_pivot()
             log.warn("Intake pivot interrupted")
         self.subsystem.intake_pivoting = False
 
@@ -174,6 +174,6 @@ class ExtakeAlgae(SubsystemCommand[Intake]):
         self.subsystem.algae_in_intake = False
         self.subsystem.stop()
         if interrupted:
-            self.subsystem.stop_pivot()
+            # self.subsystem.stop_pivot()
             log.warn("Intake pivot interrupted")
         self.subsystem.intake_pivoting = False
