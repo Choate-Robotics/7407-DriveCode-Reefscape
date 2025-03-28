@@ -42,7 +42,7 @@ class Keymap:
         DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
             lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > config.trigger_threshold
         )
-        CORAL_STATION_ALIGN = commands2.button.JoystickButton(
+        ALGAE_ALIGN = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
         )
 
@@ -57,6 +57,9 @@ class Keymap:
 
         INTAKE_ALGAE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.RB
+        )
+        INTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.LB
         )
 
     class Scoring:
@@ -97,8 +100,11 @@ class Keymap:
         EXTAKE_CORAL = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.A
         )
-        EXTAKE_ALGAE = commands2.button.JoystickButton(
+        EXTAKE_ALGAE_OPERATOR = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
+        )
+        EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B
         )
     class Elevator:
         pass
