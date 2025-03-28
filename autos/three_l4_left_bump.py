@@ -40,14 +40,14 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         SequentialCommandGroup(
-            WaitCommand(0.3),
+            # WaitCommand(0.3),
             # Station to Waypoint
             AutoBuilder.followPath(paths[3]),
             # Waypoint to second L4
             AutoBuilder.followPath(paths[4]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0)))
         ),
         SequentialCommandGroup(
-            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(1.25),
+            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(2),
             Target(config.target_positions["L4"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed)
         )
     ),
@@ -63,14 +63,14 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         SequentialCommandGroup(
-            WaitCommand(0.3),
+            # WaitCommand(0.3),
             # Station to Waypoint
             AutoBuilder.followPath(paths[6]),
             # Waypoint to third L4
             AutoBuilder.followPath(paths[7]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0)))
         ),
         SequentialCommandGroup(
-            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(1.25),
+            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(2),
             Target(config.target_positions["L4"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed)
         )
     ),

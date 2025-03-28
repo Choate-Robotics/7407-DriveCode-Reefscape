@@ -47,7 +47,7 @@ command = SequentialCommandGroup(
             AutoBuilder.followPath(paths[4]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0)))
         ),
         SequentialCommandGroup(
-            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(1.25),
+            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(2),
             Target(config.target_positions["L4"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed)
         )
     ),
@@ -70,7 +70,7 @@ command = SequentialCommandGroup(
             AutoBuilder.followPath(paths[7]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0)))
         ),
         SequentialCommandGroup(
-            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(1.25),
+            IntakeCoral(Robot.intake, Robot.wrist).withTimeout(2),
             Target(config.target_positions["L4"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed)
         )
     ),
