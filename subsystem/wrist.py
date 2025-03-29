@@ -84,12 +84,12 @@ class Wrist(Subsystem):
         """
         self.feed_motor.set_raw_output(config.wrist_intake_speed)
 
-    def feed_out(self) -> None:
+    def feed_out(self, speed) -> None:
         """
         Runs feed motors out to score or send coral from wrist to intake.
         
         """
-        self.feed_motor.set_raw_output(config.wrist_extake_speed)
+        self.feed_motor.set_raw_output(speed)
 
     def feed_stop(self) -> None:
         """

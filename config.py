@@ -117,8 +117,9 @@ WRIST_CONFIG = TalonConfig(
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
-wrist_intake_speed = 0.35
-wrist_extake_speed = -0.25
+wrist_intake_speed = 0.5
+wrist_extake_speed_teleop = -0.35
+wrist_extake_speed_auto = -0.6
 wrist_algae_speed = 1
 wrist_algae_extake_speed = -0.5
 wrist_algae_hold_volts = 1
@@ -127,7 +128,7 @@ wrist_max_angle: radians = math.radians(75)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
-back_current_threshold: float = 43
+back_current_threshold: float = 50
 current_time_threshold: float = 0.25
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 algae_current_threshold: float = 20
@@ -144,7 +145,7 @@ INTAKE_CONFIG = TalonConfig(0, 0, 0, 0, 0, brake_mode=True)
 INTAKE_PIVOT_CONFIG = TalonConfig(2, 0, 0, -0.195, 0, motion_magic_cruise_velocity=97, brake_mode=True) # 97
 
 intake_max_angle = math.radians(60)
-intake_min_angle = math.radians(0)
+intake_min_angle = math.radians(-1)
 intake_angle_threshold = math.radians(2)
 intake_current_threshold = 80  # placeholder
 intake_current_time_threshold = 2  # placeholder
@@ -152,7 +153,7 @@ intake_current_time_threshold = 2  # placeholder
 intake_max_ff = -0.075
 intake_ff_offset = math.radians(90)
 
-horizontal_intake_speed = 0.5
+horizontal_intake_speed = 0.7
 l1_eject_speed = 0.1
 intake_algae_speed = 1
 extake_algae_speed = 0.175
@@ -192,7 +193,7 @@ elevator_barge_height: meters = constants.elevator_max_height
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
 intake_climb_angle = math.radians(20)
-intake_coral_station_angle = math.radians(-0.095)
+intake_coral_station_angle = math.radians(-0.25)
 intake_l1_angle = math.radians(37)
 intake_l1_hold_angle = math.radians(-5)
 

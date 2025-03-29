@@ -67,7 +67,7 @@ class OI:
         Keymap.Scoring.SCORE_BARGE.onTrue(
             commands2.ConditionalCommand(
                 commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator)),
-                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)),
+                commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator)),
                 lambda: (
                     Field.odometry.getPose().nearest(Field.reef_face.get_faces())
                     in Field.reef_face.get_high_algae()
@@ -82,7 +82,7 @@ class OI:
             lambda: not Robot.wrist.wrist_angle_moving
         ).and_(
             lambda: not Robot.intake.intake_running
-        ).whileTrue(command.FeedOut(Robot.wrist))
+        ).whileTrue(command.FeedOut(Robot.wrist, config.wrist_extake_speed_teleop))
 
         # Intake coral from station
         Keymap.Intake.INTAKE_CORAL.whileTrue(

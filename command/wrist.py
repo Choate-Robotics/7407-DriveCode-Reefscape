@@ -104,12 +104,13 @@ class FeedOut(SubsystemCommand[Wrist]):
     run the feed out until coral is no longer detected in the feed
     """
 
-    def __init__(self, subsystem: Wrist):
+    def __init__(self, subsystem: Wrist, speed: float = config.wrist_extake_speed_auto):
         super().__init__(subsystem)
         self.subsystem = subsystem
+        self.speed = speed
 
     def initialize(self) -> None:
-        self.subsystem.feed_out()
+        self.subsystem.feed_out(self.speed)
         self.subsystem.wrist_ejecting = True
 
         # self.debouncer = Debouncer(
