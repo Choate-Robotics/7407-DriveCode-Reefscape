@@ -52,12 +52,12 @@ class OI:
         ).onFalse(command.SetPivot(Robot.intake, config.intake_coral_station_angle))
 
         Keymap.Scoring.SCORE_L2.onTrue(
-            commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator))
-        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
+            command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)
+        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
         Keymap.Scoring.SCORE_L3.onTrue(
-            commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator))
-        ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
+            command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator)
+        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
         Keymap.Scoring.SCORE_L4.onTrue(
             command.Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)

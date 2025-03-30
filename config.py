@@ -99,7 +99,7 @@ climb_speed = 1
 manual_climber_speed = 0.2
 deploy_position = 285
 manual_lower_bound = -50
-climb_initial_out = 36
+climb_initial_out = 45
 
 
 # odometry
@@ -118,7 +118,7 @@ wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
 wrist_intake_speed = 0.5
-wrist_extake_speed_teleop = -0.35
+wrist_extake_speed_teleop = -0.25
 wrist_extake_speed_auto = -0.6
 wrist_algae_speed = 1
 wrist_algae_extake_speed = -0.5
@@ -193,7 +193,7 @@ elevator_barge_height: meters = constants.elevator_max_height
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
 intake_climb_angle = math.radians(20)
-intake_coral_station_angle = math.radians(-0.25)
+intake_coral_station_angle = math.radians(-1)
 intake_l1_angle = math.radians(37)
 intake_l1_hold_angle = math.radians(-5)
 

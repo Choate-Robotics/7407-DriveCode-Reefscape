@@ -39,7 +39,7 @@ class Climber(Subsystem):
         return self.climber_motor.get_sensor_position()
         
     def update_table(self) -> None:
-        table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
+        table = ntcore.NetworkTableInstance.getDefault().getTable("climber")
 
         table.putNumber("climber_motor_revolutions", self.climber_motor.get_sensor_position())
         table.putBoolean("climber_moving", self.moving)
