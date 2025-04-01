@@ -129,7 +129,7 @@ wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
 back_current_threshold: float = 50
-current_time_threshold: float = 0.25
+current_time_threshold: float = 0.375
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 algae_current_threshold: float = 20
 

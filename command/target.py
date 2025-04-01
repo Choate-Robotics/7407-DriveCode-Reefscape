@@ -24,7 +24,7 @@ class Target(commands2.SequentialCommandGroup):
 
 class IntakeCoral(commands2.ParallelRaceGroup):
     def __init__(self, intake: Intake, wrist: Wrist):
-        super().__init__(command.RunIntake(intake), command.FeedIn(wrist))
+        super().__init__(command.RunIntake(intake).unless(lambda: wrist.coral_in_feed), command.FeedIn(wrist))
 
 
 class EjectCoral(commands2.ParallelCommandGroup):
