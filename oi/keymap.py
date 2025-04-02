@@ -106,6 +106,9 @@ class Keymap:
         EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B
         )
+        EXTAKE_ALGAE_BARGE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.R_3
+        )
     class Elevator:
         pass
         
