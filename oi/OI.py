@@ -135,7 +135,7 @@ class OI:
         Keymap.Wrist.EXTAKE_ALGAE_DRIVER.whileTrue(
             commands2.ParallelCommandGroup(
                 command.ExtakeAlgae(Robot.intake).onlyIf(lambda: Robot.intake.get_pivot_angle() >= math.radians(40)),
-                command.WristAlgaeOut(Robot.wrist) # Is this still needed -Alex
+                command.WristAlgaeOut(Robot.wrist)
             )
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
 
