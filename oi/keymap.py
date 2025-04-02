@@ -74,8 +74,11 @@ class Keymap:
         SCORE_L4 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y
         )
-        SCORE_BARGE = commands2.button.Trigger(
+        DEALGAE_SCORE = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
+        )
+        SCORE_BARGE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
         )
 
     # to do: fix climb controllers: does not do what it's supposed to
@@ -100,12 +103,10 @@ class Keymap:
         EXTAKE_CORAL = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.A
         )
-        EXTAKE_ALGAE_OPERATOR = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
-        )
         EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B
         )
+
     class Elevator:
         pass
         

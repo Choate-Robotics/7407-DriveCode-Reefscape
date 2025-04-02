@@ -147,24 +147,25 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
         self.subsystem.algae_in()
         self.subsystem.algae_running_in = True
 
-        # self.debouncer = Debouncer(
-        #     config.current_time_threshold, Debouncer.DebounceType.kRising
-        # )
+        self.debouncer = Debouncer(
+            config.current_time_threshold, Debouncer.DebounceType.kRising
+        )
 
     def execute(self) -> None:
         pass
 
     def isFinished(self) -> bool:
-        # return self.debouncer.calculate(
-        #     self.subsystem.algae_motor.get_motor_current()
-        #     > config.algae_current_threshold
-        # )
-        return False
+        return self.debouncer.calculate(
+            self.subsystem.algae_motor.get_motor_current()
+        > config.algae_current_threshold
+        )
 
     def end(self, interrupted) -> None:
         if interrupted:
             log.warn("Algae in command interrupted")
-        self.subsystem.algae_stop()
+            self.subsystem.algae_stop()
+        if not interrupted:
+            self.subsystem.hold_algae()
         self.subsystem.algae_in_wrist = True
         self.subsystem.algae_running_in = False
 

@@ -63,8 +63,8 @@ class OI:
             command.Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
         ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
-        # # Score algae in barge
-        Keymap.Scoring.SCORE_BARGE.onTrue(
+        # # De-Algae based on face and then score
+        Keymap.Scoring.DEALGAE_SCORE.onTrue(
             commands2.ConditionalCommand(
                 commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator)),
                 commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_LOW"], Robot.wrist, Robot.elevator)),
@@ -74,6 +74,11 @@ class OI:
                 ),
             )
         ).onFalse(command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator).andThen(commands2.InstantCommand(lambda: Robot.wrist.algae_stop())))
+
+        # Extake into barge
+        Keymap.Scoring.SCORE_BARGE.onTrue(
+            command.Target(config.target_positions["BARGE"], Robot.wrist, Robot.elevator)
+        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
         # # Scoring coral
         Keymap.Wrist.EXTAKE_CORAL.and_(
@@ -127,7 +132,7 @@ class OI:
         )
 
         # Extake into processor
-        Keymap.Wrist.EXTAKE_ALGAE_OPERATOR.or_(Keymap.Wrist.EXTAKE_ALGAE_DRIVER).whileTrue(
+        Keymap.Wrist.EXTAKE_ALGAE_DRIVER.whileTrue(
             commands2.ParallelCommandGroup(
                 command.ExtakeAlgae(Robot.intake).onlyIf(lambda: Robot.intake.get_pivot_angle() >= math.radians(40)),
                 command.WristAlgaeOut(Robot.wrist)
