@@ -132,7 +132,7 @@ class OI:
         )
 
         # Extake into processor
-        Keymap.Wrist.EXTAKE_ALGAE_OPERATOR.or_(Keymap.Wrist.EXTAKE_ALGAE_DRIVER).whileTrue(
+        Keymap.Wrist.EXTAKE_ALGAE_DRIVER.whileTrue(
             commands2.ParallelCommandGroup(
                 command.ExtakeAlgae(Robot.intake).onlyIf(lambda: Robot.intake.get_pivot_angle() >= math.radians(40)),
                 command.WristAlgaeOut(Robot.wrist) # Is this still needed -Alex
