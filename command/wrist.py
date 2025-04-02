@@ -162,7 +162,9 @@ class WristAlgaeIn(SubsystemCommand[Wrist]):
     def end(self, interrupted) -> None:
         if interrupted:
             log.warn("Algae in command interrupted")
-        self.subsystem.hold_algae()
+            self.subsystem.algae_stop()
+        if not interrupted:
+            self.subsystem.hold_algae()
         self.subsystem.algae_in_wrist = True
         self.subsystem.algae_running_in = False
 

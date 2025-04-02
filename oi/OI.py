@@ -63,8 +63,8 @@ class OI:
             command.Target(config.target_positions["L4"], Robot.wrist, Robot.elevator)
         ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
-        # # Score algae in barge
-        Keymap.Scoring.SCORE_BARGE.onTrue(
+        # # De-Algae based on face and then score
+        Keymap.Scoring.DEALGAE_SCORE.onTrue(
             commands2.ConditionalCommand(
                 commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator)),
                 commands2.InstantCommand(lambda: Robot.wrist.algae_in()).andThen(command.Target(config.target_positions["L2"], Robot.wrist, Robot.elevator)),
@@ -74,6 +74,11 @@ class OI:
                 ),
             )
         ).onFalse(command.Target(config.target_positions["L3"], Robot.wrist, Robot.elevator).andThen(commands2.InstantCommand(lambda: Robot.wrist.algae_stop())))
+
+        # Extake into barge
+        Keymap.Scoring.SCORE_BARGE.onTrue(
+            command.Target(config.target_positions["BARGE"], Robot.wrist, Robot.elevator)
+        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator))
 
         # # Scoring coral
         Keymap.Wrist.EXTAKE_CORAL.and_(
@@ -133,11 +138,6 @@ class OI:
                 command.WristAlgaeOut(Robot.wrist) # Is this still needed -Alex
             )
         ).onFalse(command.SetPivot(Robot.intake, config.target_positions["IDLE"].intake_angle))
-
-        # Extake into barge
-        Keymap.Wrist.EXTAKE_ALGAE_BARGE.whileTrue(
-            command.WristAlgaeOut(Robot.wrist)
-        ).onFalse(command.SetWrist(Robot.wrist, config.target_positions["IDLE"].wrist_angle))
 
         Keymap.Climb.CLIMB_UNLOCK.onTrue(
             commands2.SequentialCommandGroup(
