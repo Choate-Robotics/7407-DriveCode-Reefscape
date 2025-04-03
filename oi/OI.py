@@ -40,7 +40,11 @@ class OI:
         
         Keymap.Drivetrain.ALGAE_ALIGN.onTrue(
             command.DriveToPose(Robot.drivetrain, Field.reef_face.get_faces())
-        ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
+        ).onFalse(commands2.SequentialCommandGroup(
+            commands2.InstantCommand(lambda: Robot.drivetrain.set_robot_centric((-1, 0, 0))),
+            commands2.WaitCommand(0.3),
+            command.DriveSwerveCustom(Robot.drivetrain)
+        ))
 
         # Scoring on reef
         # Keymap.Scoring.SCORE_L1.onTrue(
