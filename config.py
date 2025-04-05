@@ -119,7 +119,7 @@ wrist_encoder_zero = 0.781
 
 wrist_intake_speed = 0.5
 wrist_extake_speed_teleop = -0.25
-wrist_extake_speed_auto = -0.6
+wrist_extake_speed_auto = -0.9
 wrist_algae_speed = 1
 wrist_algae_extake_speed = -0.5
 wrist_algae_hold_volts = 1
@@ -156,7 +156,7 @@ intake_ff_offset = math.radians(90)
 horizontal_intake_speed = 0.7
 l1_eject_speed = 0.1
 intake_algae_speed = 1
-extake_algae_speed = 0.175
+extake_algae_speed = 0.275
 
 # elevator
 elevator_lead_id = 9
