@@ -12,7 +12,7 @@ from autos import AutoRoutine
 from wpilib import DriverStation
 from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup, ParallelDeadlineGroup, WaitCommand, ConditionalCommand
 
-path_name = "Center L4 2 Barge Algae"
+path_name = "Center L4-Right De-Algae"
 paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(8)]
 
 command = SequentialCommandGroup(
@@ -25,7 +25,7 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         # Waypoint to first L4
-        AutoBuilder.followPath(paths[1]),
+        AutoBuilder.followPath(paths[1]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
         Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
     ),
     FeedOut(Robot.wrist).withTimeout(.3),
@@ -42,7 +42,7 @@ command = SequentialCommandGroup(
     ParallelCommandGroup(
         Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator),
         # Move back to next algae
-        AutoBuilder.followPath(paths[4]),
+        AutoBuilder.followPath(paths[4]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
     ),
     ParallelDeadlineGroup(
         # Move in and out while de-algae
@@ -52,13 +52,14 @@ command = SequentialCommandGroup(
     ParallelCommandGroup(
         Target(config.target_positions["DEALGAE_HIGH"], Robot.wrist, Robot.elevator),
         # Move back to next algae
-        AutoBuilder.followPath(paths[6]),
+        AutoBuilder.followPath(paths[6]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
     ),
     ParallelDeadlineGroup(
         # Move in and out while de-algae
         AutoBuilder.followPath(paths[7]),
         WristAlgaeIn(Robot.wrist)
     ),
+    Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator)
     )
 
 auto = AutoRoutine(command, paths[0].getStartingHolonomicPose())

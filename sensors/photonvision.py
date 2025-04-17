@@ -14,7 +14,7 @@ class PhotonCamCustom:
         self.name = name
         self.robot_to_camera = robot_to_camera
         self.estimator = PhotonPoseEstimator(
-            AprilTagFieldLayout.loadField(AprilTagField.k2025ReefscapeAndyMark),
+            AprilTagFieldLayout.loadField(AprilTagField.k2025ReefscapeWelded),
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             self.cam,
             self.robot_to_camera,

@@ -86,7 +86,8 @@ class _Robot(wpilib.TimedRobot):
         self.auto_selection.addOption("Three L4 Left", autos.three_l4_left)
         self.auto_selection.addOption("Bump", autos.three_l4_left_bump)
         self.auto_selection.addOption("Leave", autos.leave)
-        self.auto_selection.addOption("Center", autos.dealgae_center)
+        self.auto_selection.addOption("Center-Right", autos.dealgae_center_right)
+        self.auto_selection.addOption("Center-Left", autos.dealgae_center_left)
 
         wpilib.SmartDashboard.putData("Auto", self.auto_selection)
 
