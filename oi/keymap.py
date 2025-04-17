@@ -58,9 +58,6 @@ class Keymap:
         INTAKE_ALGAE = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.RB
         )
-        INTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.LB
-        )
 
     class Scoring:
         SCORE_L1 = commands2.button.JoystickButton(
@@ -104,8 +101,9 @@ class Keymap:
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
         )
         EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.LB
         )
+
     class Elevator:
         pass
         

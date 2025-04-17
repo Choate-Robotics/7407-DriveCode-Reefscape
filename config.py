@@ -117,7 +117,7 @@ WRIST_CONFIG = TalonConfig(
 wrist_cancoder_id = 22
 wrist_encoder_zero = 0.781
 
-wrist_intake_speed = 0.5
+wrist_intake_speed = 0.75
 wrist_extake_speed_teleop = -0.25
 wrist_extake_speed_auto = -0.9
 wrist_algae_speed = 1
@@ -129,7 +129,7 @@ wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
 back_current_threshold: float = 50
-current_time_threshold: float = 0.375
+current_time_threshold: float = 0.325
 wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
 algae_current_threshold: float = 20
 

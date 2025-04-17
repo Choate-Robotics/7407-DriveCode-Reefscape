@@ -90,14 +90,18 @@ class OI:
 
         # Intake coral from station
         Keymap.Intake.INTAKE_CORAL.whileTrue(
-            commands2.ParallelCommandGroup(
-                command.Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
-                command.SetPivot(
-                    Robot.intake,
-                    config.target_positions["STATION_INTAKING"].intake_angle,
-                ),
-            ).onlyIf(lambda: not Robot.wrist.coral_in_feed).andThen(command.IntakeCoral(Robot.intake, Robot.wrist))
-        ).onFalse(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator).onlyIf(lambda: Robot.wrist.coral_in_feed))
+            commands2.SequentialCommandGroup(
+                commands2.ParallelCommandGroup(
+                    command.Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
+                    command.SetPivot(
+                        Robot.intake,
+                        config.target_positions["STATION_INTAKING"].intake_angle,
+                    ),
+                ).onlyIf(lambda: not Robot.wrist.coral_in_feed),
+                command.IntakeCoral(Robot.intake, Robot.wrist),
+                command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
+            )
+        )
 
         Keymap.Intake.INTAKE_L1.whileTrue(
             commands2.SequentialCommandGroup(
@@ -122,7 +126,7 @@ class OI:
         ).onFalse(commands2.InstantCommand(lambda: Robot.wrist.algae_stop()).andThen(command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)))
 
         # Intaking algae with ground intake
-        Keymap.Intake.INTAKE_ALGAE.or_(Keymap.Intake.INTAKE_ALGAE_DRIVER).whileTrue(
+        Keymap.Intake.INTAKE_ALGAE.whileTrue(
             command.SetPivot(
                 Robot.intake, config.target_positions["INTAKE_ALGAE"].intake_angle
             ).andThen(
