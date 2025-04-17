@@ -12,7 +12,7 @@ from autos import AutoRoutine
 from wpilib import DriverStation
 from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGroup, ParallelDeadlineGroup, WaitCommand, ConditionalCommand
 
-path_name = "Center L4 2 Barge Algae"
+path_name = "Center L4-Left De-Algae"
 paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(8)]
 
 command = SequentialCommandGroup(
@@ -59,6 +59,7 @@ command = SequentialCommandGroup(
         AutoBuilder.followPath(paths[7]),
         WristAlgaeIn(Robot.wrist)
     ),
+    Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator)
     )
 
 auto = AutoRoutine(command, paths[0].getStartingHolonomicPose())
