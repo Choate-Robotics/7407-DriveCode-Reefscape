@@ -79,10 +79,11 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
             self.subsystem.set_robot_centric((dy, -dx, d_theta))
 
     def end(self, interrupted: bool) -> None:
-        self.subsystem.n_front_left.set_motor_velocity(0)
-        self.subsystem.n_front_right.set_motor_velocity(0)
-        self.subsystem.n_back_left.set_motor_velocity(0)
-        self.subsystem.n_back_right.set_motor_velocity(0)
+        # self.subsystem.n_front_left.set_motor_velocity(0)
+        # self.subsystem.n_front_right.set_motor_velocity(0)
+        # self.subsystem.n_back_left.set_motor_velocity(0)
+        # self.subsystem.n_back_right.set_motor_velocity(0)
+        pass
 
     def isFinished(self) -> bool:
         return False
@@ -102,11 +103,11 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
     def __init__(
         self,
         subsystem: Drivetrain,
-        target_angle: radians
+        poses: list[Pose2d]
     ):
         super().__init__(subsystem)
         self.subsystem = subsystem
-        self.angle = target_angle
+        self.poses = poses
         self.theta_pid_controller = PIDController(
             config.drivetrain_rotation_kp,
             config.drivetrain_rotation_ki,
@@ -116,22 +117,27 @@ class DriveSwerveAim(SubsystemCommand[Drivetrain]):
         self.table = ntcore.NetworkTableInstance.getDefault().getTable("Aim Drivetrain")
 
     def initialize(self) -> None:
-        self.theta_pid_controller.enableContinuousInput(radians(-180), radians(180))
+        self.angle = self.subsystem.get_estimated_pose().nearest(self.poses).rotation().radians()
+
         self.theta_pid_controller.reset()
-        self.theta_pid_controller.setSetpoint(math.radians(bound_angle(math.degrees(self.angle))))
+        self.theta_pid_controller.enableContinuousInput(-math.pi, math.pi)
+        self.theta_pid_controller.setTolerance(
+            math.radians(config.drivetrain_rotation_tolerance*3)
+        )
+        self.theta_pid_controller.setSetpoint(self.angle)
 
     def execute(self) -> None:
         self.table.putNumber("target angle", math.degrees(self.angle))
         dx, dy = (
             self.subsystem.axis_dx.value * 1,
-            self.subsystem.axis_dy.value * -1
+            self.subsystem.axis_dy.value * 1
         )
 
-        current = self.subsystem.get_heading().radians()
+        current = self.subsystem.get_estimated_pose().rotation().radians()
         d_theta = self.theta_pid_controller.calculate(current)
 
-        dx = curve(dx)
-        dy = curve(dy)
+        dx = deadzone(dx)
+        dy = deadzone(dy)
         dx *= self.subsystem.max_vel
         dy *= self.subsystem.max_vel
 

@@ -45,6 +45,9 @@ class Keymap:
         ALGAE_ALIGN = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
         )
+        STATION_ALIGN = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.LB
+        )
 
     class Intake:
         INTAKE_CORAL = commands2.button.Trigger(
@@ -100,9 +103,7 @@ class Keymap:
         EXTAKE_ALGAE_OPERATOR = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
         )
-        EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.LB
-        )
+        EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B)
 
     class Elevator:
         pass

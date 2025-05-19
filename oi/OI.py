@@ -46,6 +46,11 @@ class OI:
             command.DriveSwerveCustom(Robot.drivetrain)
         ))
 
+        Keymap.Drivetrain.STATION_ALIGN.onTrue(
+            command.DriveSwerveAim(Robot.drivetrain, [Field.coral_station.leftCenterFace, Field.coral_station.rightCenterFace])
+        ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
+
+
         # Scoring on reef
         # Keymap.Scoring.SCORE_L1.onTrue(
         #     command.Target(config.target_positions["L1"], Robot.wrist, Robot.elevator)
@@ -86,7 +91,13 @@ class OI:
             lambda: not Robot.wrist.wrist_angle_moving
         ).and_(
             lambda: not Robot.intake.intake_running
-        ).whileTrue(command.FeedOut(Robot.wrist, config.wrist_extake_speed_teleop))
+        ).whileTrue(
+            commands2.ConditionalCommand(
+                command.FeedOut(Robot.wrist, config.wrist_extake_speed_l4),
+                command.FeedOut(Robot.wrist, config.wrist_extake_speed_teleop),
+                lambda: Robot.elevator.is_at_position(config.elevator_l4_height)
+            )
+        )
 
         # Intake coral from station
         Keymap.Intake.INTAKE_CORAL.whileTrue(
@@ -99,7 +110,11 @@ class OI:
                     ),
                 ).onlyIf(lambda: not Robot.wrist.coral_in_feed),
                 command.IntakeCoral(Robot.intake, Robot.wrist),
-                command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator)
+                commands2.ConditionalCommand(
+                    command.Target(config.target_positions["IDLE_WITH_CORAL"], Robot.wrist, Robot.elevator),
+                    command.Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
+                    lambda: Robot.wrist.coral_in_feed
+                )
             )
         )
 
