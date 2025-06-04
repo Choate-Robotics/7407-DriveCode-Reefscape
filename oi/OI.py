@@ -29,13 +29,13 @@ class OI:
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_RIGHT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
-            # command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_right_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_right_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
         Keymap.Drivetrain.DRIVE_TO_LEFT_POSE.onTrue(
-            command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
-            # command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
+            # command.DriveToPose(Robot.drivetrain, Field.branch.get_left_branches()),
+            command.DriveToPose(Robot.drivetrain, Field.get_branches().get_left_branches())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
         
         Keymap.Drivetrain.ALGAE_ALIGN.onTrue(
@@ -103,7 +103,7 @@ class OI:
         Keymap.Intake.INTAKE_CORAL.whileTrue(
             commands2.SequentialCommandGroup(
                 commands2.ParallelCommandGroup(
-                    command.Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator),
+                    InstantCommand(lambda: Robot.wrist.feed_in()).andThen(command.Target(config.target_positions["STATION_INTAKING"], Robot.wrist, Robot.elevator)),
                     command.SetPivot(
                         Robot.intake,
                         config.target_positions["STATION_INTAKING"].intake_angle,
@@ -116,7 +116,7 @@ class OI:
                     lambda: Robot.wrist.coral_in_feed
                 )
             )
-        )
+        ).onFalse(InstantCommand(lambda: Robot.wrist.feed_stop()))
 
         Keymap.Intake.INTAKE_L1.whileTrue(
             commands2.SequentialCommandGroup(
