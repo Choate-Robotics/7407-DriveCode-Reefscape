@@ -89,7 +89,8 @@ class ReefFace(Enum):
             (self.left.scoring_pose.X() + self.right.scoring_pose.X()) / 2,
             (self.left.scoring_pose.Y() + self.right.scoring_pose.Y()) / 2,
             self.left.scoring_pose.rotation(),
-        ).transformBy(Transform2d(0, -0.15, 0))
+        )
+        # ).transformBy(Transform2d(0, -0.15, 0))
 
     @staticmethod
     def get_faces() -> list[Pose2d]:
