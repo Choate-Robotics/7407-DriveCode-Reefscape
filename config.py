@@ -99,7 +99,7 @@ climb_speed = 1
 manual_climber_speed = 0.2
 deploy_position = 285
 manual_lower_bound = -50
-climb_initial_out = 45
+climb_initial_out = 55
 
 
 # odometry
