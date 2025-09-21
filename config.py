@@ -183,6 +183,10 @@ ELEVATOR_CONFIG = TalonConfig(
 # TO CHANGE
 period: float = 0.03
 
+# targeting
+targeting_wrist_tolerance: radians = math.radians(20)
+targeting_elevator_height_tolerance: meters = 1 * inches_to_meters
+
 elevator_l1_height: meters = 5 * inches_to_meters
 elevator_l2_height: meters = 6 * inches_to_meters #6
 elevator_l3_height: meters = 13.75 * inches_to_meters #13.75

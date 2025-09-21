@@ -14,10 +14,11 @@ class SetWrist(SubsystemCommand[Wrist]):
     Set the wrist to a specific angle.
     """
 
-    def __init__(self, subsystem: Wrist, angle: radians):
+    def __init__(self, subsystem: Wrist, angle: radians, tolerance: radians = config.angle_threshold):
         super().__init__(subsystem)
         self.subsystem = subsystem
         self.angle = angle
+        self.tolerance = tolerance
 
     def initialize(self) -> None:
         # if self.subsystem.algae_in_wrist:
@@ -29,7 +30,7 @@ class SetWrist(SubsystemCommand[Wrist]):
         pass
 
     def isFinished(self) -> bool:
-        return self.subsystem.is_at_angle(self.angle)
+        return self.subsystem.is_at_angle(self.angle, self.tolerance)
 
     def end(self, interrupted) -> None:
         # if self.subsystem.algae_in_wrist:

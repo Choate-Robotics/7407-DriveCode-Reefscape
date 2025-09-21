@@ -84,14 +84,14 @@ class Elevator(Subsystem):
             / constants.elevator_gear_ratio
         )
 
-    def is_at_position(self, height: meters) -> bool:
+    def is_at_position(self, height: meters, tolerance: meters = config.elevator_height_threshold) -> bool:
         """
         checks if the elevator is at a certain height
 
         Args:
             height (meters): height to be checked
         """
-        return abs(self.get_position() - height) < config.elevator_height_threshold
+        return abs(self.get_position() - height) < tolerance
 
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")

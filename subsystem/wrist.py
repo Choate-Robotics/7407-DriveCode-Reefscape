@@ -174,12 +174,13 @@ class Wrist(Subsystem):
             * 2
         )
 
-    def is_at_angle(self, angle: radians) -> bool:
+    def is_at_angle(self, angle: radians, tolerance: radians = config.angle_threshold) -> bool:
         """
         Checks if the wrist angle is at an input angle.
 
         """
-        return abs(self.get_wrist_angle() - angle) < config.angle_threshold
+        self.table.putNumber("wrist angle tolerance", tolerance)
+        return abs(self.get_wrist_angle() - angle) < tolerance
 
     def update_table(self) -> None:
         """

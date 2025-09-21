@@ -1,5 +1,5 @@
 from subsystem import Intake, Wrist, Elevator
-from config import TargetData, wrist_idle_angle
+from config import TargetData, wrist_idle_angle, targeting_wrist_tolerance, targeting_elevator_height_tolerance
 import command
 import commands2
 
@@ -12,8 +12,8 @@ class Target(commands2.SequentialCommandGroup):
         super().__init__(
             commands2.ConditionalCommand(
                 commands2.SequentialCommandGroup(
-                    command.SetWrist(wrist, wrist_idle_angle),
-                    command.SetElevator(elevator, elevator_height)
+                    command.SetWrist(wrist, wrist_idle_angle, targeting_wrist_tolerance),
+                    command.SetElevator(elevator, elevator_height, targeting_elevator_height_tolerance)
                 ),
                 commands2.WaitCommand(0),
                 lambda: not elevator.is_at_position(elevator_height)
