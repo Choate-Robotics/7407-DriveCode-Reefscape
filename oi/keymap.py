@@ -74,8 +74,8 @@ class Keymap:
         SCORE_L4 = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.Y
         )
-        SCORE_BARGE = commands2.button.Trigger(
-            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
+        SCORE_BARGE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
         )
 
     # to do: fix climb controllers: does not do what it's supposed to
@@ -94,16 +94,22 @@ class Keymap:
         )
 
     class Wrist:
-        REMOVE_ALGAE = commands2.button.Trigger(
+        REMOVE_ALGAE_LOW = commands2.button.Trigger(
             lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 180
+        )
+        REMOVE_ALGAE_HIGH = commands2.button.Trigger(
+            lambda: Controllers.OPERATOR_CONTROLLER.getPOV() == 0
+        )
+        LOLLIPOP_INTAKE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.L_3
         )
         EXTAKE_CORAL = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.A
         )
-        EXTAKE_ALGAE_OPERATOR = commands2.button.JoystickButton(
-            Joysticks.joysticks[Controllers.OPERATOR], controllerOPERATOR.LB
+        EXTAKE_ALGAE = commands2.button.JoystickButton(
+            Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B
         )
-        EXTAKE_ALGAE_DRIVER = commands2.button.JoystickButton(Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.B)
+
 
     class Elevator:
         pass

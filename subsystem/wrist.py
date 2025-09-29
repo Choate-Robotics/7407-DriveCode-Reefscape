@@ -107,13 +107,13 @@ class Wrist(Subsystem):
         self.coral_in_feed = is_there_a_coral_in_the_feed
 
     def algae_in(self) -> None:
-        self.algae_motor.set_raw_output(config.wrist_algae_speed)
+        self.algae_motor.set_voltage(config.wrist_algae_voltage)
     
     def algae_out(self) -> None:
-        self.algae_motor.set_raw_output(config.wrist_algae_extake_speed)
+        self.algae_motor.set_voltage(config.wrist_algae_extake_voltage)
 
     def algae_stop(self) -> None:
-        self.algae_motor.set_raw_output(0)
+        self.algae_motor.set_voltage(0)
 
     def hold_algae(self, voltage = config.wrist_algae_hold_volts) -> None:
         self.algae_motor.set_voltage(voltage)

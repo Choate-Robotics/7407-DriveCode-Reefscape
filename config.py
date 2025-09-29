@@ -69,12 +69,12 @@ drivetrain_rotation_tolerance: degrees = 1  # degrees
 drivetrain_x_kp: float = 4.0
 drivetrain_x_ki: float = 0.0
 drivetrain_x_kd: float = 0.0
-drivetrain_x_tolerance: float = 0.001
+drivetrain_x_tolerance: float = 0.01
 
 drivetrain_y_kp: float = 4.0
 drivetrain_y_ki: float = 0.0
 drivetrain_y_kd: float = 0.0
-drivetrain_y_tolerance: float = 0.001
+drivetrain_y_tolerance: float = 0.01
 
 auto_translation_pid = PIDConstants(4, 0.0, 0)
 auto_rotation_pid = PIDConstants(5.0, 0.0, 0.0)
@@ -115,24 +115,23 @@ WRIST_CONFIG = TalonConfig(
     48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350
 )  # 97.75
 wrist_cancoder_id = 22
-wrist_encoder_zero = 0.781
+wrist_encoder_zero = 0.95
 
 wrist_intake_speed = 0.75
 wrist_extake_speed_teleop = -0.30
 wrist_extake_speed_l4 = -0.9
 wrist_extake_speed_auto = -0.9
-wrist_algae_speed = 1
-wrist_algae_extake_speed = -0.5
-wrist_algae_hold_volts = 1
-algae_moving_hold_volts = 10
+wrist_algae_voltage = -8
+wrist_algae_extake_voltage = 10
+wrist_algae_hold_volts = -2
 wrist_max_angle: radians = math.radians(75)
 wrist_min_angle: radians = math.radians(-117)
 angle_threshold: radians = math.radians(1)  # radians
 out_current_threshold: float = 13  # amps PLACEHOLDER
 back_current_threshold: float = 50
 current_time_threshold: float = 0.325
-wrist_algae_time_threshold: float = 3  # seconds PLACEHOLDER
-algae_current_threshold: float = 20
+wrist_algae_time_threshold: float = 0.5  # seconds
+algae_current_threshold: float = 30
 
 wrist_max_ff = 0.17
 wrist_ff_offset = math.radians(30)
@@ -191,7 +190,7 @@ elevator_l1_height: meters = 5 * inches_to_meters
 elevator_l2_height: meters = 6 * inches_to_meters #6
 elevator_l3_height: meters = 13.75 * inches_to_meters #13.75
 elevator_l4_height: meters = constants.elevator_max_height
-elevator_dhigh_height: meters = 11 * inches_to_meters
+elevator_dhigh_height: meters = 10 * inches_to_meters
 elevator_dlow_height: meters = 2.75 * inches_to_meters
 elevator_barge_height: meters = constants.elevator_max_height
 
@@ -202,17 +201,18 @@ intake_coral_station_angle = math.radians(-1)
 intake_l1_angle = math.radians(37)
 intake_l1_hold_angle = math.radians(-5)
 
-wrist_idle_angle = math.radians(-10)
+wrist_idle_angle = math.radians(20)
 wrist_intake_angle = math.radians(-114.5)
 wrist_intake_l1_angle = math.radians(-100)
 wrist_l1_angle = math.radians(64)
 wrist_l2_angle = math.radians(64) #64
 wrist_l3_angle = math.radians(64) #64
 wrist_l4_angle = math.radians(54)
-wrist_dhigh_angle = math.radians(55)
-wrist_dlow_angle = math.radians(55)
-wrist_barge_angle = math.radians(54)
+wrist_dhigh_angle = math.radians(47.5)
+wrist_dlow_angle = math.radians(47.5)
+wrist_barge_angle = math.radians(64)
 wrist_processor_score_angle = 0
+wrist_lollipop_angle = math.radians(4.5)
 
 
 # TARGET POSITIONS
@@ -415,5 +415,17 @@ target_positions: dict[str, TargetData] = {
         intake_in_run=True,
         intake_out_run=False,
         intake_climb=True,
+    ),
+    "LOLLIPOP": TargetData(
+        elevator_idle=True,
+        wrist_idle=True,
+        intake_idle=True,
+        elevator_height=0,
+        wrist_angle=wrist_lollipop_angle,
+        wrist_feed_on=False,
+        wrist_score_on=False,
+        intake_angle=0,
+        intake_in_run=False,
+        intake_out_run=False,
     ),
 }
