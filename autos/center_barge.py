@@ -44,7 +44,7 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         # Move back to barge algae
-        AutoBuilder.followPath(paths[4]),
+        AutoBuilder.followPath(paths[4]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
         Target(config.target_positions["SCORE_BARGE"], Robot.wrist, Robot.elevator)
     ),
     WristAlgaeOut(Robot.wrist).withTimeout(.3),
@@ -63,7 +63,7 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         # Move back to barge algae
-        AutoBuilder.followPath(paths[7]),
+        AutoBuilder.followPath(paths[7]).andThen(InstantCommand(lambda: Robot.drivetrain.set_driver_centric((0, 0), 0))),
         SequentialCommandGroup(
             WaitCommand(0.2),
             Target(config.target_positions["SCORE_BARGE"], Robot.wrist, Robot.elevator),
