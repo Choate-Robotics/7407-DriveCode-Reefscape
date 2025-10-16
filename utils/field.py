@@ -215,18 +215,18 @@ class ManualBranchesBlue(StrEnum):
     def get_left_branches() -> list[Pose2d]:
         return [ManualBranchesBlue.A.scoring_pose, ManualBranchesBlue.C.scoring_pose, ManualBranchesBlue.E.scoring_pose, ManualBranchesBlue.G.scoring_pose, ManualBranchesBlue.I.scoring_pose, ManualBranchesBlue.K.scoring_pose]
 
-ManualBranchesBlue.A.scoring_pose = Pose2d(1, 0, math.radians(0))
-ManualBranchesBlue.B.scoring_pose = Pose2d(9, 0, math.radians(0))
-ManualBranchesBlue.C.scoring_pose = Pose2d(9, 0, math.radians(60))
-ManualBranchesBlue.D.scoring_pose = Pose2d(9, 0, math.radians(60))
-ManualBranchesBlue.E.scoring_pose = Pose2d(9, 0, math.radians(120))
-ManualBranchesBlue.F.scoring_pose = Pose2d(9, 0, math.radians(120))
-ManualBranchesBlue.G.scoring_pose = Pose2d(9, 0, math.radians(180))
-ManualBranchesBlue.H.scoring_pose = Pose2d(9, 0, math.radians(180))
-ManualBranchesBlue.I.scoring_pose = Pose2d(9, 0, math.radians(-120))
-ManualBranchesBlue.J.scoring_pose = Pose2d(9, 0, math.radians(-120))
-ManualBranchesBlue.K.scoring_pose = Pose2d(9, 0, math.radians(-60))
-ManualBranchesBlue.L.scoring_pose = Pose2d(9, 0, math.radians(-60))
+ManualBranchesBlue.A.scoring_pose = Pose2d(3.19, 4.22, math.radians(0))
+ManualBranchesBlue.B.scoring_pose = Pose2d(3.20, 3.87, math.radians(0))
+ManualBranchesBlue.C.scoring_pose = Pose2d(3.69, 2.97, math.radians(60))
+ManualBranchesBlue.D.scoring_pose = Pose2d(4.01, 2.80, math.radians(60))
+ManualBranchesBlue.E.scoring_pose = Pose2d(4.96, 2.79, math.radians(120))
+ManualBranchesBlue.F.scoring_pose = Pose2d(5.27, 2.98, math.radians(120))
+ManualBranchesBlue.G.scoring_pose = Pose2d(5.80, 3.81, math.radians(180))
+ManualBranchesBlue.H.scoring_pose = Pose2d(5.78, 4.16, math.radians(180))
+ManualBranchesBlue.I.scoring_pose = Pose2d(5.34, 5.03, math.radians(-120))
+ManualBranchesBlue.J.scoring_pose = Pose2d(5.00, 5.22, math.radians(-120))
+ManualBranchesBlue.K.scoring_pose = Pose2d(4.01, 5.25, math.radians(-60))
+ManualBranchesBlue.L.scoring_pose = Pose2d(3.74, 5.07, math.radians(-60))
 
 class Reef:
     right_branches = [Branch.B, Branch.D, Branch.F, Branch.H, Branch.J, Branch.L]
