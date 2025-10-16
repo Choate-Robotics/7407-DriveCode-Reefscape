@@ -89,6 +89,8 @@ class FeedIn(SubsystemCommand[Wrist]):
         return self.debouncer.calculate(
             self.subsystem.feed_motor.get_motor_current()
             > config.back_current_threshold
+            and self.subsystem.feed_motor.get_sensor_velocity()
+            < 0.1
         )
 
     def end(self, interrupted) -> None:

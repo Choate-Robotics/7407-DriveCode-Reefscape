@@ -38,8 +38,8 @@ class Elevator(Subsystem):
         """
         limits the height of the elevator to both a max and min
         """
-        if height > constants.elevator_max_height:
-            return constants.elevator_max_height
+        if height > constants.elevator_true_max:
+            return constants.elevator_true_max
         elif height < 0.0:
             return 0.0
         return height

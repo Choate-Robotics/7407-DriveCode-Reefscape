@@ -112,10 +112,10 @@ wrist_algae_id = 17
 WRIST_ALGAE_CONFIG = TalonConfig(1, 0, 0, 0, 0, current_limit=40)
 wrist_id = 14
 WRIST_CONFIG = TalonConfig(
-    48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=350
+    48, 0, 0, 0.06, 0, motion_magic_cruise_velocity=97.75, motion_magic_acceleration=300
 )  # 97.75
 wrist_cancoder_id = 22
-wrist_encoder_zero = 0.95
+wrist_encoder_zero = 0.945
 
 wrist_intake_speed = 0.75
 wrist_extake_speed_teleop = -0.30
@@ -192,7 +192,7 @@ elevator_l3_height: meters = 13.75 * inches_to_meters #13.75
 elevator_l4_height: meters = constants.elevator_max_height
 elevator_dhigh_height: meters = 10 * inches_to_meters
 elevator_dlow_height: meters = 2.75 * inches_to_meters
-elevator_barge_height: meters = constants.elevator_max_height
+elevator_barge_height: meters = constants.elevator_true_max
 
 intake_algae_ground_angle = math.radians(58)
 intake_algae_score_angle = math.radians(32)
@@ -210,7 +210,7 @@ wrist_l3_angle = math.radians(64) #64
 wrist_l4_angle = math.radians(54)
 wrist_dhigh_angle = math.radians(47.5)
 wrist_dlow_angle = math.radians(47.5)
-wrist_barge_angle = math.radians(64)
+wrist_barge_angle = math.radians(70)
 wrist_processor_score_angle = 0
 wrist_lollipop_angle = math.radians(4.5)
 

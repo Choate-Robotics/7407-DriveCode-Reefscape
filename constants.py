@@ -88,6 +88,7 @@ intake_encoder_gear_ratio: float = 3
 elevator_gear_ratio = 9
 elevator_driver_gear_circumference = 1.751 * inches_to_meters * math.pi
 elevator_max_height: meters = 27.5 * inches_to_meters # true max=28 inches
+elevator_true_max: meters = 28 * inches_to_meters
 
 # field
 field_length = 17.548
