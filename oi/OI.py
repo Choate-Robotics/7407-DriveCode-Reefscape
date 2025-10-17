@@ -42,13 +42,13 @@ class OI:
             command.DriveToPose(Robot.drivetrain, Field.reef_face.get_faces())
         ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
-        Keymap.Drivetrain.STATION_ALIGN.onTrue(
-            command.DriveSwerveAim(Robot.drivetrain, 
-                [Field.coral_station.leftCenterFace, 
-                Field.coral_station.rightCenterFace, 
-                Field.barge.middleCage.rotateBy(Rotation2d(math.radians(180)))]
-                )
-        ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
+        # Keymap.Drivetrain.STATION_ALIGN.onTrue(
+        #     command.DriveSwerveAim(Robot.drivetrain, 
+        #         [Field.coral_station.leftCenterFace, 
+        #         Field.coral_station.rightCenterFace, 
+        #         Field.barge.middleCage.rotateBy(Rotation2d(math.radians(180)))]
+        #         )
+        # ).onFalse(command.DriveSwerveCustom(Robot.drivetrain))
 
 
         # Scoring on reef
@@ -142,7 +142,7 @@ class OI:
         )
 
         # Extake into processor or barge
-        Keymap.Wrist.EXTAKE_ALGAE.whileTrue(
+        Keymap.Wrist.EXTAKE_ALGAE.or_(Keymap.Drivetrain.STATION_ALIGN).whileTrue(
             commands2.ParallelCommandGroup(
                 command.ExtakeAlgae(Robot.intake).onlyIf(lambda: Robot.intake.get_pivot_angle() >= math.radians(40)),
                 command.WristAlgaeOut(Robot.wrist)
