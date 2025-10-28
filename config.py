@@ -118,9 +118,9 @@ wrist_cancoder_id = 22
 wrist_encoder_zero = 0.945
 
 wrist_intake_speed = 0.75
-wrist_extake_speed_teleop = -0.30
-wrist_extake_speed_l4 = -0.9
-wrist_extake_speed_auto = -0.9
+wrist_extake_speed_teleop = -0.25
+wrist_extake_speed_l4 = -0.8
+wrist_extake_speed_auto = -0.8
 wrist_algae_voltage = -8
 wrist_algae_extake_voltage = 10
 wrist_algae_hold_volts = -2
