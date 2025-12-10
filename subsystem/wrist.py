@@ -15,6 +15,7 @@ class Wrist(Subsystem):
 
         self.feed_motor: hardware.TalonFX = hardware.TalonFX(config.wrist_feed_id, "rio")
         self.feed_cfg = configs.TalonFXConfiguration()
+        self.feed_cfg.current_limits.supply_current_limit = 60
         self.feed_cfg.slot0.k_p = 1.0
         self.feed_cfg.motor_output.inverted = signals.InvertedValue.COUNTER_CLOCKWISE_POSITIVE
         self.feed_duty_cycle = controls.DutyCycleOut(0)
@@ -28,11 +29,13 @@ class Wrist(Subsystem):
         self.wrist_cfg.motion_magic.motion_magic_cruise_velocity = 97.75
         self.wrist_cfg.motion_magic.motion_magic_acceleration = 350
         self.wrist_cfg.feedback.sensor_to_mechanism_ratio = 45
+        self.wrist_cfg.feedback.feedback_rotor_offset = math.radians(30)
         self.wrist_cfg.motor_output.inverted = signals.InvertedValue.COUNTER_CLOCKWISE_POSITIVE
         self.wrist_control = controls.MotionMagicVoltage(0.0)
 
         self.algae_motor: hardware.TalonFX = hardware.TalonFX(config.wrist_algae_id, "rio")
         self.algae_cfg = configs.TalonFXConfiguration()
+        self.algae_cfg.current_limits.supply_current_limit = 40
         self.algae_cfg.slot0.k_p = 1.0
         self.algae_cfg.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE
         self.algae_duty_cycle = controls.DutyCycleOut(0)
@@ -165,10 +168,9 @@ class Wrist(Subsystem):
         """
 
         self.target_angle = self.limit_angle(angle)
-
+        self.req = self.wrist_control.with_position(self.target_angle)
         
-        req = self.wrist_pos_volts.with_position(self.target_angle).with_feed_forward(ff)
-        self.wrist_motor.set_control(req)
+        self.wrist_motor.set_control(self.req)
 
     def get_wrist_angle(self) -> radians:
         """
