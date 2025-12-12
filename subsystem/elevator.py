@@ -22,9 +22,9 @@ class Elevator(Subsystem):
             .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
         ).with_motion_magic(
             configs.MotionMagicConfigs()
-            .with_motion_magic_cruise_velocity(110)
-            .with_motion_magic_acceleration(275)
-            .with_motion_magic_jerk(1000)
+            .with_motion_magic_cruise_velocity(110/9)
+            .with_motion_magic_acceleration(275/9)
+            .with_motion_magic_jerk(1000/9)
         ).with_slot0(
             configs.Slot0Configs()
             .with_k_p(5)
@@ -96,11 +96,7 @@ class Elevator(Subsystem):
         Returns:
             return_float: current elevator height in meters
         """
-        return (
-           self.leader_motor.get_sensor_position()
-            * constants.elevator_driver_gear_circumference
-            / constants.elevator_gear_ratio
-        )
+        return self.leader_motor.get_position().value_as_double
 
     def is_at_position(self, height: meters, tolerance: meters = config.elevator_height_threshold) -> bool:
         """
