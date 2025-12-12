@@ -69,12 +69,8 @@ class Elevator(Subsystem):
             height (meters): intended elevator height in meters
         """
         height = self.limit_height(height)
-        self.target_height = height
 
-        rotations = (
-            height * constants.elevator_gear_ratio
-        ) / constants.elevator_driver_gear_circumference
-        self.leader_motor.set_control(self.motion_magic.with_position(rotations))
+        self.leader_motor.set_control(self.motion_magic.with_position(height))
 
     def stop(self) -> None:
         """
@@ -107,23 +103,23 @@ class Elevator(Subsystem):
         """
         return abs(self.get_position() - height) < tolerance
 
-    def update_table(self) -> None:
-        table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
+    # def update_table(self) -> None:
+    #    table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
 
-        table.putNumber("height", self.get_position() * meters_to_inches)
-        table.putNumber("velocity rps", self.leader_motor.get_sensor_velocity())
-        table.putNumber("acceleration rpss", self.leader_motor.get_sensor_acceleration())
-        table.putNumber("target height", self.target_height * meters_to_inches)
-        table.putNumber(
-            "motor lead applied output", self.leader_motor.get_applied_output()
-        )
-        table.putNumber(
-            "motor lead current", self.leader_motor.get_motor_current()
-        )
-        table.putNumber(
-            "motor follow applied output", self.follower_motor.get_applied_output()
-        )
+    #     table.putNumber("height", self.get_position() * meters_to_inches)
+    #     table.putNumber("velocity rps", self.leader_motor.get_sensor_velocity())
+    #     table.putNumber("acceleration rpss", self.leader_motor.get_sensor_acceleration())
+    #     table.putNumber("target height", self.target_height * meters_to_inches)
+    #     table.putNumber(
+    #         "motor lead applied output", self.leader_motor.get_applied_output()
+    #     )
+    #     table.putNumber(
+    #         "motor lead current", self.leader_motor.get_motor_current()
+    #     )
+    #     table.putNumber(
+    #         "motor follow applied output", self.follower_motor.get_applied_output()
+    #     )
 
-    def periodic(self):
-        if config.NT_ELEVATOR:
-            self.update_table()
+    # def periodic(self):
+    #     if config.NT_ELEVATOR:
+    #         self.update_table()
