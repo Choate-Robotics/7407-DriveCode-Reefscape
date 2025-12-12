@@ -3,35 +3,51 @@ from wpilib import DigitalInput
 
 import config
 import constants
-from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
 from units.SI import meters, meters_to_inches
+from phoenix6 import hardware, controls, configs, signals
 
 
 class Elevator(Subsystem):
     def __init__(self):
         super().__init__()
-        self.leader_motor: TalonFX = TalonFX(
-            config.elevator_lead_id,
-            config.foc_active,
-            inverted=False,
-            config=config.ELEVATOR_CONFIG
-        )
-        self.follower_motor: TalonFX = TalonFX(
-            config.elevator_follower_id,
-            config.foc_active,
-            inverted=False,
-            config=config.ELEVATOR_CONFIG
+        self.leader_motor = hardware.TalonFX(config.elevator_lead_id)
+        self.motion_magic = controls.MotionMagicVoltage(0)
+
+        self.follower_motor = hardware.TalonFX(config.elevator_follower_id)      
+
+        self.config = configs.TalonFXConfiguration().with_motor_output(
+            configs.MotorOutputConfigs()
+            .with_neutral_mode(signals.NeutralModeValue.BRAKE)
+            .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
+        ).with_motion_magic(
+            configs.MotionMagicConfigs()
+            .with_motion_magic_cruise_velocity(110)
+            .with_motion_magic_acceleration(275)
+            .with_motion_magic_jerk(1000)
+        ).with_slot0(
+            configs.Slot0Configs()
+            .with_k_p(5)
+            .with_k_i(0)
+            .with_k_d(0.175)
+            .with_k_s(0.13)
+            .with_k_v(0)
+            .with_k_a(0)
+            .with_gravity_type(signals.GravityTypeValue.ELEVATOR_STATIC)
+            .with_k_g(0.28)
+        ).with_feedback(
+            configs.FeedbackConfigs()
+            .with_sensor_to_mechanism_ratio(constants.elevator_gear_ratio/constants.elevator_driver_gear_circumference)
+            .with_feedback_sensor_source(signals.FeedbackSensorSourceValue.FUSED_CANCODER)
         )
 
         self.target_height: meters = 0.0
         self.elevator_moving: bool = False
 
     def init(self):
-        self.leader_motor.init()
-        self.follower_motor.init()
-        self.follower_motor.follow(self.leader_motor, inverted=True)
-        self.leader_motor.set_sensor_position(0)
+        self.leader_motor.configurator.apply(self.config)
+        self.follower_motor.set_control(controls.Follower(config.elevator_lead_id, True))
+        self.leader_motor.set_position(0)
 
     @staticmethod
     def limit_height(height: meters) -> meters:
@@ -43,6 +59,7 @@ class Elevator(Subsystem):
         elif height < 0.0:
             return 0.0
         return height
+
 
     def set_position(self, height: meters) -> None:
         """
@@ -57,13 +74,14 @@ class Elevator(Subsystem):
         rotations = (
             height * constants.elevator_gear_ratio
         ) / constants.elevator_driver_gear_circumference
-        self.leader_motor.set_target_position(rotations)
+        self.leader_motor.set_control(self.motion_magic.with_position(rotations))
 
     def stop(self) -> None:
         """
         Stops the elevator
         """
         self.set_position(self.get_position())
+
 
     def set_zero(self) -> None:
         """
@@ -79,7 +97,7 @@ class Elevator(Subsystem):
             return_float: current elevator height in meters
         """
         return (
-            self.leader_motor.get_sensor_position()
+           self.leader_motor.get_sensor_position()
             * constants.elevator_driver_gear_circumference
             / constants.elevator_gear_ratio
         )
