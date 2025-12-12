@@ -1,7 +1,6 @@
 import config
 import constants
 from phoenix6.hardware import CANcoder
-import ntcore
 from phoenix6 import StatusSignal, controls, configs, hardware, signals 
 import math
 from units.SI import radians
@@ -30,7 +29,9 @@ class Intake(commands2.subsystem):
             ).with_feedback(
 
                 
-            ))
+            )
+            
+            )
 
         self.pivot_motor_configs = (
             configs.TalonFXConfiguration()
@@ -39,6 +40,21 @@ class Intake(commands2.subsystem):
                 .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
                 .with_neutral_mode(signals.NeutralModeValue.BRAKE)
             ).with_feedback(
+                configs.FeedbackConfigs()
+                .with_feedback_remote_sensor_id(signals.FeedbackSensorSourceValue.FUSED_CANCODER)
+            ).with_motion_magic(
+                configs.MotionMagicConfigs()
+                .with_motion_magic_cruise_velocity(97)
+                
+            ).with_slot1(
+                configs.Slot1Configs()
+                .with_k_p(2)
+                .with_k_i(0)
+                .with_k_d(0)
+                .with_k_s(-0.195)
+                .with_k_v(0)
+                .with_k_a(0)
+                .with_gravity_type(signals.GravityTypeValue.ARM_COSINE)
 
             )
             
