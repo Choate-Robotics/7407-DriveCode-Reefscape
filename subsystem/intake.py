@@ -1,8 +1,7 @@
 import config
 import constants
-from toolkit.motors.ctre_motors import TalonFX
 from toolkit.subsystem import Subsystem
-from phoenix6.hardware import CANcoder
+from phoenix6 import CANcoder, hardware, controls, configs, StatusCode
 import ntcore
 
 import math
@@ -14,48 +13,60 @@ class Intake(Subsystem):
 
     def __init__(self):
         super().__init__()
-        self.horizontal_motor: TalonFX = TalonFX(
-            config.horizontal_id,
-            config.foc_active,
-            inverted=False,
-            config=config.INTAKE_CONFIG,
-        )
-        self.pivot_motor: TalonFX = TalonFX(
-            config.intake_pivot_id,
-            config.foc_active,
-            inverted=False,
-            config=config.INTAKE_PIVOT_CONFIG,
-        )
-        self.intake_running: bool = False
+        self.horizontal_motor: TalonFX = hardware.TalonFX(config.horizontal_id)
+        self.motion_magic = controls.MotionMagicVoltage(0)
+        self.control = controls.DutyCycleOut(0)
 
+        self.pivot_motor: TalonFX = hardware.TalonFX(config.intake_pivot_id)
+        
+        self.config = configs.TalonFXConfiguration().with_motor_output(
+            configs.MotorOutputConfigs()
+            .with_neutral_mode(signals.NeutralModeValue.BRAKE)
+            .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
+        ).with_motion_magic(
+            configs.MotionMagicConfigs()
+            .with_motion_magic_cruise_velocity(97)
+        ).with_slot0(
+            configs.Slot0Configs()
+            .with_k_p(2)
+            .with_k_i(0)
+            .with_k_d(0)
+            .with_k_s(-0.195)
+            .with_k_v(0)
+            .with_k_a(0)
+        ).with_feedback(
+            .with_feedback_sensor_source(signals.FeedbackSensorValue.intake_cancoder_id)
+        )
+
+        self.intake_running: bool = False
         self.pivot_angle = math.radians(0)
         self.intake_pivoting: bool = False
         self.target_angle: radians = 0
         self.pivot_zeroed: bool = False
-
         self.algae_in_intake = False
 
         self.encoder: CANcoder = CANcoder(config.intake_cancoder_id)
 
 
     def init(self):
-        self.horizontal_motor.init()
-        self.pivot_motor.init()
-
+        self.horizontal_motor.configurator.apply(self.config)
+        self.pivot_motor.configurator.apply(self.config)
+        self.set_pivot_angle(0)
         self.zero_pivot()
+
 
     def roll_in(self) -> None:
         """
         spin the motors inwards to collect the coral
         """
-        self.horizontal_motor.set_raw_output(
+        self.horizontal_motor.set_control(
             config.horizontal_intake_speed
         )
         self.intake_running = True
     
     def intake_algae(self) -> None:
 
-        self.horizontal_motor.set_raw_output(
+        self.horizontal_motor.set_control(
             -config.intake_algae_speed
         )
         self.intake_running = True
@@ -64,21 +75,21 @@ class Intake(Subsystem):
         """
         stop the motors
         """
-        self.horizontal_motor.set_raw_output(0)
+        self.horizontal_motor.set_control(0)
         self.intake_running = False
 
     def roll_out(self, speed: float = config.horizontal_intake_speed) -> None:
         """
         eject coral in the intake
         """
-        self.horizontal_motor.set_raw_output(
+        self.horizontal_motor.set_control(
             -speed
         )
         self.intake_running = True
 
     def extake_algae(self) -> None:
 
-        self.horizontal_motor.set_raw_output(
+        self.horizontal_motor.set_control(
             config.extake_algae_speed
         )
 
@@ -113,7 +124,7 @@ class Intake(Subsystem):
             (self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi
         )
 
-        self.pivot_motor.set_sensor_position(
+        self.pivot_motor.set_position(
             self.pivot_angle * constants.intake_pivot_gear_ratio / (2 * math.pi)
         )
 
@@ -122,7 +133,7 @@ class Intake(Subsystem):
     def get_pivot_angle(self):
         "returns current angle of pivot"
         self.pivot_angle = (
-            self.pivot_motor.get_sensor_position()
+            self.pivot_motor.get_position()
             / constants.intake_pivot_gear_ratio
             * math.pi
             * 2
