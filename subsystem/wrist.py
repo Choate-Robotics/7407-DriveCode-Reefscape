@@ -55,7 +55,24 @@ class Wrist(Subsystem):
         self.algae_motor.init()
         self.initial_zero()
         self.table = ntcore.NetworkTableInstance.getDefault().getTable("wrist")
+        self.wrist_angle = self.table.getDoubleTopic("wrist angle").publish() 
+        self.target_angle = self.table.getDoubleTopic("target angle").publish()
+        self.wrist_angle_moving = self.table.getBooleanTopic("target angle moving").publish()
+        self.wrist_feeding = self.table.getBooleanTopic("wrist feeding").publish()
+        self.wrist_ejecting = self.table.getBooleanTopic("wrist ejecting").publish()
+        self.feed_current = self.table.getDoubleTopic("feed current").publish()
+        self.wrist_zeroed = self.table.geBooleanTopic("wrist zeroed").publish()
+        self.wrist_abs_pos = self.table.getDoubleTopic("wrist absolute position").publish()
+        self.wrist_abs_ang = self.table.getDoubleTopic("wrist absolute angle").publish()
+        self.calc_kg = self.table.getDoubleTopic("calculated kg").publish()
+        self.wrist_applied_out = self.table.getDoubleTopic("wrist applied output").publish()
+        self.wrist_current = self.table.getDoubleTopic("wrist current").publish()
+        self.coral_in_feed = self.table.getDoubleTopic("coral in feed").publish()
+        self.wrist_angle_diff = self.table.getDoubleTopic("wrist angle difference")
+        self.algae_in_wrist = self.table.getBooleanTopic("algae in wrist").publish()
+        self.algae_motor_current = self.table.getDoubleTopic("algae motor current").publish()
 
+        
     def initial_zero(self) -> None:
         """
         Zeros the wirst.
@@ -186,31 +203,29 @@ class Wrist(Subsystem):
         """
         update the network table with the wrist data
         """
-
-        self.table.putNumber("wrist angle", math.degrees(self.get_wrist_angle()))
-        self.table.putNumber("target angle", math.degrees(self.target_angle))
-        self.table.putBoolean("wrist moving", self.wrist_angle_moving)
-        self.table.putBoolean("wrist feeding", self.wrist_feeding)
-        self.table.putBoolean("wrist ejecting", self.wrist_ejecting)
-        self.table.putNumber("feed current", self.feed_motor.get_motor_current())
-        self.table.putBoolean("wrist zeroed", self.wrist_zeroed)
-        self.table.putNumber("wrist absolute position", self.encoder.get_absolute_position().value)
-        self.table.putNumber("wrist absolute angle", (math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
+        self.wrist_angle.set(math.degrees(self.get_wrist_angle))
+        self.target_angle.set(math.degrees(self.target_angle))
+        self.wrist_angle_moving.set(self.wrist_angle_moving)
+        self.wrist_feeding.set(self.wrist_feeding)
+        self.wrist_ejecting.set(self.wrist_ejecting)
+        self.feed_current.set(self.feed_current.get_motor_current)
+        self.wrist_zeroed.set(self.wrist_zeroed)
+        self.wrist_abs_pos.set(self.encoder.get_absolute_position().value)
+        self.wrist_abs_ang.set((math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
             / constants.wrist_encoder_gear_ratio
             * 2
             * math.pi))
-        self.table.putNumber("calculated kG", config.wrist_max_ff * math.cos(self.get_wrist_angle() - config.wrist_ff_offset))
-        self.table.putNumber("wrist applied output", self.wrist_motor.get_applied_output())
-        self.table.putNumber("wrist current", self.wrist_motor.get_motor_current())
-        self.table.putBoolean("coral in feed", self.coral_in_feed)
-        self.table.putNumber("wrist angle difference", (math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
+        self.calc_kg.set(config.wrist_max_ff * math.cos(self.get_wrist_angle() - config.wrist_ff_offset))
+        self.wrist_applied_out.set(self.wrist_motor.get_applied_output())
+        self.wrist_current.set(self.wrist_motor.get_motor_current())
+        self.coral_in_feed.set(self.coral_in_feed)
+        self.wrist_angle_diff.set((math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)                   
             / constants.wrist_encoder_gear_ratio
             * 2
             * math.pi)-self.get_wrist_angle())
+        self.algae_in_wrist.set(self.algae_in_wrist)
+        self.algae_motor_current.set(self.algae_motor.get_motor_current())
         
-        self.table.putBoolean("algae in wrist", self.algae_in_wrist)
-        self.table.putNumber("algae motor current", self.algae_motor.get_motor_current())
-
     def periodic(self) -> None:
         if config.NT_WRIST:
             self.update_table()
