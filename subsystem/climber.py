@@ -26,6 +26,12 @@ class Climber(Subsystem):
         self.climber_motor.init()
         self.zero()
 
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("climber")
+        self.pos_pub = self.table.getDoubleTopic("climber_motor_revolutions").publish()
+        self.moving_pub = self.table.getBooleanTopic("climber_moving").publish()
+        self.zero_pub = self.table.getBooleanTopic("climber_zeroed").publish()
+        self.current_pub = self.table.getBooleanTopic("climber_motor_current").publish()
+
     def zero(self) -> None:
         self.climber_motor.set_sensor_position(0)
         self.zeroed = True
@@ -39,12 +45,10 @@ class Climber(Subsystem):
         return self.climber_motor.get_sensor_position()
         
     def update_table(self) -> None:
-        table = ntcore.NetworkTableInstance.getDefault().getTable("climber")
-
-        table.putNumber("climber_motor_revolutions", self.climber_motor.get_sensor_position())
-        table.putBoolean("climber_moving", self.moving)
-        table.putBoolean("climber_zeroed", self.zeroed)
-        table.putNumber("climber_motor_current", self.climber_motor.get_motor_current())
+        self.pos_pub.set(self.climber_motor.get_sensor_position())
+        self.moving_pub.set(self.moving)
+        self.zero_pub.set(self.zeroed)
+        self.current_pub.set(self.climber_motor.get_motor_current())
 
     def periodic(self) -> None:
         if config.NT_CLIMBER:
