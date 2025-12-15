@@ -46,17 +46,17 @@ class Intake(Subsystem):
 
         self.table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
         self.intake_running_pub = self.table.getBooleanTopic("intake running").publish()
-        self.horizontal_current_pub = self.table.getNumber("horizontal current").publish()
-        self.pivot_current_pub = self.table.getNumber("pivot current").publish()
-        self.pivot_applied_output_pub = self.table.getNumber("pivot applied output").publish()
-        self.pivot_angle_pub = self.table.getNumber("pivot angle").publish()
-        self.pivot_absolute_angle_pub = self.table.getNumber("pivot absolute angle").publish()
-        self.absolute_position_pub = self.table.getNumber("absolute position").publish()
-        self.pivot_moving_pub = self.table.getBoolean("pivot moving").publish()
-        self.pivot_zeroed_pub = self.table.getBoolean("pivot zeroed").publish()
-        self.pivot_target_angle_pub = self.table.getNumber("pivot target angle").publish()
-        self.pivot_velocity_pub= self.table.getNumber("pivot velocity").publish()
-        self.pivot_acceleration_pub = self.table.getNumber("pivot acceleration").publish()
+        self.horizontal_current_pub = self.table.getDoubleTopic("horizontal current").publish()
+        self.pivot_current_pub = self.table.getDoubleTopic("pivot current").publish()
+        self.pivot_applied_output_pub = self.table.getDoubleTopic("pivot applied output").publish()
+        self.pivot_angle_pub = self.table.getDoubleTopic("pivot angle").publish()
+        self.pivot_absolute_angle_pub = self.table.getDoubleTopic("pivot absolute angle").publish()
+        self.absolute_position_pub = self.table.getDoubleTopic("absolute position").publish()
+        self.pivot_moving_pub = self.table.getBooleanTopic("pivot moving").publish()
+        self.pivot_zeroed_pub = self.table.getBooleanTopic("pivot zeroed").publish()
+        self.pivot_target_angle_pub = self.table.getDoubleTopic("pivot target angle").publish()
+        self.pivot_velocity_pub= self.table.ggetDoubleTopic("pivot velocity").publish()
+        self.pivot_acceleration_pub = self.table.ggetDoubleTopic("pivot acceleration").publish()
 
 
     def roll_in(self) -> None:
@@ -177,7 +177,7 @@ class Intake(Subsystem):
         self.pivot_zeroed_pub.set(self.pivot_zeroed)
         self.pivot_target_angle_pub.set(math.degrees(self.target_angle))
         self.pivot_velocity_pub.set(self.pivot_motor.get_sensor_velocity())
-        self.pivot_acceleration_pub(self.pivot_motor.get_sensor_acceleration())
+        self.pivot_acceleration_pub.set(self.pivot_motor.get_sensor_acceleration())
 
     def periodic(self) -> None:
         if config.NT_INTAKE:
