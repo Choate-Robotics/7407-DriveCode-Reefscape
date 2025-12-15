@@ -28,7 +28,13 @@ class SwerveNode:
         self.sim_travel_distance: meters = 0
         self.sim_motor_speed: meters_per_second = 0
         self.sim_motor_angle: radians = 0
-        self.nt = ntcore.NetworkTableInstance.getDefault().getTable("Pods")
+
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("Pods")
+        self.target_angle_pub = self.table.getDoubleTopic("target angle").publish()
+        self.current_angle_pub = self.table.getDoubleTopic("current angle").publish()
+        self.current_speed_pub = self.table.getDoubleTopic("current speed").publish()
+        self.target_speed_pub = self.table.getDoubleTopic("target speed").publish()
+        self.abs_pos_pub = self.table.getDoubleTopic("absolute pos").publish()
 
     def init(self):
         """
@@ -226,9 +232,9 @@ class SwerveNode:
         return diff + initial_angle, False, 0
     
     def update_tables(self):
-        self.nt.putNumber(f"{self.name} target angle", bounded_angle_diff(self.get_target_angle(), 0))
-        self.nt.putNumber(f"{self.name} current angle", bounded_angle_diff(self.get_turn_motor_angle(), 0))
-        self.nt.putNumber(f"{self.name} current speed", self.get_motor_velocity())
-        self.nt.putNumber(f"{self.name} target speed", self.m_move._motor.get_closed_loop_reference().value/constants.drivetrain_move_gear_ratio_as_rotations_per_meter)
-        self.nt.putNumber(f"{self.name} absolute pos", self.get_abs())
+        self.target_angle_pub.set(bounded_angle_diff(self.get_target_angle(), 0))
+        self.current_angle_pub.set(bounded_angle_diff(self.get_turn_motor_angle(), 0))
+        self.current_speed_pub.set(self.get_motor_velocity())
+        self.target_speed_pub.set(self.m_move._motor.get_closed_loop_reference().value/constants.drivetrain_move_gear_ratio_as_rotations_per_meter)
+        self.abs_pos_pub.set(self.get_abs())
 

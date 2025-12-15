@@ -97,7 +97,12 @@ class Drivetrain(Subsystem):
         self.sim_node_positions: tuple[SwerveModulePosition, SwerveModulePosition, SwerveModulePosition, SwerveModulePosition] = None
         self.sim_node_states: tuple[SwerveModuleState, SwerveModuleState, SwerveModuleState, SwerveModuleState] = None
         self.node_translations: tuple[Translation2d] | None = None
-        self.nt = ntcore.NetworkTableInstance.getDefault().getTable("Drivetrain")
+
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("Drivetrain")
+        self.encoder_pub= self.table.getDoubleArrayTopic("encoder poses").publish()
+        self.node_states_pub = self.table.getDoubleArrayTopic("node states").publish()
+        self.pos_pub = self.table.getStructTopic("estimated pose", Pose2d).publish()
+        self.rot_pub = self.table.getDoubleTopic("rotation").publish()
 
         # auto setup
         self.pp_config = constants.auto_config
@@ -365,25 +370,22 @@ class Drivetrain(Subsystem):
         return [fl, fr, bl, br]
     
     def update_tables(self):
-        self.nt.putNumberArray("encoder poses", self.get_abs())
+        self.encoder_pub.set(self.get_abs())
+
         n_states = self.node_states
 
-        self.nt.putNumberArray('Node States', [
+        self.node_states_pub.set([
             n_states[0].angle.radians(), n_states[0].speed,
             n_states[1].angle.radians(), n_states[1].speed,
             n_states[2].angle.radians(), n_states[2].speed,
             n_states[3].angle.radians(), n_states[3].speed
         ])
 
-        pose = self.get_pose()
-
-        self.nt.putNumberArray("Estimated pose",[
-            pose.X(),
-            pose.Y(),
-            pose.rotation().radians()
+        self.pos_pub.set([
+            self.get_pose()
         ])
 
-        self.nt.putNumber("rotation", self.get_heading().degrees())
+        self.rot_pub.set(self.get_heading().degrees())
 
         self.n_front_left.update_tables()
         self.n_front_right.update_tables()
