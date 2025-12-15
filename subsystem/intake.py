@@ -19,7 +19,7 @@ class Intake(Subsystem):
 
         self.pivot_motor: TalonFX = hardware.TalonFX(config.intake_pivot_id)
         
-        self.config = configs.TalonFXConfiguration().with_motor_output(
+        self.pivot_config = configs.TalonFXConfiguration().with_motor_output(
             configs.MotorOutputConfigs()
             .with_neutral_mode(signals.NeutralModeValue.BRAKE)
             .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
@@ -38,8 +38,23 @@ class Intake(Subsystem):
             .with_feedback_sensor_source(signals.FeedbackSensorValue.intake_cancoder_id)
         )
 
+        self.horizontal_config = configs.TalonFXConfiguration().with_motor_output(
+            configs.MotorOutputConfigs()
+            .with_neutral_mode(signals.NeutralModeValue.BRAKE)
+            .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
+        ).with_motion_magic(
+            configs.MotionMagicConfigs()
+            .with_motion_magic_cruise_velocity(97)
+        ).with_slot0(
+            configs.Slot0Configs()
+            .with_k_p(2)
+            .with_k_i(0)
+            .with_k_d(0)
+        ).with_feedback(
+            .with_feedback_sensor_source(signals.FeedbackSensorValue.intake_cancoder_id)
+        )
+
         self.intake_running: bool = False
-        self.pivot_angle = math.radians(0)
         self.intake_pivoting: bool = False
         self.target_angle: radians = 0
         self.pivot_zeroed: bool = False
@@ -49,9 +64,8 @@ class Intake(Subsystem):
 
 
     def init(self):
-        self.horizontal_motor.configurator.apply(self.config)
-        self.pivot_motor.configurator.apply(self.config)
-        self.set_pivot_angle(0)
+        self.horizontal_motor.configurator.apply(self.horizontal_config)
+        self.pivot_motor.configurator.apply(self.pivot_config)
         self.zero_pivot()
 
 
@@ -60,14 +74,14 @@ class Intake(Subsystem):
         spin the motors inwards to collect the coral
         """
         self.horizontal_motor.set_control(
-            config.horizontal_intake_speed
+            self.control.with_output(horizontal_intake_speed)
         )
         self.intake_running = True
     
     def intake_algae(self) -> None:
 
         self.horizontal_motor.set_control(
-            -config.intake_algae_speed
+            self.control.with_output(-intake_algae_speed)
         )
         self.intake_running = True
 
@@ -83,14 +97,14 @@ class Intake(Subsystem):
         eject coral in the intake
         """
         self.horizontal_motor.set_control(
-            -speed
+            self.control.with_output(-speed)
         )
         self.intake_running = True
 
     def extake_algae(self) -> None:
 
         self.horizontal_motor.set_control(
-            config.extake_algae_speed
+            self.control.with_output(extake_algae_speed)
         )
 
         self.intake_running = True
