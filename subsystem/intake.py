@@ -55,8 +55,8 @@ class Intake(Subsystem):
         self.pivot_moving_pub = self.table.getBooleanTopic("pivot moving").publish()
         self.pivot_zeroed_pub = self.table.getBooleanTopic("pivot zeroed").publish()
         self.pivot_target_angle_pub = self.table.getDoubleTopic("pivot target angle").publish()
-        self.pivot_velocity_pub= self.table.ggetDoubleTopic("pivot velocity").publish()
-        self.pivot_acceleration_pub = self.table.ggetDoubleTopic("pivot acceleration").publish()
+        self.pivot_velocity_pub= self.table.getDoubleTopic("pivot velocity").publish()
+        self.pivot_acceleration_pub = self.table.getDoubleTopic("pivot acceleration").publish()
 
 
     def roll_in(self) -> None:
