@@ -89,7 +89,9 @@ class Intake(Subsystem):
         """
         stop the motors
         """
-        self.horizontal_motor.set_control(0)
+        self.horizontal_motor.set_control(
+            self.control.with_output(0)
+        )
         self.intake_running = False
 
     def roll_out(self, speed: float = config.horizontal_intake_speed) -> None:
@@ -138,7 +140,7 @@ class Intake(Subsystem):
             (self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi
         )
 
-        self.pivot_motor.set_position(
+        self.pivot_motor.set_control(
             self.pivot_angle * constants.intake_pivot_gear_ratio / (2 * math.pi)
         )
 
