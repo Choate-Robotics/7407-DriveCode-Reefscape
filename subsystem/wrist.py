@@ -208,7 +208,7 @@ class Wrist(Subsystem):
         self.wrist_angle_moving_pub.set(self.wrist_angle_moving)
         self.wrist_feeding_pub.set(self.wrist_feeding)
         self.wrist_ejecting_pub.set(self.wrist_ejecting)
-        self.feed_current_pub.set(self.feed_current.get_motor_current)
+        self.feed_current_pub.set(self.feed_motor.get_motor_current())
         self.wrist_zeroed_pub.set(self.wrist_zeroed)
         self.wrist_abs_pos_pub.set(self.encoder.get_absolute_position().value)
         self.wrist_abs_ang_pub.set((math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)
