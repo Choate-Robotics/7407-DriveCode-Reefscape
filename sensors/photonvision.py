@@ -4,7 +4,7 @@ from photonlibpy.photonCamera import PhotonCamera
 from photonlibpy.estimatedRobotPose import EstimatedRobotPose
 from photonlibpy.photonPoseEstimator import PhotonPoseEstimator, PoseStrategy
 from robotpy_apriltag import AprilTagFieldLayout, AprilTagField
-from wpimath.geometry import Transform3d, Pose3d, Translation2d
+from wpimath.geometry import Transform3d, Pose3d, Translation2d, Pose2d
 from wpilib import TimedRobot
 
 
@@ -26,6 +26,10 @@ class PhotonCamCustom:
             .getSubTable(self.name)
         )
 
+        self.pose_pub = self.table.getStructTopic("estimated pose", Pose2d).publish()
+        self.ids_pub = self.table.getDoubleArrayTopic("ids").publish()
+        self.dist_pub = self.table.getDoubleTopic("distance to closest target").publish()
+
     def init(self):
         pass
 
@@ -36,22 +40,14 @@ class PhotonCamCustom:
             pose = self.estimator.update(result)
             if pose:
                 estimatedPose = pose.estimatedPose.toPose2d()
-                self.table.putNumberArray(
-                    "estimated pose",
-                    [
-                        estimatedPose.X(),
-                        estimatedPose.Y(),
-                        estimatedPose.rotation().radians(),
-                    ],
-                )
+                self.pose_pub.set(estimatedPose)
 
             self.table.putBoolean("has target", result.hasTargets())
             if result.hasTargets():
-                self.table.putNumberArray(
-                    "ids", [target.getFiducialId() for target in result.getTargets()]
+                self.ids_pub.set(
+                    [target.getFiducialId() for target in result.getTargets()]
                 )
-                self.table.putNumber(
-                    "distance to closest target",
+                self.dist_pub.set(
                     result.getBestTarget()
                     .bestCameraToTarget.translation()
                     .toTranslation2d()

@@ -49,6 +49,9 @@ class _Robot(wpilib.TimedRobot):
         period = config.period
         self.scheduler.setPeriod(period)
 
+        self.time_pub = self.nt.getTable("timing").getDoubleTopic("loop time").publish()
+        self.last_time = 0
+
         Field.flip_poses()
         Field.update_field_table("Field")
         self.log.info(f"Scheduler period set to {period} seconds")
@@ -138,6 +141,10 @@ class _Robot(wpilib.TimedRobot):
 
         Robot.drivetrain.update_tables()
         Sensors.cam_controller.update_tables()
+
+        time = wpilib.Timer.getFPGATimestamp()
+        self.time_pub.set(time - self.last_time)
+        self.last_time = time
         ...
 
     # Initialize subsystems
