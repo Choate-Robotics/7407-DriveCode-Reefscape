@@ -33,6 +33,15 @@ class Elevator(Subsystem):
         self.follower_motor.follow(self.leader_motor, inverted=True)
         self.leader_motor.set_sensor_position(0)
 
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("elevator")
+        self.height_pub = self.table.getDoubleTopic("height").publish()
+        self.velocity_pub = self.table.getDoubleTopic("velocity rps").publish()
+        self.acceleration_pub = self.table.getDoubleTopic("acceleration rpss").publish()
+        self.target_height_pub = self.table.getDoubleTopic("target height").publish()
+        self.motor_lead_applied_output_pub = self.table.getDoubleTopic("motor lead applied output").publish()
+        self.motor_lead_current_pub = self.table.getDoubleTopic("motor lead current").publish()
+        self.motor_follow_applied_output_pub = self.table.getDoubleTopic("motor follow applied output").publish()
+   
     @staticmethod
     def limit_height(height: meters) -> meters:
         """
@@ -96,19 +105,13 @@ class Elevator(Subsystem):
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("Elevator")
 
-        table.putNumber("height", self.get_position() * meters_to_inches)
-        table.putNumber("velocity rps", self.leader_motor.get_sensor_velocity())
-        table.putNumber("acceleration rpss", self.leader_motor.get_sensor_acceleration())
-        table.putNumber("target height", self.target_height * meters_to_inches)
-        table.putNumber(
-            "motor lead applied output", self.leader_motor.get_applied_output()
-        )
-        table.putNumber(
-            "motor lead current", self.leader_motor.get_motor_current()
-        )
-        table.putNumber(
-            "motor follow applied output", self.follower_motor.get_applied_output()
-        )
+        self.height_pub.set(self.get_position() * meters_to_inches)
+        self.velocity_pub.set(self.leader_motor.get_sensor_velocity())
+        self.acceleration_pub.set(self.leader_motor.get_sensor_acceleration())
+        self.target_height_pub.set(self.target_height * meters_to_inches)
+        self.motor_lead_applied_output_pub.set(self.leader_motor.get_applied_output())
+        self.motor_lead_current_pub.set(self.leader_motor.get_motor_current())
+        self.motor_follow_applied_output_pub.set(self.follower_motor.get_applied_output())
 
     def periodic(self):
         if config.NT_ELEVATOR:

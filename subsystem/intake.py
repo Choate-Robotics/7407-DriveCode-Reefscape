@@ -44,6 +44,21 @@ class Intake(Subsystem):
 
         self.zero_pivot()
 
+        self.table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
+        self.intake_running_pub = self.table.getBooleanTopic("intake running").publish()
+        self.horizontal_current_pub = self.table.getDoubleTopic("horizontal current").publish()
+        self.pivot_current_pub = self.table.getDoubleTopic("pivot current").publish()
+        self.pivot_applied_output_pub = self.table.getDoubleTopic("pivot applied output").publish()
+        self.pivot_angle_pub = self.table.getDoubleTopic("pivot angle").publish()
+        self.pivot_absolute_angle_pub = self.table.getDoubleTopic("pivot absolute angle").publish()
+        self.absolute_position_pub = self.table.getDoubleTopic("absolute position").publish()
+        self.pivot_moving_pub = self.table.getBooleanTopic("pivot moving").publish()
+        self.pivot_zeroed_pub = self.table.getBooleanTopic("pivot zeroed").publish()
+        self.pivot_target_angle_pub = self.table.getDoubleTopic("pivot target angle").publish()
+        self.pivot_velocity_pub= self.table.getDoubleTopic("pivot velocity").publish()
+        self.pivot_acceleration_pub = self.table.getDoubleTopic("pivot acceleration").publish()
+
+
     def roll_in(self) -> None:
         """
         spin the motors inwards to collect the coral
@@ -151,18 +166,18 @@ class Intake(Subsystem):
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("intake")
 
-        table.putBoolean("intake running", self.intake_running)
-        table.putNumber("horizontal current", self.get_horizontal_motor_current())
-        table.putNumber("pivot current", self.pivot_motor.get_motor_current())
-        table.putNumber("pivot applied output", self.pivot_motor.get_applied_output())
-        table.putNumber("pivot angle", math.degrees(self.get_pivot_angle()))
-        table.putNumber("pivot absolute angle", math.degrees((self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi))
-        table.putNumber("absolute position", self.encoder.get_absolute_position().value)
-        table.putBoolean("pivot moving", self.intake_pivoting)
-        table.putBoolean("pivot zeroed", self.pivot_zeroed)
-        table.putNumber("pivot target angle", math.degrees(self.target_angle))
-        table.putNumber("pivot velocity", self.pivot_motor.get_sensor_velocity())
-        table.putNumber("pivot acceleration", self.pivot_motor.get_sensor_acceleration())
+        self.intake_running_pub.set(self.intake_running)
+        self.horizontal_current_pub.set(self.get_horizontal_motor_current())
+        self.pivot_current_pub.set(self.pivot_motor.get_motor_current())
+        self.pivot_applied_output_pub.set(self.pivot_motor.get_applied_output())
+        self.pivot_angle_pub.set(math.degrees(self.get_pivot_angle()))
+        self.pivot_absolute_angle_pub.set(math.degrees((self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi))
+        self.absolute_position_pub.set(self.encoder.get_absolute_position().value)
+        self.pivot_moving_pub.set(self.intake_pivoting)
+        self.pivot_zeroed_pub.set(self.pivot_zeroed)
+        self.pivot_target_angle_pub.set(math.degrees(self.target_angle))
+        self.pivot_velocity_pub.set(self.pivot_motor.get_sensor_velocity())
+        self.pivot_acceleration_pub.set(self.pivot_motor.get_sensor_acceleration())
 
     def periodic(self) -> None:
         if config.NT_INTAKE:
