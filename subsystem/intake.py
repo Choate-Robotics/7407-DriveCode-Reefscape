@@ -81,7 +81,7 @@ class Intake(commands2.subsystem):
         spin the motors inwards to collect the coral
         """
 
-        self.horizontal_motor.set_control(controls.with_output(config.horizontal_intake_speed))
+        self.horizontal_motor.set_control(controls.DutyCycleOut.with_output(config.horizontal_intake_speed))
         """    self.horizontal_motor.set_raw_output(
             config.horizontal_intake_speed
         )
@@ -91,7 +91,7 @@ class Intake(commands2.subsystem):
     
     def intake_algae(self) -> None:
 
-        self.horizontal_motor.set_control(controls.with_output(-config.horizontal_intake_speed))
+        self.horizontal_motor.set_control(controls.DutyCycleOut.with_output(-config.horizontal_intake_speed))
         self.intake_running = True
 
     def stop(self) -> None:
@@ -113,7 +113,7 @@ class Intake(commands2.subsystem):
         self.intake_running = True
 
     def extake_algae(self) -> None:
-        self.horizontal_motor.set_control(controls.duty_cycle_out.with_output(config.extake_algae_speed))
+        self.horizontal_motor.set_control(controls.DutyCycleOut.with_output(config.extake_algae_speed))
         self.intake_running = True
 
     def get_horizontal_motor_current(self) -> float:
@@ -180,7 +180,7 @@ class Intake(commands2.subsystem):
         
 
     def stop_pivot(self) -> None:
-        self.pivot_motor.set_control(self.control.with_output(0))
+        self.pivot_motor.set_control(controls.DutyCycleOut.with_output(0))
 
     def periodic(self) -> None:
         #if config.NT_INTAKE:
