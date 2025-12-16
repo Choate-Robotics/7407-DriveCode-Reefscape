@@ -26,11 +26,7 @@ class Intake(commands2.subsystem):
                 configs.MotorOutputConfigs()
                 .with_inverted(signals.InvertedValue.CLOCKWISE_POSITIVE)
                 .with_neutral_mode(signals.NeutralModeValue.BRAKE)
-            ).with_feedback(
-
-                
             )
-            
             )
 
         self.pivot_motor_configs = (
@@ -85,7 +81,7 @@ class Intake(commands2.subsystem):
         spin the motors inwards to collect the coral
         """
 
-        self.horizontal_motor.set_control(self.control.with_output(config.horizontal_intake_speed))
+        self.horizontal_motor.set_control(controls.with_output(config.horizontal_intake_speed))
         """    self.horizontal_motor.set_raw_output(
             config.horizontal_intake_speed
         )
@@ -95,14 +91,14 @@ class Intake(commands2.subsystem):
     
     def intake_algae(self) -> None:
 
-        self.horizontal_motor.set_control(self.control.with_output(-config.horizontal_intake_speed))
+        self.horizontal_motor.set_control(controls.with_output(-config.horizontal_intake_speed))
         self.intake_running = True
 
     def stop(self) -> None:
         """
         stop the motors
         """
-        self.horizontal_motor.set_control(self._duty_cycle_out.with_output(0)),
+        self.horizontal_motor.set_control(controls.DutyCycleOut.with_output(0)),
         f"raw output: {0}",
         
         self.intake_running = False
@@ -113,11 +109,11 @@ class Intake(commands2.subsystem):
         """
 
         ""
-        self.horizontal_motor.set_control(self.control.with_output(config.speed))
+        self.horizontal_motor.set_control(controls.DutyCycleOut.with_output(config.speed))
         self.intake_running = True
 
     def extake_algae(self) -> None:
-        self.horizontal_motor.set_control(self.control.with_output(config.extake_algae_speed))
+        self.horizontal_motor.set_control(controls.duty_cycle_out.with_output(config.extake_algae_speed))
         self.intake_running = True
 
     def get_horizontal_motor_current(self) -> float:
