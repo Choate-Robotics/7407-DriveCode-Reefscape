@@ -61,7 +61,7 @@ class Wrist(Subsystem):
         self.wrist_feeding_pub = self.table.getBooleanTopic("wrist feeding").publish()
         self.wrist_ejecting_pub = self.table.getBooleanTopic("wrist ejecting").publish()
         self.feed_current_pub = self.table.getDoubleTopic("feed current").publish()
-        self.wrist_zeroed_pub = self.table.geBooleanTopic("wrist zeroed").publish()
+        self.wrist_zeroed_pub = self.table.getBooleanTopic("wrist zeroed").publish()
         self.wrist_abs_pos_pub = self.table.getDoubleTopic("wrist absolute position").publish()
         self.wrist_abs_ang_pub = self.table.getDoubleTopic("wrist absolute angle").publish()
         self.calc_kg_pub = self.table.getDoubleTopic("calculated kg").publish()
@@ -203,12 +203,12 @@ class Wrist(Subsystem):
         """
         update the network table with the wrist data
         """
-        self.wrist_angle_pub.set(math.degrees(self.get_wrist_angle))
+        self.wrist_angle_pub.set(math.degrees(self.get_wrist_angle()))
         self.target_angle_pub.set(math.degrees(self.target_angle))
         self.wrist_angle_moving_pub.set(self.wrist_angle_moving)
         self.wrist_feeding_pub.set(self.wrist_feeding)
         self.wrist_ejecting_pub.set(self.wrist_ejecting)
-        self.feed_current_pub.set(self.feed_current.get_motor_current)
+        self.feed_current_pub.set(self.feed_motor.get_motor_current())
         self.wrist_zeroed_pub.set(self.wrist_zeroed)
         self.wrist_abs_pos_pub.set(self.encoder.get_absolute_position().value)
         self.wrist_abs_ang_pub.set((math.degrees(self.encoder.get_absolute_position().value - config.wrist_encoder_zero)

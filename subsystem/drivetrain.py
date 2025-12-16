@@ -381,9 +381,7 @@ class Drivetrain(Subsystem):
             n_states[3].angle.radians(), n_states[3].speed
         ])
 
-        self.pos_pub.set([
-            self.get_pose()
-        ])
+        self.pos_pub.set(self.get_pose())
 
         self.rot_pub.set(self.get_heading().degrees())
 
