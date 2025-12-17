@@ -7,12 +7,6 @@ from units.SI import radians
 import commands2
 
 class Intake(commands2.subsystem):
-    
-    pivot_motor_current: StatusSignal
-    pivot_motor_pos: StatusSignal
-    horizontal_motor_current: StatusSignal
-    horizontal_motor_pos: StatusSignal
-
     def __init__(self):
         super().__init__()
 
@@ -117,12 +111,10 @@ class Intake(commands2.subsystem):
         self.intake_running = True
 
     def get_horizontal_motor_current(self) -> float:
-        self.horizontal_motor_current.refresh()
-        return self.horizontal_motor_current.value
+        return self.horizontal_motor.get_motor_current().value
 
     def get_pivot_motor_current(self) -> float:
-        self.pivot_motor_current.refresh()
-        return self.pivot_motor_current.value
+        return self.pivot_motor.get_motor_current().value
 
     
     def limit_angle(self, angle: radians) -> radians:
@@ -145,7 +137,7 @@ class Intake(commands2.subsystem):
         """
 
         self.pivot_angle = (
-            (self.encoder.get_absolute_position().value - config.intake_encoder_zero) * 2 * math.pi)
+            (self.encoder.get_absolute_position().value - config.intake_encoder_zero) / (2 * math.pi))
         pos = self.pivot_angle
         self.pivot_motor.set_position(pos), f"sensor position: {pos}"
 
@@ -153,11 +145,9 @@ class Intake(commands2.subsystem):
 
     def get_pivot_angle(self):
         "returns current angle of pivot"
-        self.pivot_motor_pos.refresh()
-        self.pivot_angle = (
-            self.pivot_motor_pos / 2 * math.pi
-        )
-        return self.pivot_angle
+        return (self.pivot_angle.get_position().value/
+                (2
+                * math.pi))
     
     def is_at_angle(self, angle: radians) -> bool:
         return abs(self.get_pivot_angle() - angle) < config.intake_angle_threshold
