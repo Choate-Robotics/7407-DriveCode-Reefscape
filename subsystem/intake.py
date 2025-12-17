@@ -145,9 +145,8 @@ class Intake(commands2.subsystem):
         """
 
         self.pivot_angle = (
-            (self.encoder.get_absolute_position().value - config.intake_encoder_zero) / constants.intake_encoder_gear_ratio * 2 * math.pi
-        )
-        pos = self.pivot_angle * constants.intake_pivot_gear_ratio / (2 * math.pi)
+            (self.encoder.get_absolute_position().value - config.intake_encoder_zero) * 2 * math.pi)
+        pos = self.pivot_angle
         self.pivot_motor.set_position(pos), f"sensor position: {pos}"
 
         self.pivot_zeroed = True
@@ -156,7 +155,7 @@ class Intake(commands2.subsystem):
         "returns current angle of pivot"
         self.pivot_motor_pos.refresh()
         self.pivot_angle = (
-            self.pivot_motor_pos.value / constants.intake_pivot_gear_ratio * math.pi * 2
+            self.pivot_motor_pos / 2 * math.pi
         )
         return self.pivot_angle
     
@@ -168,7 +167,6 @@ class Intake(commands2.subsystem):
         setting the angle of the pivot
         """
 
-        ff = config.intake_max_ff * math.cos(config.intake_ff_offset - angle)
         rotations = angle / (2 * math.pi) * constants.intake_pivot_gear_ratio
 
         self.target_angle = angle
