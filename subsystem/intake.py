@@ -37,7 +37,6 @@ class Intake(Subsystem):
 
         self.encoder: CANcoder = CANcoder(config.intake_cancoder_id)
 
-
     def init(self):
         self.horizontal_motor.init()
         self.pivot_motor.init()
